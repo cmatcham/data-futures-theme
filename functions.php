@@ -427,20 +427,12 @@ function get_wheels() {
 	
 	$wheels = $wpdb->get_results("SELECT * FROM $wheel_table WHERE user_id = ".get_current_user_id());
 
+	if (empty($wheels)) {
+	    create_wheel('New wheel', '');
+	    return get_wheels();
+	}
 	return $wheels;
-/* 	if (empty($wheels)) {
-		echo 'and my wheels are empty';
-	}
-	echo empty($wheels);
-	if (is_array($wheels) || is_object($wheels)) {
-		foreach ( $wheels as $data_future_wheel) {
-			echo 'You have a wheel called '.$data_future_wheel->name;
-		}
-		echo 'Shown all your wheels';
-	} else {
-		echo 'You have no wheels, create one here';
-	}
- */
+
 }
 
 function get_wheel() {
@@ -540,6 +532,7 @@ function create_wheel($name, $url) {
 	$wheel_table = $wpdb->prefix . "data_futures_wheel";
 	
 	$wpdb->insert($wheel_table, array('user_id' => get_current_user_id(), 'name' => $name, 'url' => $url));
+	return $wpdb->insert_id;
 }
 
 
