@@ -184,6 +184,11 @@ function data_futures_show_login() {
         }
     }
     
+    //failed login?
+    if ($_REQUEST['login'] == 'failed') {
+        $error = 'Invalid login, please try again.';
+    }
+    
     
 ?>
 <div class="container">
@@ -202,6 +207,9 @@ function data_futures_show_login() {
 						<div class="tab-pane active in" id="login">
 							<?php if (!empty($message)) { ?>
 							<div class="alert alert-success" role="alert"><?php echo $message ?></div>
+							<?php } ?>
+							<?php if (!empty($error) && $screen == 'login') { ?>
+							<div class="alert alert-danger" role="alert"><?php echo $error ?></div>
 							<?php } ?>
 							<form action="<?php echo wp_login_url(); ?>" method="post">
 								<div class="form-group">
@@ -227,7 +235,7 @@ function data_futures_show_login() {
 							<form action="<?php echo esc_url(get_permalink()) ?>" method="post">
 								<input type="hidden" name="action" value="data_futures_create_account"/>
 								<?php wp_nonce_field( 'create_account_nonce', 'data_futures_create_account' );  ?>
-								<?php if (!empty($error)) { ?>
+								<?php if (!empty($error) && $screen == 'create') { ?>
 								<div class="alert alert-danger" role="alert"><?php echo $error ?></div>
 								<?php } ?>
 								<div class="form-group">
@@ -307,7 +315,8 @@ function csjm_login_fail( $username ) {
      $referrer = $_SERVER['HTTP_REFERER'];  // where did the post submission come from?
      // if there's a valid referrer, and it's not the default log-in screen
      if ( !empty($referrer) && !strstr($referrer,'wp-login') && !strstr($referrer,'wp-admin') ) {
-          wp_redirect(get_permalink() . '/?login=failed' );  // let's append some information (login=failed) to the URL for the theme to use
+
+         wp_redirect($referrer . '/?login=failed' );  // let's append some information (login=failed) to the URL for the theme to use
           exit;
      }
 }
