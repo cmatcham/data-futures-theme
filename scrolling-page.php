@@ -10,7 +10,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Scrolling Nav - Start Bootstrap Template</title>
+    <title><?php echo get_bloginfo('name');?> :: <?php echo get_the_title(get_the_ID());?></title>
 
 
     <?php wp_head(); ?>
@@ -50,7 +50,7 @@ $child_pages = new WP_Query( array(
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand page-scroll" href="#page-top">Transparent Data Use</a>
+                <a class="navbar-brand page-scroll" href="../">Transparent Data Use</a>
             </div>
 
             <!-- Collect the nav links, forms, and other content for toggling -->
@@ -67,6 +67,15 @@ $child_pages = new WP_Query( array(
 
 					<?php endwhile; endif;  ?>
                 </ul>
+                            <?php wp_nav_menu( array(
+                'theme_location' 	=> 'about-menu',
+                'container' 		=> false,
+                'menu_class'      	=> 'nav navbar-nav navbar-right',
+                'menu_id'         	=> '',
+                'echo'            	=> true,
+                'items_wrap'      	=> '<ul id="%1$s" class="%2$s">%3$s</ul>',
+                'depth'           	=> 0
+            )); ?>
             </div>
             <!-- /.navbar-collapse -->
         </div>
@@ -74,7 +83,11 @@ $child_pages = new WP_Query( array(
     </nav>
 
 <?php
-
+$front_page = get_option('page_on_front');
+$public_link = get_post_meta($front_page, 'public-link', true);
+$public_url = get_permalink($public_link);
+$entity_link = get_post_meta($front_page, 'entity-link', true);
+$entity_url = get_permalink($entity_link);
 
 if ( $child_pages->have_posts() ) : while ( $child_pages->have_posts() ) : $child_pages->the_post();
 ?>	
@@ -97,14 +110,16 @@ if ( $child_pages->have_posts() ) : while ( $child_pages->have_posts() ) : $chil
             <div class="col-md-4"></div>
             <div class="col-md-4">
             	<div class="col-xs-6 public-entity-nav public">
+	            	<a href="<?php echo $public_url;?>"><span class="link"></span></a>
             		<div class="col-xs-4 col-xs-offset-8 col-md-6 col-md-offset-6" >
             		<h2>PUBLIC</h2>
             		<span class="glyphicon glyphicon-record"></span>
             		</div>
             	</div>
             	<div class="col-xs-6 public-entity-nav entity" >
+	            	<a href="<?php echo $entity_url;?>"><span class="link"></span></a>
             		<div class="col-xs-4 col-md-6 ">
-            		<h2>ENTITY</h2>
+            		<h2>ORGANISATION</h2>
             		<span class="glyphicon glyphicon-record"></span>
             		</div>
             	</div>
@@ -121,22 +136,9 @@ endwhile; endif;
 wp_reset_postdata();
 
 wp_footer();
+
+data_futures_footer(false);
 ?>
-	<div class="footer-padding"></div>
-    <footer>
-    <div class="navbar navbar-fixed-bottom">
-    <div class="container">
-    <ul class="nav navbar-nav navbar-left">
-      <li><a href="#about">TERMS</a></li>
-      <li><a href="#contact">PRIVACY</a></li>
-      <li><a href="#contact">TRUSTED DATA</a></li>
-    </ul>
-    <ul class="nav navbar-nav navbar-right">
-      <li><a>Brought to you by <strong>DATA FUTURES</strong> partnership</a></li>
-    </ul>
-    </div>
-    </div>
-    </footer>
 
 
 </body>

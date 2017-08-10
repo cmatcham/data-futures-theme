@@ -12,7 +12,11 @@
 
     <title>Create your wheel</title>
 
-
+	<style>
+	   .modal-content { padding: 15px;}
+	   #dataFutures { width:400px;border:1px solid rgba(200,200,200,0.8);padding:10px;-webkit-box-shadow: 6px 3px 20px 2px rgba(0,0,0,0.75);-moz-box-shadow: 6px 3px 20px 2px rgba(0,0,0,0.75);box-shadow: 6px 3px 20px 2px rgba(0,0,0,0.75);} 
+        h1.dataFuturesQuestion {display:none;}
+	</style>
     <?php wp_head(); ?>
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -20,10 +24,15 @@
         <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
         <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
-
 </head>
 <body>
-
+<?php
+$front_page = get_option('page_on_front');
+$public_link = get_post_meta($front_page, 'public-link', true);
+$public_url = get_permalink($public_link);
+$entity_link = get_post_meta($front_page, 'entity-link', true);
+$entity_url = get_permalink($entity_link);
+?>
     <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
         <div class="container">
             <div class="navbar-header page-scroll">
@@ -33,29 +42,36 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand page-scroll" href="#page-top">Transparent Data Use</a>
+                <a class="navbar-brand page-scroll" href="../">Transparent Data Use</a>
                 
                 
             </div>
-            <?php if (is_user_logged_in()) { ?>
+            
             <div class="collapse navbar-collapse navbar-ex1-collapse">
+            	<ul class="nav navbar-nav">
+            		<li><a href="<?= $entity_url ?>">For Organisations</a></li>
+            		<li><a href="<?= $public_url ?>">For Public</a></li>
+            	</ul>
+            	<?php if (is_user_logged_in()) { ?>
                 <ul class="nav navbar-nav navbar-right">
                 	<li class="dropdown"> <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Your wheels <span class="caret"></span></a>
 						<ul class="dropdown-menu">
 							<?php
-							foreach ( get_wheels() as $data_future_wheel) {
-								echo '<li><a class="loadWheel" href="#" data-target="'.$data_future_wheel->id.'">'.$data_future_wheel->name.'</li>';
+							$wheels = get_wheels();
+							foreach ( $wheels as $data_future_wheel) {
+								echo '<li><a class="loadWheel" href="#" data-target="'.$data_future_wheel->id.'" id="wheelLink'.$data_future_wheel->id.'">'.$data_future_wheel->name.'</li>';
 							}
 							?>	
 				            <li role="separator" class="divider"></li>
-				            <li><a href="#">Create new</a></li>
+				            <li><a id="createNewWheel" href="#">Create new</a></li>
 						</ul>
                 	</li>
                 	<li><a href="<?php echo wp_logout_url( get_permalink() ); ?>">Logout</a></li>
                 </ul>
+                <?php } ?>
             </div>
             
-            <?php } ?>
+            
             
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse navbar-ex1-collapse">
@@ -75,135 +91,19 @@ if (!is_user_logged_in()) {
 	data_futures_show_login();             
 
 ?>
-<!-- Custom Login/Register/Password Code @ https://digwp.com/2010/12/login-register-password-code/ -->
-<!-- Theme Template Code -->
 
-<div id="login-register-password">
-
-	<?php global $user_ID, $user_identity; if (!$user_ID) { ?>
-
-	<ul class="tabs_login">
-		<li class="active_login"><a href="#tab1_login">Login</a></li>
-		<li><a href="#tab2_login">Register</a></li>
-		<li><a href="#tab3_login">Forgot?</a></li>
-	</ul>
-	<div class="tab_container_login">
-		<div id="tab1_login" class="tab_content_login">
-
-			<?php $register = $_GET['register']; $reset = $_GET['reset']; if ($register == true) { ?>
-
-			<h3>Success!</h3>
-			<p>Check your email for the password and then return to log in.</p>
-
-			<?php } elseif ($reset == true) { ?>
-
-			<h3>Success!</h3>
-			<p>Check your email to reset your password.</p>
-
-			<?php } else { ?>
-
-			<h3>Have an account?</h3>
-			<p>Log in or sign up! It&rsquo;s fast &amp; <em>free!</em></p>
-
-			<?php } ?>
-
-			<form method="post" action="<?php bloginfo('url') ?>/wp-login.php" class="wp-user-form">
-				<div class="username">
-					<label for="user_login"><?php _e('Username'); ?>: </label>
-					<input type="text" name="log" value="<?php echo esc_attr(stripslashes($user_login)); ?>" size="20" id="user_login" tabindex="11" />
-				</div>
-				<div class="password">
-					<label for="user_pass"><?php _e('Password'); ?>: </label>
-					<input type="password" name="pwd" value="" size="20" id="user_pass" tabindex="12" />
-				</div>
-				<div class="login_fields">
-					<div class="rememberme">
-						<label for="rememberme">
-							<input type="checkbox" name="rememberme" value="forever" checked="checked" id="rememberme" tabindex="13" /> Remember me
-						</label>
-					</div>
-					<?php do_action('login_form'); ?>
-					<input type="submit" name="user-submit" value="<?php _e('Login'); ?>" tabindex="14" class="user-submit" />
-					<input type="hidden" name="redirect_to" value="<?php echo $_SERVER['REQUEST_URI']; ?>" />
-					<input type="hidden" name="user-cookie" value="1" />
-				</div>
-			</form>
-		</div>
-		<div id="tab2_login" class="tab_content_login" style="display:none;">
-			<h3>Register for this site!</h3>
-			<p>Sign up now for the good stuff.</p>
-			<form method="post" action="<?php echo site_url('wp-login.php?action=register', 'login_post') ?>" class="wp-user-form">
-				<div class="username">
-					<label for="user_login"><?php _e('Username'); ?>: </label>
-					<input type="text" name="user_login" value="<?php echo esc_attr(stripslashes($user_login)); ?>" size="20" id="user_login" tabindex="101" />
-				</div>
-				<div class="password">
-					<label for="user_email"><?php _e('Your Email'); ?>: </label>
-					<input type="text" name="user_email" value="<?php echo esc_attr(stripslashes($user_email)); ?>" size="25" id="user_email" tabindex="102" />
-				</div>
-				<div class="login_fields">
-					<?php do_action('register_form'); ?>
-					<input type="submit" name="user-submit" value="<?php _e('Sign up!'); ?>" class="user-submit" tabindex="103" />
-					<?php $register = $_GET['register']; if($register == true) { echo '<p>Check your email for the password!</p>'; } ?>
-					<input type="hidden" name="redirect_to" value="<?php echo $_SERVER['REQUEST_URI']; ?>?register=true" />
-					<input type="hidden" name="user-cookie" value="1" />
-				</div>
-			</form>
-		</div>
-		<div id="tab3_login" class="tab_content_login" style="display:none;">
-			<h3>Lose something?</h3>
-			<p>Enter your username or email to reset your password.</p>
-			<form method="post" action="<?php echo site_url('wp-login.php?action=lostpassword', 'login_post') ?>" class="wp-user-form">
-				<div class="username">
-					<label for="user_login" class="hide"><?php _e('Username or Email'); ?>: </label>
-					<input type="text" name="user_login" value="" size="20" id="user_login" tabindex="1001" />
-				</div>
-				<div class="login_fields">
-					<?php do_action('login_form', 'resetpass'); ?>
-					<input type="submit" name="user-submit" value="<?php _e('Reset my password'); ?>" class="user-submit" tabindex="1002" />
-					<?php $reset = $_GET['reset']; if($reset == true) { echo '<p>A message will be sent to your email address.</p>'; } ?>
-					<input type="hidden" name="redirect_to" value="<?php echo $_SERVER['REQUEST_URI']; ?>?reset=true" />
-					<input type="hidden" name="user-cookie" value="1" />
-				</div>
-			</form>
-		</div>
-	</div>
-
-	<?php } else { // is logged in ?>
-
-	<div class="sidebox">
-		<h3>Welcome, <?php echo $user_identity; ?></h3>
-		<div class="usericon">
-			<?php global $userdata; echo get_avatar($userdata->ID, 60); ?>
-
-		</div>
-		<div class="userinfo">
-			<p>You&rsquo;re logged in as <strong><?php echo $user_identity; ?></strong></p>
-			<p>
-				<a href="<?php echo wp_logout_url('index.php'); ?>">Log out</a> | 
-				<?php if (current_user_can('manage_options')) { 
-					echo '<a href="' . admin_url() . '">' . __('Admin') . '</a>'; } else { 
-					echo '<a href="' . admin_url() . 'profile.php">' . __('Profile') . '</a>'; } ?>
-
-			</p>
-		</div>
-	</div>
-
-	<?php } ?>
-
-</div>
 <script>
-	jquery(document).ready(function() {
-		jquery(".tab_content_login").hide();
-		jquery("ul.tabs_login li:first").addClass("active_login").show();
-		jquery(".tab_content_login:first").show();
-		jquery("ul.tabs_login li").click(function() {
-			jquery("ul.tabs_login li").removeClass("active_login");
-			jquery(this).addClass("active_login");
-			jquery(".tab_content_login").hide();
-			var activeTab = jquery(this).find("a").attr("href");
-			if (jquery.browser.msie) {jquery(activeTab).show();}
-			else {jquery(activeTab).show();}
+	jQuery(document).ready(function() {
+		jQuery(".tab_content_login").hide();
+		jQuery("ul.tabs_login li:first").addClass("active_login").show();
+		jQuery(".tab_content_login:first").show();
+		jQuery("ul.tabs_login li").click(function() {
+			jQuery("ul.tabs_login li").removeClass("active_login");
+			jQuery(this).addClass("active_login");
+			jQuery(".tab_content_login").hide();
+			var activeTab = jQuery(this).find("a").attr("href");
+			if (jQuery.browser.msie) {jQuery(activeTab).show();}
+			else {jQuery(activeTab).show();}
 			return false;
 		});
 	});
@@ -217,12 +117,12 @@ if (!is_user_logged_in()) {
 
 <?php
 if (is_user_logged_in()) {
+$selected_wheel = get_selected_wheel($wheels);
+
 ?>
 <div class="container">
 	<div class="row" style="padding-top:60px;">
-<?php 
-$wheels = get_wheels();
-?>    
+
 <div class="form-group">
 	<label for="wheelName">Name</label>
 	<input type="text" class="form-control" id="wheelName" placeholder="Enter a name for this wheel (eg. your organisation name)" name="wheelName">
@@ -262,6 +162,7 @@ $wheels = get_wheels();
 				</div>
 				<div class="form-group">
 					<textarea id="q1answer" data-question="1" class="form-control" rows="3"></textarea>
+					<span class="help-block">Answers should be kept short, to a maximum of 500 characters.  For further detailed explanation, you can include a link below</span>
 				</div>
 				<div class="modal fade" id="q1help" tabindex="-1" role="dialog"
 					aria-labelledby="q1help" aria-hidden="true">
@@ -373,6 +274,7 @@ $wheels = get_wheels();
 				</div>
 				<div class="form-group">
 					<textarea data-question="2" id="q2answer" class="form-control" rows="3"></textarea>
+					<span class="help-block">Answers should be kept short, to a maximum of 500 characters.  For further detailed explanation, you can include a link below</span>
 				</div>
 				<div class="modal fade" id="q2help" tabindex="-1" role="dialog"
 					aria-labelledby="q2help" aria-hidden="true">
@@ -436,6 +338,7 @@ $wheels = get_wheels();
 				</div>
 				<div class="form-group">
 					<textarea data-question="3" id="q3answer" class="form-control" rows="3"></textarea>
+					<span class="help-block">Answers should be kept short, to a maximum of 500 characters.  For further detailed explanation, you can include a link below</span>
 				</div>
 				<div class="modal fade" id="q3help" tabindex="-1" role="dialog"
 					aria-labelledby="q3help" aria-hidden="true">
@@ -467,6 +370,7 @@ $wheels = get_wheels();
 				</div>
 				<div class="form-group">
 					<textarea data-question="4" id="q4answer" class="form-control" rows="3"></textarea>
+					<span class="help-block">Answers should be kept short, to a maximum of 500 characters.  For further detailed explanation, you can include a link below</span>
 				</div>
 				<div class="modal fade" id="q4help" tabindex="-1" role="dialog"
 					aria-labelledby="q4help" aria-hidden="true">
@@ -510,6 +414,7 @@ $wheels = get_wheels();
 				</div>
 				<div class="form-group">
 					<textarea data-question="5" id="q5answer" class="form-control" rows="3"></textarea>
+					<span class="help-block">Answers should be kept short, to a maximum of 500 characters.  For further detailed explanation, you can include a link below</span>
 				</div>
 				<div class="modal fade" id="q5help" tabindex="-1" role="dialog"
 					aria-labelledby="q5help" aria-hidden="true">
@@ -543,6 +448,7 @@ $wheels = get_wheels();
 				</div>
 				<div class="form-group">
 					<textarea data-question="6" id="q6answer" class="form-control" rows="3"></textarea>
+					<span class="help-block">Answers should be kept short, to a maximum of 500 characters.  For further detailed explanation, you can include a link below</span>
 				</div>
 				<div class="modal fade" id="q6help" tabindex="-1" role="dialog"
 					aria-labelledby="q6help" aria-hidden="true">
@@ -574,6 +480,7 @@ $wheels = get_wheels();
 				</div>
 				<div class="form-group">
 					<textarea data-question="7" id="q7answer" class="form-control" rows="3"></textarea>
+					<span class="help-block">Answers should be kept short, to a maximum of 500 characters.  For further detailed explanation, you can include a link below</span>
 				</div>
 				<div class="modal fade" id="q7help" tabindex="-1" role="dialog"
 					aria-labelledby="q7help" aria-hidden="true">
@@ -602,6 +509,7 @@ $wheels = get_wheels();
 				</div>
 				<div class="form-group">
 					<textarea data-question="8" id="q8answer" class="form-control" rows="3"></textarea>
+					<span class="help-block">Answers should be kept short, to a maximum of 500 characters.  For further detailed explanation, you can include a link below</span>
 				</div>
 				<div class="modal fade" id="q8help" tabindex="-1" role="dialog"
 					aria-labelledby="q8help" aria-hidden="true">
@@ -662,7 +570,7 @@ $wheels = get_wheels();
 		block, include the widget code:
 		<code>
 			<pre>
-&lt;script src="http://parhelion.co.nz/dataFutures/media/dataFutures.js">&lt;/script>
+&lt;script src="https://trusteddata.co.nz/media/dataFutures.js">&lt;/script>
 </pre>
 		</code>
 		Then in the location you want the widget, create a
@@ -670,15 +578,15 @@ $wheels = get_wheels();
 		block with the id
 		<code>dataFutures</code>
 		and a
-		<code>data-embed</code>
+		<code>data-wheel-id</code>
 		attribute as generated from your answers
 		<code>
-			<pre>&lt;div id="dataFutures" data-embed="<span id="embedCode"></span>"&gt;</pre>
+			<pre>&lt;div id="dataFutures" data-wheel-id="<span id="embedCode"></span>"&gt;</pre>
 		</code>
 	</p>
 <script>
 var ajaxurl = '<?php echo admin_url( "admin-ajax.php" )?>';
-var wheel_id = -1;
+var wheelId = <?php echo $selected_wheel->id;?>;
 
 jQuery(document).ready(function() {
 	console.log('ready');
@@ -689,12 +597,27 @@ jQuery(document).ready(function() {
 		jQuery('#rootwizard .progress-bar').css({width:$percent+'%'});
 	}});
   	
-  	$('a.loadWheel').click(function(e) {
+  	jQuery('a.loadWheel').click(function(e) {
   	     e.preventDefault(); 
   	     console.log(this);
   	     loadWheel(jQuery(this).data('target'));
   	 });
-  	
+
+	jQuery('#wheelName').on('change keyup paste', jQuery.debounce(function(evt) {
+		jQuery('#wheelLink'+wheelId).text(jQuery('#wheelName').val());
+		saveWheel();
+	}, 1000));
+
+	jQuery('#wheelURL').on('change keyup paste', jQuery.debounce(function(evt) {
+		saveWheel();
+	}, 1000));
+
+	jQuery('#createNewWheel').click(function(e) {
+		e.preventDefault();
+		createWheel();
+	});
+	
+  	loadWheel(wheelId);
   	monitorAnswers();
   	
   	jQuery("#createAccountTab").tab('show');
@@ -715,12 +638,33 @@ function monitorAnswers() {
 	});
 }
 
+function createWheel() {
+	var ajaxurl = '<?php echo admin_url( "admin-ajax.php" )?>';
+	var data = {'action':'create_wheel'};
+	jQuery.post(ajaxurl, data, function(response) {
+		console.log(response);
+	});
+}
+
+function saveWheel() {
+	var ajaxurl = '<?php echo admin_url( "admin-ajax.php" )?>';
+	var data = {
+			'action':'save_wheel',
+			'id':wheelId,
+			'name':jQuery('#wheelName').val(),
+			'url':jQuery('#wheelURL').val()
+		};
+		jQuery.post(ajaxurl, data, function(response) {
+			console.log(response);
+		});
+	
+}
+
 function ajaxSave(id, value) {
-	console.log("CSJM", id, value);
 	var ajaxurl = '<?php echo admin_url( "admin-ajax.php" )?>';
 	var data = {
 		'action':'save_answer',
-		'id':wheel_id,
+		'id':wheelId,
 		'question':id,
 		'answer':value
 	};
@@ -730,6 +674,7 @@ function ajaxSave(id, value) {
 }
 
 function loadWheel(id) {
+	wheelId = id;
 	var ajaxurl = '<?php echo admin_url( "admin-ajax.php" )?>';
 	var data = {
 		'action':'get_wheel',
@@ -737,10 +682,9 @@ function loadWheel(id) {
 	};
 	jQuery.post(ajaxurl, data, function(response) {
 		var json = JSON.parse(response);
+		jQuery('#embedCode').text(json.embedCode);
 		jQuery('#wheelName').val(json.name);		
-		jQuery('#wheelUrl').val(json.url);
-		console.log(json);
-		console.log(json.answers);
+		jQuery('#wheelURL').val(json.url);
 		jQuery('#q1answer').val(getAnswer(1, json.answers));
 		jQuery('#q2answer').val(getAnswer(2, json.answers));
 		jQuery('#q3answer').val(getAnswer(3, json.answers));
@@ -769,7 +713,7 @@ function generateEmbed() {
 	json.push({'answer':localStorage.q4answer});
 	console.log(json);
 	var code = LZString.compressToBase64(JSON.stringify(json));
-	$('#embedCode').text(code);
+	//$('#embedCode').text(code);
 }
 </script>
 
@@ -780,7 +724,7 @@ function generateEmbed() {
 <?php 
 } 
 
-
+data_futures_footer(false);
 ?>
 
 

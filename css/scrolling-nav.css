@@ -114,7 +114,7 @@ div.scrolling-page-image div {
 	}
 
 .scrolling-section {
-    height: 100%;
+    min-height: 100%;
     padding-top: 100px;
     background: #fff;
 }
@@ -137,8 +137,14 @@ div.scrolling-page-image div {
 .entity .public-entity-nav.public {
 	color: grey;
 }
+.entity .public-entity-nav.public:hover {
+	color: #5085a0;
+}
 .public .public-entity-nav.entity {
 	color: grey;
+}
+.public .public-entity-nav.entity:hover {
+	color: #f78f33;
 }
 .entity .public-entity-nav.entity {
 	color: #f78f33;
@@ -173,4 +179,14 @@ div.scrolling-page-image div {
 .entity a.btn.btn-default {
 	background-color: #f78f33 !important;
 }
+span.link {
+  position:absolute; 
+  width:100%;
+  height:100%;
+  top:0;
+  left: 0;
+
+  z-index: 1;
+}   
+
 

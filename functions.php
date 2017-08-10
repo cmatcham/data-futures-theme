@@ -2,6 +2,13 @@
 
 add_action( 'after_switch_theme', 'create_db' );
 
+add_filter( 'allowed_http_origins', 'add_allowed_origins' );
+function add_allowed_origins( $origins ) {
+    $origins[] = 'http://192.168.1.4:81';
+    return $origins;
+}
+
+
 function create_db() {
 	require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
 	
@@ -17,6 +24,8 @@ function create_db() {
 		user_id BIGINT(20) UNSIGNED NOT NULL,
 		name TEXT,
 		url VARCHAR(255),
+        creation_time DATETIME DEFAULT CURRENT_TIMESTAMP,
+        modification_time DATETIME ON UPDATE CURRENT_TIMESTAMP,
 		PRIMARY KEY (id)
 	) $charset_collate;";
 
@@ -44,15 +53,27 @@ function create_db() {
 
 
 
+show_admin_bar(false);
 add_theme_support( 'post-thumbnails', array( 'page' ) );
-
 add_action('admin_head', 'remove_content_editor');
+
+add_action( 'admin_enqueue_scripts', 'add_bar_graphs' );
+
+function add_bar_graphs() {
+    wp_enqueue_script( 'bar_graphs', get_template_directory_uri() . '/js/bargraph.js' );
+    
+}
+
+function register_data_future_menus() {
+    register_nav_menu('about-menu',__( 'About Menu' ));
+    register_nav_menu('privacy-menu',__( 'Privacy Menu' ));
+}
+add_action( 'init', 'register_data_future_menus' );
 
 /**
  * Remove the content editor from scrolling pages
  */
-function remove_content_editor()
-{
+function remove_content_editor() {
     //Check against your meta data here
     if(get_page_template_slug() === 'scrolling-page.php'){      
         remove_post_type_support('page', 'editor');         
@@ -62,35 +83,64 @@ function remove_content_editor()
 
 
 function styles() {
-	error_log(get_page_template_slug());
-	error_log(is_front_page());
 	wp_deregister_script('jquery');
-    wp_register_script('jquery', 'http://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js', false, '2.1.3');
+    wp_register_script('jquery', 'https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js', false, '2.1.3');
     wp_enqueue_script('jquery');
 
+    wp_enqueue_style( 'bootstrap', get_theme_file_uri( '/css/bootstrap.min.css'), array(), null );
+    wp_enqueue_script('bootstrap', get_theme_file_uri( '/js/bootstrap.min.js'), array('jquery'), null);
+    
 	if (get_page_template_slug() === 'scrolling-page.php') {
-		wp_enqueue_style( 'bootstrap', get_theme_file_uri( '/css/bootstrap.min.css'), array(), null );
 		wp_enqueue_style( 'scrolling', get_theme_file_uri( '/css/scrolling-nav.css'), array(), null );
-		
-		// Bootstrap Core JavaScript 
-		wp_enqueue_script('bootstrap', get_theme_file_uri( '/js/bootstrap.min.js'), array('jquery'), null);
 		wp_enqueue_script('jquery-easing', get_theme_file_uri( '/js/jquery.easing.min.js'), array(), null);
 		wp_enqueue_script('scrolling', get_theme_file_uri( '/js/scrolling-nav.js'), array(), null);
-
-	} else if (get_page_template_slug() === 'wheel-page.php') {
-		
+	} else if (get_page_template_slug() === 'wheel-page.php') {		
 		wp_enqueue_script( 'lz-string', get_theme_file_uri( '/js/lz-string.js' ), array(), null);
 		wp_enqueue_script( 'bootstrap', 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js', array(), null);
 		wp_enqueue_script( 'bootstrapWizard', get_theme_file_uri( '/js/bootstrapWizard.js' ), array( 'jquery' ), '1.0');
 		wp_enqueue_script( 'debounce', get_theme_file_uri( '/js/jquery.debounce-1.0.5.js' ), array(), null);
 		wp_enqueue_script( 'dataFutures', get_theme_file_uri( '/js/dataFutures.js' ), array(), null);
-
-		wp_enqueue_style( 'bootstrap', get_theme_file_uri( '/css/bootstrap.min.css'), array(), null );
 	} else if (is_front_page()) {
 		wp_enqueue_script( 'bootstrap', 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js', array(), null);
-		wp_enqueue_style( 'bootstrap', get_theme_file_uri( '/css/bootstrap.min.css'), array(), null );
 	}
 
+}
+
+function data_futures_footer($fixed) {
+?>
+<footer>
+    <div class="navbar <?php echo $fixed ? 'navbar-fixed-bottom' : ''?>">
+	    <div class="container">
+    		<div class="navbar-header">
+    
+		    </div>
+            <div class="collapse navbar-collapse">
+            <?php wp_nav_menu( array(
+                'theme_location' 	=> 'privacy-menu',
+                'container'         => false,
+                'container_class' 	=> 'collapse navbar-collapse',
+                'container_id'    	=> 'main-navbar-collapse',
+                'menu_class'      	=> 'nav navbar-nav',
+                'menu_id'         	=> '',
+                'echo'            	=> true,
+                'fallback_cb'     	=> 'wp_page_menu',
+                'before'          	=> '',
+                'after'           	=> '',
+                'link_before'     	=> '',
+                'link_after'      	=> '',
+                'items_wrap'      	=> '<ul id="%1$s" class="%2$s">%3$s</ul>',
+                'depth'           	=> 0,
+                'walker'          	=> ''
+            )); ?>
+
+				<ul class="nav navbar-nav navbar-right">
+      				<li><a>Brought to you by <strong>DATA FUTURES</strong> partnership</a></li>
+    			</ul>
+    		</div>
+    	</div>
+    </div>
+</footer>
+<?php 
 }
 
 function data_futures_show_login() {
@@ -190,7 +240,7 @@ function data_futures_show_login() {
 			</div>
 		</div>
 		<div class="col-md-6">
-			<div id="dataFutures"></div>
+			<div id="dataFutures" data-disclaimer="none" data-style="none"></div>
 		</div>
 	</div>
 </div>
@@ -269,17 +319,6 @@ add_action( 'login_enqueue_scripts', 'my_login_logo' );
 add_action( 'wp_enqueue_scripts', 'styles' );	
 	
 	
-add_action('wp_ajax_add_transfer', 'process_add_transfer');
-
-function process_add_transfer() {
-	if ( empty($_POST) || !wp_verify_nonce($_POST['nonce'],'add_transfer') ) {
-	    echo 'You targeted the right function, but sorry, your nonce did not verify.';
-	    die();
-	} else {
-	    // do your function here 
-	    wp_redirect($redirect_url_for_non_ajax_request);
-	}
-}
 
 
 function data_futures_add_meta_boxes( $post ) {
@@ -316,7 +355,7 @@ add_action( 'add_meta_boxes_page', 'data_futures_add_meta_boxes' );
 function home_page_page_select_metabox($post) {
 	$selected_public = get_post_meta( $post->ID, 'public-link', true );
 	$selected_entity = get_post_meta( $post->ID, 'entity-link', true );
-    
+	
   	wp_nonce_field( basename( __FILE__ ), 'home_page_links_nonce' );
 	?>
 	<p>These are the blue and orange links on the front page</p>
@@ -358,6 +397,7 @@ function home_page_save_select_metabox($post_id) {
     if( isset( $_POST[ 'entity-link' ] ) ) {
         update_post_meta( $post_id, 'entity-link', sanitize_text_field( $_POST[ 'entity-link' ] ) );
     }
+
 
 }
 add_action( 'publish_page', 'home_page_save_select_metabox' );
@@ -435,6 +475,8 @@ function get_wheels() {
 
 }
 
+
+
 function get_wheel() {
     global $wpdb;
     $wheel_id = $_REQUEST['id'];
@@ -444,13 +486,13 @@ function get_wheel() {
     $wheels = $wpdb->get_row("SELECT * FROM $wheel_table WHERE user_id = ".get_current_user_id()." AND id = ".sanitize_key($wheel_id));
 
     if (empty($wheels)) {
-        echo "{'error':'invalid'}";
+        echo '{"error":"invalid"}';
         wp_die();
     }
     
     $answers = $wpdb->get_results("SELECT * FROM $answers_table WHERE wheel_id = ".sanitize_key($wheel_id));
         
-    $wheel = array("id" => $wheels->id, "name" => $wheels->name, "url" => $wheels->url, "answers" => $answers);
+    $wheel = array("embedCode" => hash_id($wheels->id), "id" => $wheels->id, "name" => $wheels->name, "url" => $wheels->url, "answers" => $answers);
     
     echo json_encode($wheel);
     wp_die();
@@ -458,6 +500,89 @@ function get_wheel() {
 
 add_action( 'wp_ajax_get_wheel', get_wheel );
 add_action( 'wp_ajax_nopriv_get_wheel', get_wheel );
+
+function get_public_wheel() {
+    global $wpdb;
+    $wheel_id = $_REQUEST['id'];
+    $wheel_id = un_hash($wheel_id);
+
+    error_log('public wheel '.id);
+    $answers_table = $wpdb->prefix . "data_futures_answers";
+    
+    $answers = $wpdb->get_results($wpdb->prepare("SELECT * FROM $answers_table WHERE wheel_id = %d", $wheel_id));
+    
+    $wheel = array("answers" => $answers);
+    echo json_encode($wheel);
+    wp_die();
+}
+
+add_action( 'rest_api_init', function () {
+    register_rest_route( 'dataFutures/v1', '/wheel/(?P<id>\d+)', array(
+        'methods' => 'GET',
+        'callback' => 'get_public_wheel_rest',
+    ));
+});
+
+function get_public_wheel_rest($data) {
+    global $wpdb;
+    $wheel_id = $data['id'];
+    $wheel_id = un_hash($wheel_id);
+    
+    error_log('public wheel '.id);
+    $answers_table = $wpdb->prefix . "data_futures_answers";
+    
+    $answers = $wpdb->get_results($wpdb->prepare("SELECT * FROM $answers_table WHERE wheel_id = %d", $wheel_id));
+    
+    $wheel = array("answers" => $answers);
+    return $wheel;
+//    wp_die();
+}
+
+add_action( 'wp_ajax_public_wheel', get_public_wheel );
+add_action( 'wp_ajax_nopriv_public_wheel', get_public_wheel );
+
+add_action( 'wp_ajax_create_wheel', ajax_create_wheel );
+add_action( 'wp_ajax_nopriv_create_wheel', ajax_create_wheel );
+
+function get_selected_wheel($wheels) {
+    if (isset($_REQUEST['id'])) {
+        foreach ($wheels as $candidate) {
+            if ($candidate->id == $_REQUEST['id']) {
+                return $candidate;
+            }
+        }
+    }
+    return $wheels[0];
+}
+
+function save_wheel() {
+    global $wpdb;
+    $wheel_table = $wpdb->prefix . "data_futures_wheel";
+    $wheel_id = $_REQUEST['id'];
+    $name = sanitize_text_field($_REQUEST['name']);
+    $url = sanitize_text_field($_REQUEST['url']);
+    
+    if (!is_valid_wheel($wheel_id)) {
+        echo '{"error":"invalid"}';
+        wp_die();
+    }
+    $wpdb->update(
+        $wheel_table,
+        array(
+            'name' => stripslashes($name),
+            'url'  => stripslashes($url)
+        ),
+        array(
+            'id' => $wheel_id
+        ),
+        array( '%s', '%s'),
+        array( '%d')
+    );
+}
+
+add_action( 'wp_ajax_save_wheel', save_wheel );
+add_action( 'wp_ajax_nopriv_save_wheel', save_wheel );
+
 
 function save_answer() {
     global $wpdb;
@@ -468,17 +593,17 @@ function save_answer() {
     $link = sanitize_text_field($_REQUEST['link']);
     
     if (!is_valid_wheel($wheel_id)) {
-        echo "{'error':'invalid'}";
+        echo '{"error":"invalid"}';
         wp_die();
     }
     
     if (!is_numeric($question)) {
-        echo "{'error':'invalid'}";
+        echo '{"error":"invalid"}';
         wp_die();
     }
     
     if ($question < 1 || $question > 8) {
-        echo "{'error':'invalid'}";
+        echo '{"error":"invalid"}';
         wp_die();
     }
     
@@ -527,6 +652,11 @@ function is_valid_wheel($id) {
     return (!empty($wheels));
 }
 
+function ajax_create_wheel() {
+    $id = create_wheel('New wheel', '');
+    echo "{\"id\":$id}";
+}
+
 function create_wheel($name, $url) {
 	global $wpdb;
 	$wheel_table = $wpdb->prefix . "data_futures_wheel";
@@ -546,4 +676,89 @@ function button_func( $atts ){
 }
 add_shortcode( 'button', 'button_func' );
 
+
+function wheel_embed($atts) {
+    return '<script src="http://localhost:81/dataFutures/wp-content/themes/datafutures/js/dataFutures.js"></script>
+        <div id="dataFutures" data-wheel-id="'.$atts["id"].'"></div>';
+}
+
+add_shortcode( 'wheel', 'wheel_embed' );
+
+function hash_id($n) {
+    $upperlimit = 8388608;
+    $buckets = 64;
+    return (($n * $upperlimit / $buckets) % $upperlimit) + floor($n / $buckets);
+ 
+}
+    
+function un_hash($n) {
+    
+    $upperlimit = 8388608;
+    $buckets = 64;
+    return (($n % ($upperlimit / $buckets)) * $buckets) + floor($n / ($upperlimit / $buckets));
+}
+
+
+// Function that outputs the contents of the dashboard widget
+function dashboard_widget_function( $post, $callback_args ) {
+    global $wpdb;
+    $wheel_table = $wpdb->prefix . "data_futures_wheel";
+    $number_wheels = $wpdb->get_var("SELECT count(*) FROM $wheel_table");
+    
+    $number_wheels_week = $wpdb->get_var("SELECT count(*) FROM $wheel_table WHERE creation_time > CURDATE() - INTERVAL 7 DAY");
+    $number_wheels_month = $wpdb->get_var("SELECT count(*) FROM $wheel_table WHERE creation_time > CURDATE() - INTERVAL 30 DAY");
+    $number_wheels_year = $wpdb->get_var("SELECT count(*) FROM $wheel_table WHERE creation_time > CURDATE() - INTERVAL 365 DAY");
+    
+    $number_accounts = $wpdb->get_var("SELECT count(distinct user_id) FROM $wheel_table");
+    ?>
+    <p>Over it's lifetime, <strong><?php echo $number_accounts; ?></strong> people have signed up to create <strong><?php echo $number_wheels ?></strong> unique wheels</p>
+    <p>Wheels created in the last week: <?php echo $number_wheels_week; ?></p>
+    <p>Wheels created in the last 30 days: <?php echo $number_wheels_month ?></p>
+    <p>Wheels created in the last year: <?php echo $number_wheels_year?></p>
+
+    
+    <?php 
+    $summary = $wpdb->get_results("SELECT YEAR(creation_time) AS year, MONTH(creation_time) AS month, count(*) AS num FROM $wheel_table WHERE creation_time > CURDATE() - INTERVAL 365 DAY GROUP BY YEAR(creation_time), MONTH(creation_time)", 'ARRAY_N');
+    
+    for ($i = 0; $i < 12; $i++) {
+        $months[] = strtotime( date( 'Y-m-01' )." -$i months");
+    }
+    $months_desc = array_reverse($months);
+    
+    $graphable = array();
+    foreach ($months_desc as $month) {
+        $month_num = date('n', $month);
+        $year_num = date('Y', $month);
+        $found = 0;
+        foreach ($summary as $result) {
+            if ($result[0] == $year_num && $result[1] == $month_num) {
+                $found = $result[2];
+            }
+        }
+        $graphable[date('M', $month)] = $found;   
+        
+        
+    }
+    ?>
+    <canvas id="wheelSummaryPlot"></canvas> 
+    <script>
+   	var ctx = document.getElementById("wheelSummaryPlot").getContext("2d");
+                        
+    var graph = new BarGraph(ctx);
+    graph.margin = 2;
+    graph.width = 350;
+    graph.height = 150;
+    graph.xAxisLabelArr = [<?php foreach ($graphable as $key => $value) { echo '"'.$key.'",';}?>];
+    graph.update([<?php foreach ($graphable as $key => $value) { echo $value.',';}?>]);
+	</script>
+    <?php 
+}
+
+// Function used in the action hook
+function add_dashboard_widgets() {
+    wp_add_dashboard_widget('dashboard_widget', 'Wheels Dashboard', 'dashboard_widget_function');
+}
+
+// Register the new dashboard widget with the 'wp_dashboard_setup' action
+add_action('wp_dashboard_setup', 'add_dashboard_widgets' );
 ?>
