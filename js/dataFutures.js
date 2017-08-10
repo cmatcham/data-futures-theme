@@ -14,7 +14,19 @@
  * Styling:
  * The wheel itself is sized at 350x350px.  Your answers will be injected into a named div inside the 
  * div you inserted above, with the id 'dataFuturesGuidelinesAnswers'.
- * Standard CSS styles can be applied to this container.
+ * The script will inject standard styling for these elements.  To suppress this and use your own CSS, 
+ * append data-style="none" to the #dataFutures div above.  The hierarchy of injected content is shown below.
+ * 
+ *
+ * div#dataFutures
+ * 		canvas#dataFuturesWheelCanvas
+ * 		div#dataFuturesGuidelinesAnswers
+ * 			div#dataFuturesGuidelinesAnswersQuestion
+ * 				h1.dataFuturesQuestion
+ * 					[question shown here]
+ * 				div#dataFuturesGuidelinesAnswersAnswer
+ * 					[answer shown here]
+ * 
  * 
  */
 (function(window, document, version, callback) {
@@ -323,7 +335,7 @@
 		function initDataFuturesWheel($) {
 			var elem = $('#dataFutures');
 			if (!elem.length) {
-				console.log('Not able to find Data Futures embed location');
+				console.log('Not able to find Data Futures embed location. Please read the documentation at the top of this file.');
 				return;
 			}
 			
@@ -373,7 +385,6 @@
 				}
 				
 				if (clicked >= 0) {
-					console.log(dataFuturesWheel.slices[clicked]);
 					$('#dataFuturesGuidelinesAnswersQuestion').html('<h1 class="dataFuturesQuestion">'+dataFuturesWheel.slices[clicked].text+"</h1>");
 					var answer = dataFuturesWheel.answers.find(function(el){return el.question_id == clicked+1});
 					if (answer) {
