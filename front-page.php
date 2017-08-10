@@ -116,7 +116,7 @@ button.navbar-toggle {
 span.icon-bar {
     background-color: white;
 }
-.navbar-collapse.navbar-ex1-collapse  {
+.navbar-collapse.navbar-ex1-collapse.collapsing,.navbar-collapse.navbar-ex1-collapse.in  {
     background-color: black;
 }
 </style>

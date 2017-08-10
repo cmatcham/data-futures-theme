@@ -28,6 +28,8 @@
  * 					[answer shown here]
  * 
  * 
+ * For further assistance contact colin@parhelion.co.nz
+ * 
  */
 (function(window, document, version, callback) {
     var j, d;
