@@ -4,3 +4,64 @@ Author: Colin Matcham
 Author URI: http://parhelion.co.nz
 Description: Theme and application developed for the Data Futures Partnership, for their Transparent Data Use project.
 */
+
+@font-face {
+    font-family: MyriadPro;
+    src: url("fonts/MyriadPro-Light.otf") format("opentype");
+}
+@font-face {
+    font-family: MyriadPro;
+    font-style: normal;
+    font-weight: 100;
+    src: url("fonts/MyriadPro-Light.otf") format("opentype");
+}
+@font-face {
+    font-family: MyriadPro;
+    font-style: normal;
+    font-weight: 500;
+    src: url("fonts/MyriadPro-Bold.otf") format("opentype");
+}
+@font-face {
+    font-family: MyriadPro;
+    font-style: normal;
+    font-weight: bold;
+    src: url("fonts/MyriadPro-BoldSemiCn.otf") format("opentype");
+}
+body {
+	font-family: 'MyriadPro';
+}
+.logo_heading.transparent {
+	color:#006b8a;
+	font-weight:bold;
+}
+.logo_heading.data_use{
+	color:black;
+}
+
+h1.heading {
+	position: relative;
+	padding-bottom:30px;
+}
+
+h1.heading:after {
+  content:""; 
+  background: black; 
+  position: absolute; 
+  top: 50px; 
+  left: 0; 
+  height: 2px; 
+  width: 50px;
+}
+.public h1:after {
+  background: #5085a0; 
+}
+.entity h1:after {
+  background: #f78f33; 
+}
+
+.public h1 {
+	color: #5085a0;
+}
+.entity h1 {
+	color: #f78f33;
+}

@@ -10,14 +10,43 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Create your wheel</title>
+    <title>Create your dial</title>
 
 	<style>
 	   .modal-content { padding: 15px;}
-	   #dataFutures { width:400px;border:1px solid rgba(200,200,200,0.8);padding:10px;-webkit-box-shadow: 6px 3px 20px 2px rgba(0,0,0,0.75);-moz-box-shadow: 6px 3px 20px 2px rgba(0,0,0,0.75);box-shadow: 6px 3px 20px 2px rgba(0,0,0,0.75);} 
         h1.dataFuturesQuestion {display:none;}
+       .modal-content .tab-content{ padding-top:20px;padding-bottom:50px;}
+       .question .label-info {float:right;}
+       
+       	#loginCreateTabContent input {
+		  color: #337ab7;
+		  font-weight: bold;
+		}
+        #loginCreateTabContent ::-webkit-input-placeholder { /* WebKit, Blink, Edge */
+		    color:    #5085a0;
+		}
+		#loginCreateTabContent :-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+		   color:    #5085a0;
+		   opacity:  1;
+		}
+		#loginCreateTabContent ::-moz-placeholder { /* Mozilla Firefox 19+ */
+		   color:    #5085a0;
+		   opacity:  1;
+		}
+		#loginCreateTabContent :-ms-input-placeholder { /* Internet Explorer 10-11 */
+		   color:    #5085a0;
+		}
+		#loginCreateTabContent ::-ms-input-placeholder { /* Microsoft Edge */
+		   color:    #5085a0;
+		}
+
+		:placeholder-shown { /* Standard one last! */
+            color: #337ab7;
+        }
+       
 	</style>
     <?php wp_head(); ?>
+    <link rel="stylesheet" type="text/css" media="all" href="<?php bloginfo( 'stylesheet_url' ); ?>" />
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
@@ -25,7 +54,7 @@
         <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
 </head>
-<body>
+<body class="public">
 <?php
 $front_page = get_option('page_on_front');
 $public_link = get_post_meta($front_page, 'public-link', true);
@@ -54,7 +83,7 @@ $entity_url = get_permalink($entity_link);
             	</ul>
             	<?php if (is_user_logged_in()) { ?>
                 <ul class="nav navbar-nav navbar-right">
-                	<li class="dropdown"> <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Your wheels <span class="caret"></span></a>
+                	<li class="dropdown"> <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Your dials <span class="caret"></span></a>
 						<ul class="dropdown-menu">
 							<?php
 							$wheels = get_wheels();
@@ -122,7 +151,7 @@ $selected_wheel = get_selected_wheel($wheels);
 ?>
 <div class="container">
 	<div class="row" style="padding-top:60px;">
-
+<h2>Step 1: Create your data use dial</h2>
 <div class="form-group">
 	<label for="wheelName">Name</label>
 	<input type="text" class="form-control" id="wheelName" placeholder="Enter a name for this wheel (eg. your organisation name)" name="wheelName">
@@ -156,14 +185,22 @@ $selected_wheel = get_selected_wheel($wheels);
 		<div class="tab-content">
 			<div class="tab-pane" id="tab1">
 				<div class="question" id="question1">
-					<h1>What will my data be used for?</h1>
-					<a href="#" class="btn btn-lg btn-success" data-toggle="modal"
-						data-target="#q1help">Click to open help</a>
+
+					<div class="panel panel-default">
+  						<div class="panel-heading">
+    						<h3 class="panel-title">What will my data be used for?
+    						<span class="label label-info"><a href="#" data-toggle="modal" data-target="#q1help">Help <span class="glyphicon glyphicon-question-sign"></span></a></span></h3>
+	    				</div>
+						<div class="panel-body">
+    					<div class="form-group">
+							<textarea id="q1answer" data-question="1" class="form-control" rows="3"></textarea>
+							<span class="help-block">Answers should be kept short, to a maximum of 500 characters.</span>
+						</div>
+						</div>
+					
+					</div>
 				</div>
-				<div class="form-group">
-					<textarea id="q1answer" data-question="1" class="form-control" rows="3"></textarea>
-					<span class="help-block">Answers should be kept short, to a maximum of 500 characters.  For further detailed explanation, you can include a link below</span>
-				</div>
+				
 				<div class="modal fade" id="q1help" tabindex="-1" role="dialog"
 					aria-labelledby="q1help" aria-hidden="true">
 					<div class="modal-dialog modal-lg">
@@ -268,13 +305,21 @@ $selected_wheel = get_selected_wheel($wheels);
 			</div>
 			<div class="tab-pane" id="tab2">
 				<div class="question" id="question2">
-					<h1>What are the benefits and who will benefit?</h1>
-					<a href="#" class="btn btn-lg btn-success" data-toggle="modal"
-						data-target="#q2help">Click to open help</a>
-				</div>
-				<div class="form-group">
-					<textarea data-question="2" id="q2answer" class="form-control" rows="3"></textarea>
-					<span class="help-block">Answers should be kept short, to a maximum of 500 characters.  For further detailed explanation, you can include a link below</span>
+					<div class="panel panel-default">
+  						<div class="panel-heading">
+    						<h3 class="panel-title">What are the benefits and who will benefit?
+    						<span class="label label-info"><a href="#" data-toggle="modal" data-target="#q2help">Help <span class="glyphicon glyphicon-question-sign"></span></a></span></h3>
+	    				</div>
+						<div class="panel-body">
+    					<div class="form-group">
+							<textarea id="q2answer" data-question="2" class="form-control" rows="3"></textarea>
+							<span class="help-block">Answers should be kept short, to a maximum of 500 characters.</span>
+						</div>
+						</div>
+					
+					</div>
+				
+				
 				</div>
 				<div class="modal fade" id="q2help" tabindex="-1" role="dialog"
 					aria-labelledby="q2help" aria-hidden="true">
@@ -332,13 +377,19 @@ $selected_wheel = get_selected_wheel($wheels);
 			</div>
 			<div class="tab-pane" id="tab3">
 				<div class="question" id="question3">
-					<h1>Who will be using my data?</h1>
-					<a href="#" class="btn btn-lg btn-success" data-toggle="modal"
-						data-target="#q3help">Click to open help</a>
-				</div>
-				<div class="form-group">
-					<textarea data-question="3" id="q3answer" class="form-control" rows="3"></textarea>
-					<span class="help-block">Answers should be kept short, to a maximum of 500 characters.  For further detailed explanation, you can include a link below</span>
+					<div class="panel panel-default">
+  						<div class="panel-heading">
+    						<h3 class="panel-title">Who will be using my data?
+    						<span class="label label-info"><a href="#" data-toggle="modal" data-target="#q3help">Help <span class="glyphicon glyphicon-question-sign"></span></a></span></h3>
+	    				</div>
+						<div class="panel-body">
+    					<div class="form-group">
+							<textarea id="q3answer" data-question="3" class="form-control" rows="3"></textarea>
+							<span class="help-block">Answers should be kept short, to a maximum of 500 characters.</span>
+						</div>
+						</div>
+					
+					</div>
 				</div>
 				<div class="modal fade" id="q3help" tabindex="-1" role="dialog"
 					aria-labelledby="q3help" aria-hidden="true">
@@ -364,14 +415,20 @@ $selected_wheel = get_selected_wheel($wheels);
 			</div>
 			<div class="tab-pane" id="tab4">
 				<div class="question" id="question4">
-					<h1>Is my data secure?</h1>
-					<a href="#" class="btn btn-lg btn-success" data-toggle="modal"
-						data-target="#q4help">Click to open help</a>
-				</div>
-				<div class="form-group">
-					<textarea data-question="4" id="q4answer" class="form-control" rows="3"></textarea>
-					<span class="help-block">Answers should be kept short, to a maximum of 500 characters.  For further detailed explanation, you can include a link below</span>
-				</div>
+					<div class="panel panel-default">
+  						<div class="panel-heading">
+    						<h3 class="panel-title">Is my data secure?
+    						<span class="label label-info"><a href="#" data-toggle="modal" data-target="#q4help">Help <span class="glyphicon glyphicon-question-sign"></span></a></span></h3>
+	    				</div>
+						<div class="panel-body">
+    					<div class="form-group">
+							<textarea id="q4answer" data-question="4" class="form-control" rows="3"></textarea>
+							<span class="help-block">Answers should be kept short, to a maximum of 500 characters.</span>
+						</div>
+						</div>
+					
+					</div>	
+					</div>
 				<div class="modal fade" id="q4help" tabindex="-1" role="dialog"
 					aria-labelledby="q4help" aria-hidden="true">
 					<div class="modal-dialog modal-lg">
@@ -408,13 +465,19 @@ $selected_wheel = get_selected_wheel($wheels);
 			</div>
 			<div class="tab-pane" id="tab5">
 				<div class="question" id="question5">
-					<h1>Will my data be anonymous?</h1>
-					<a href="#" class="btn btn-lg btn-success" data-toggle="modal"
-						data-target="#q5help">Click to open help</a>
-				</div>
-				<div class="form-group">
-					<textarea data-question="5" id="q5answer" class="form-control" rows="3"></textarea>
-					<span class="help-block">Answers should be kept short, to a maximum of 500 characters.  For further detailed explanation, you can include a link below</span>
+					<div class="panel panel-default">
+  						<div class="panel-heading">
+    						<h3 class="panel-title">Will my data be anonymous?
+    						<span class="label label-info"><a href="#" data-toggle="modal" data-target="#q5help">Help <span class="glyphicon glyphicon-question-sign"></span></a></span></h3>
+	    				</div>
+						<div class="panel-body">
+    					<div class="form-group">
+							<textarea id="q5answer" data-question="5" class="form-control" rows="3"></textarea>
+							<span class="help-block">Answers should be kept short, to a maximum of 500 characters.</span>
+						</div>
+						</div>
+					
+					</div>
 				</div>
 				<div class="modal fade" id="q5help" tabindex="-1" role="dialog"
 					aria-labelledby="q5help" aria-hidden="true">
@@ -442,13 +505,19 @@ $selected_wheel = get_selected_wheel($wheels);
 			</div>
 			<div class="tab-pane" id="tab6">
 				<div class="question" id="question6">
-					<h1>Can I see and correct data about me?</h1>
-					<a href="#" class="btn btn-lg btn-success" data-toggle="modal"
-						data-target="#q6help">Click to open help</a>
-				</div>
-				<div class="form-group">
-					<textarea data-question="6" id="q6answer" class="form-control" rows="3"></textarea>
-					<span class="help-block">Answers should be kept short, to a maximum of 500 characters.  For further detailed explanation, you can include a link below</span>
+					<div class="panel panel-default">
+  						<div class="panel-heading">
+    						<h3 class="panel-title">Can I see and correct data about me?
+    						<span class="label label-info"><a href="#" data-toggle="modal" data-target="#q6help">Help <span class="glyphicon glyphicon-question-sign"></span></a></span></h3>
+	    				</div>
+						<div class="panel-body">
+    					<div class="form-group">
+							<textarea id="q6answer" data-question="6" class="form-control" rows="3"></textarea>
+							<span class="help-block">Answers should be kept short, to a maximum of 500 characters.</span>
+						</div>
+						</div>
+					
+					</div>
 				</div>
 				<div class="modal fade" id="q6help" tabindex="-1" role="dialog"
 					aria-labelledby="q6help" aria-hidden="true">
@@ -474,13 +543,18 @@ $selected_wheel = get_selected_wheel($wheels);
 			</div>
 			<div class="tab-pane" id="tab7">
 				<div class="question" id="question7">
-					<h1>Could my data be sold?</h1>
-					<a href="#" class="btn btn-lg btn-success" data-toggle="modal"
-						data-target="#q7help">Click to open help</a>
-				</div>
-				<div class="form-group">
-					<textarea data-question="7" id="q7answer" class="form-control" rows="3"></textarea>
-					<span class="help-block">Answers should be kept short, to a maximum of 500 characters.  For further detailed explanation, you can include a link below</span>
+					<div class="panel panel-default">
+  						<div class="panel-heading">
+    						<h3 class="panel-title">Could my data be sold?
+    						<span class="label label-info"><a href="#" data-toggle="modal" data-target="#q7help">Help <span class="glyphicon glyphicon-question-sign"></span></a></span></h3>
+	    				</div>
+						<div class="panel-body">
+    					<div class="form-group">
+							<textarea id="q7answer" data-question="7" class="form-control" rows="3"></textarea>
+							<span class="help-block">Answers should be kept short, to a maximum of 500 characters.</span>
+						</div>
+						</div>
+					</div>	
 				</div>
 				<div class="modal fade" id="q7help" tabindex="-1" role="dialog"
 					aria-labelledby="q7help" aria-hidden="true">
@@ -503,13 +577,19 @@ $selected_wheel = get_selected_wheel($wheels);
 			</div>
 			<div class="tab-pane" id="tab8">
 				<div class="question" id="question8">
-					<h1>Will I be asked for consent?</h1>
-					<a href="#" class="btn btn-lg btn-success" data-toggle="modal"
-						data-target="#q8help">Click to open help</a>
-				</div>
-				<div class="form-group">
-					<textarea data-question="8" id="q8answer" class="form-control" rows="3"></textarea>
-					<span class="help-block">Answers should be kept short, to a maximum of 500 characters.  For further detailed explanation, you can include a link below</span>
+					<div class="panel panel-default">
+  						<div class="panel-heading">
+    						<h3 class="panel-title">Will I be asked for consent?
+    						<span class="label label-info"><a href="#" data-toggle="modal" data-target="#q8help">Help <span class="glyphicon glyphicon-question-sign"></span></a></span></h3>
+	    				</div>
+						<div class="panel-body">
+    					<div class="form-group">
+							<textarea id="q8answer" data-question="8" class="form-control" rows="3"></textarea>
+							<span class="help-block">Answers should be kept short, to a maximum of 500 characters.</span>
+						</div>
+						</div>
+					
+					</div>
 				</div>
 				<div class="modal fade" id="q8help" tabindex="-1" role="dialog"
 					aria-labelledby="q8help" aria-hidden="true">
@@ -562,35 +642,77 @@ $selected_wheel = get_selected_wheel($wheels);
 			</ul>
 		</div>
 	</div>
+	<h2>Step 2: Test your dial</h2>
+	<p>See how your dial will look with your answers: <a href="../public-dials/" class="btn btn-default" id="testDialLink">Test your dial</a></p>
 
+	<h2>Step 3: Display your dial</h2>
+	<a href="#" class="btn btn-primary" data-toggle="modal" data-target="#embedYourDial">Add the data dial to your website</a>
+	<a href="#" class="btn btn-primary" data-toggle="modal" data-target="#linkToYourDial">Link to the dial on our website</a>
 
-	<p>
-		In your html
-		<code>&lt;head&gt;</code>
-		block, include the widget code:
-		<code>
-			<pre>
-&lt;script src="https://trusteddata.co.nz/media/dataFutures.js">&lt;/script>
-</pre>
-		</code>
-		Then in the location you want the widget, create a
-		<code>&lt;div&gt;</code>
-		block with the id
-		<code>dataFutures</code>
-		and a
-		<code>data-wheel-id</code>
-		attribute as generated from your answers
-		<code>
-			<pre>&lt;div id="dataFutures" data-wheel-id="<span id="embedCode"></span>"&gt;</pre>
-		</code>
-	</p>
+	<div class="modal fade" id="linkToYourDial" tabindex="-1" role="dialog" aria-labelledby="linkLink" aria-hidden="true">
+		<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<p>From your site, create a link to <a href="../public-dials/" id="linkEmbedCode"></a>
+		</div>
+		</div>
+	</div>
+	<div class="modal fade" id="embedYourDial" tabindex="-1" role="dialog" aria-labelledby="embedLink" aria-hidden="true">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+			<ul class="nav nav-tabs">
+  				<li role="presentation" class="active"><a data-toggle="tab" href="#htmlEmbed">Direct HTML</a></li>
+  				<li role="presentation"><a data-toggle="tab" href="#wordPressEmbed">Wordpress</a></li>
+  				<li role="presentation"><a data-toggle="tab" href="#silverstripeEmbed">Silverstripe</a></li>
+  				<li role="presentation"><a data-toggle="tab" href="#otherEmbed">Other</a></li>
+			</ul>
+			<div class="tab-content">
+			<div id="htmlEmbed" class="tab-pane fade in active">
+			<p>To enable your data dial on your own website, please cut and paste the following code. You may wish to send the code and instructions to your web developer.</p>
+			<p>	In your html
+				<code>&lt;head&gt;</code>
+				block, include the widget code:
+				<code>
+					<pre>&lt;script src="https://trusteddata.co.nz/media/dataFutures.js">&lt;/script></pre>
+				</code>
+				Then in the location you want the widget, create a
+				<code>&lt;div&gt;</code>
+				block with the id
+				<code>dataFutures</code>
+				and a
+				<code>data-wheel-id</code>
+				attribute as generated from your answers
+				<code>
+					<pre>&lt;div id="dataFutures" data-wheel-id="<span id="embedCode"></span>"&gt;</pre>
+				</code>
+			</p>
+			</div>
+			<div id="wordPressEmbed" class="tab-pane fade">
+			<p>If your site is built with Wordpress, simply download and install the attached plugin</p>
+			<p>Once installed, use the shortcode <code>[data-dial id="<span id="wordpressEmbedCode"></span>"]</code></p>
+			<p><a href="https://trusteddata.co.nz/media/wordpress/transparent-data-dial.zip" class="btn btn-default">Download wordpress plugin</a>
+			<p></p>
+			</div>
+			<div id="silverstripeEmbed" class="tab-pane fade">
+			<p>If your site is built with Silverstripe, simply download and install the attached addon</p>
+			<p>Once installed in your silverstripe directory, use the shortcode <code>[transparent_data_dial,id=<span id="silverstripeEmbedCode"></span>]</code></p>
+			<p><a href="https://trusteddata.co.nz/media/silverstripe/transparentdata.zip" class="btn btn-default">Download wordpress plugin</a>
+			<p></p>
+			</div>
+			<div id="otherEmbed" class="tab-pane fade">
+			<p>If you use an alternative CMS, or need assistance, <a href="http://tagtheagency.com">TAG The Agency</a> can help.  Please contact <a href="mailto:info@tagtheagency.com">info@tagtheagency.com</a> to discuss a professional services contract.</p>
+			<p></p>
+			<p></p>
+			</div>
+			</div>
+		</div>
+	</div>
+	
 <script>
 var ajaxurl = '<?php echo admin_url( "admin-ajax.php" )?>';
 var wheelId = <?php echo $selected_wheel->id;?>;
 
 jQuery(document).ready(function() {
-	console.log('ready');
-  	jQuery('#rootwizard').bootstrapWizard({onTabShow: function(tab, navigation, index) {
+	jQuery('#rootwizard').bootstrapWizard({onTabShow: function(tab, navigation, index) {
 		var $total = navigation.find('li').length;
 		var $current = index+1;
 		var $percent = ($current/$total) * 100;
@@ -599,7 +721,6 @@ jQuery(document).ready(function() {
   	
   	jQuery('a.loadWheel').click(function(e) {
   	     e.preventDefault(); 
-  	     console.log(this);
   	     loadWheel(jQuery(this).data('target'));
   	 });
 
@@ -625,15 +746,13 @@ jQuery(document).ready(function() {
 });
 
 function monitorAnswers() {
-	console.log('monitoring answers');
 	jQuery("textarea").each(function(idx, element) {
-		console.log(element);
 		jQuery(element).on('change keyup paste', jQuery.debounce(function(evt) {
 		    localStorage.setItem(evt.target.id, evt.target.value);
 		    
 		    ajaxSave(jQuery(evt.target).data('question'), evt.target.value);
 		    
-		    generateEmbed();
+		    //generateEmbed();
 		}, 2000));
 	});
 }
@@ -642,7 +761,6 @@ function createWheel() {
 	var ajaxurl = '<?php echo admin_url( "admin-ajax.php" )?>';
 	var data = {'action':'create_wheel'};
 	jQuery.post(ajaxurl, data, function(response) {
-		console.log(response);
 	});
 }
 
@@ -655,7 +773,6 @@ function saveWheel() {
 			'url':jQuery('#wheelURL').val()
 		};
 		jQuery.post(ajaxurl, data, function(response) {
-			console.log(response);
 		});
 	
 }
@@ -669,7 +786,6 @@ function ajaxSave(id, value) {
 		'answer':value
 	};
 	jQuery.post(ajaxurl, data, function(response) {
-		console.log(response);
 	});
 }
 
@@ -683,6 +799,10 @@ function loadWheel(id) {
 	jQuery.post(ajaxurl, data, function(response) {
 		var json = JSON.parse(response);
 		jQuery('#embedCode').text(json.embedCode);
+		jQuery('#wordpressEmbedCode').text(json.embedCode);
+		jQuery('#silverstripeEmbedCode').text(json.embedCode);
+		jQuery('#linkEmbedCode').html('<a href="../public-dials/'+json.embedCode+'">https://www.trusteddata.co.nz/public-dials/'+json.embedCode+'</a>');
+		jQuery('#testDialLink').attr('href', '../public-dials/'+json.embedCode);
 		jQuery('#wheelName').val(json.name);		
 		jQuery('#wheelURL').val(json.url);
 		jQuery('#q1answer').val(getAnswer(1, json.answers));
@@ -698,7 +818,6 @@ function loadWheel(id) {
 
 function getAnswer(id, array) {
 	var object = array.find(function(el){return el.question_id == id});
-	console.log(id, object, array);
 	if (typeof(object) !== 'undefined') {
 		return object.answer;
 	}

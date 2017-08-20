@@ -340,6 +340,8 @@
 				console.log('Not able to find Data Futures embed location. Please read the documentation at the top of this file.');
 				return;
 			}
+			var comment = "<!-- Transparent Data Use Dial embeddable widget created for Data Futures by Parhelion http://parhelion.co.nz -->";
+			$(comment).insertBefore(elem);
 			
 			var style_link = $("<style>");
 			style_link.text(
@@ -354,16 +356,16 @@
 			}
 			elem.append("<canvas id='dataFuturesWheelCanvas' width='350px' height='350px'></canvas><div id='dataFuturesGuidelinesAnswers'><div id='dataFuturesGuidelinesAnswersQuestion'></div><div id='dataFuturesGuidelinesAnswersAnswer'></div></div>");
 			if (elem.data('disclaimer') != 'none') {
-				elem.append("<div class='dataFuturesDisclaimer'><p>This <strong>Transparent Data</strong> privacy wheel was created using the free tool at <a href=\"http://www.trusteddata.co.nz\">trusteddata.co.nz</a>, brought to you by the Data Futures Partnership. <a href=\"http://www.trusteddata.co.nz\">Create yours today</a>");
+				elem.append("<div class='dataFuturesDisclaimer'><p>This <strong>Transparent Data</strong> privacy dial was created using the free tool at <a href=\"http://www.trusteddata.co.nz\">trusteddata.co.nz</a>, brought to you by the Data Futures Partnership. <a href=\"http://www.trusteddata.co.nz\">Create yours today</a>");
 			}
 			canvas = document.getElementById('dataFuturesWheelCanvas');
 			var ctx = canvas.getContext('2d');
 			dataFuturesWheel.init();
 			dataFuturesWheel.drawSlices(ctx, 0);
 			
-			if (elem.data('id')) {
+			if (elem.data('wheel-id')) {
 				var data = {'action':'public_wheel', 'id':elem.data('wheel-id')};
-				$.get('http://localhost:81/dataFutures/wp-json/dataFutures/v1/wheel/'+elem.data('wheel-id'), data, function(response) {
+				$.get('https://trusteddata.co.nz/wp-json/dataFutures/v1/wheel/'+elem.data('wheel-id'), data, function(response) {
 					dataFuturesWheel.answers = response.answers;
 				});
 			}

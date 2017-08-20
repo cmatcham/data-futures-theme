@@ -1,15 +1,7 @@
-@font-face {
-  font-family: 'PT Sans';
-  font-style: normal;
-  font-weight: 400;
-  src: local('PT Sans'), local('PTSans-Regular'), url(https://fonts.gstatic.com/s/ptsans/v8/ATKpv8nLYAKUYexo8iqqrg.woff2) format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215;
-}
-
 body {
     width: 100%;
     height: 100%;
-    font-family: 'PT Sans';
+    font-family: 'MyriadPro';
 }
 
 html {
@@ -30,33 +22,7 @@ html {
     }
 }
 
-h1 {
-	position: relative;
-	padding-bottom:30px;
-}
 
-h1:after {
-  content:""; 
-  background: #5085a0; 
-  position: absolute; 
-  top: 50px; 
-  left: 0; 
-  height: 2px; 
-  width: 50px;
-}
-.public h1:after {
-  background: #5085a0; 
-}
-.entity h1:after {
-  background: #f78f33; 
-}
-
-.public h1 {
-	color: #5085a0;
-}
-.entity h1 {
-	color: #f78f33;
-}
 
 div.scrolling-page-image {
 	position:relative;
@@ -69,29 +35,34 @@ div.scrolling-page-image {
 }
 div.scrolling-page-image div {
 	position:absolute; 
-	width: 340px; 
-	height:340px; 
-	top: -20px; 
-	left:20px; 
+	width: 330px; 
+	height:330px; 
+	top: -15px; 
+	left:15px; 
+	border-radius: 4px;
 }
 .public div.scrolling-page-image div {
-	border: 4px solid rgba(80,133,160,.2);
+	border: 8px solid rgba(80,133,160,.2);
 }
 .entity div.scrolling-page-image div {
-	border: 4px solid rgba(247,143,51,.2);
+	border: 8px solid rgba(247,143,51,.2);
 }
+div.scrolling-page-image div.noborder {
+	border: none;
+}
+
 @media(max-width:1199px) {
 	div.scrolling-page-image {
 		width: 250px;
 		height: 250px;		
 	}
 	div.scrolling-page-image div {
-		width: 270px;
-		height: 270px;	
-		top: -10px; 
-		left:10px; 	
+		width: 276px;
+		height: 276px;	
+		top: -13px; 
+		left:13px; 	
 	}
-}
+} 
 @media(max-width:991px) {
 	div.scrolling-page-image {
 		position:relative;
@@ -109,12 +80,12 @@ div.scrolling-page-image div {
 
 }
 
-	.footer-padding {
+.footer-padding {
 		height:100%;
 	}
 
 .scrolling-section {
-    min-height: 100%;
+    min-height: 100px;
     padding-top: 100px;
     background: #fff;
 }
@@ -187,6 +158,9 @@ span.link {
   left: 0;
 
   z-index: 1;
-}   
+}  
+section.scrolling-section p {
+	margin-bottom: 30px;
+} 
 
 

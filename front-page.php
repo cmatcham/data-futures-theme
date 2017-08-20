@@ -15,6 +15,23 @@ $page_content = $page_object->post_content;
 <title><?php echo get_bloginfo('name');?></title>
 <style>
 @font-face {
+    font-family: MyriadPro;
+    src: url("wp-content/themes/datafutures/fonts/MyriadPro-Light.otf") format("opentype");
+}
+@font-face {
+    font-family: MyriadPro;
+    font-style: normal;
+    font-weight: 100;
+    src: url("wp-content/themes/datafutures/fonts/MyriadPro-Light.otf") format("opentype");
+}
+@font-face {
+    font-family: MyriadPro;
+    font-style: normal;
+    font-weight: bold;
+    src: url("wp-content/themes/datafutures/fonts/MyriadPro-BoldSemiCn.otf") format("opentype");
+}
+@font-face {
+
 	font-family: 'PT Sans';
 	font-style: normal;
 	font-weight: 400;
@@ -28,13 +45,14 @@ html {
 	-o-background-size: cover;
 	background-size: cover;
   	min-height: 100%;
-	font-family: 'PT Sans';
+	font-family: 'MyriadPro' !important;
 	color:white;
 }
 body {
 	color: white;
 	background-color: inherit;
 	height: 100%;
+	font-family: 'MyriadPro' !important;
 }
 
 .public .glyphicon-record{
@@ -79,7 +97,7 @@ div.entry {
 	width: 400px;
 }
 h1 {
-	
+	font-weight: bold;
 	text-align: center;
 }
 a:link, a:visited {

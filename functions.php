@@ -2,24 +2,26 @@
 
 add_action( 'after_switch_theme', 'create_db' );
 
-add_filter( 'allowed_http_origins', 'add_allowed_origins' );
-function add_allowed_origins( $origins ) {
-    $origins[] = 'http://192.168.1.4:81';
-    return $origins;
+/* add_action( 'template_redirect', 'wpse_76802_maintance_mode' );
+function wpse_76802_maintance_mode() {
+    if ( is_page( 48 ) ) {
+        wp_redirect( esc_url_raw( home_url( 'index.php?page_id=2' ) ) );
+        exit;
+    }
 }
-
+ */
 
 function create_db() {
-	require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
-	
-	global $wpdb;
-	$users_table = $wpdb->prefix . "users";
-	$wheel_table = $wpdb->prefix . "data_futures_wheel";
-	$answers_table = $wpdb->prefix . "data_futures_answers";
-
-	$charset_collate = $wpdb->get_charset_collate();
-
-	$sql = "CREATE TABLE $wheel_table (
+    require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
+    
+    global $wpdb;
+    $users_table = $wpdb->prefix . "users";
+    $wheel_table = $wpdb->prefix . "data_futures_wheel";
+    $answers_table = $wpdb->prefix . "data_futures_answers";
+    
+    $charset_collate = $wpdb->get_charset_collate();
+    
+    $sql = "CREATE TABLE $wheel_table (
 		id INT NOT NULL AUTO_INCREMENT,
 		user_id BIGINT(20) UNSIGNED NOT NULL,
 		name TEXT,
@@ -28,10 +30,10 @@ function create_db() {
         modification_time DATETIME ON UPDATE CURRENT_TIMESTAMP,
 		PRIMARY KEY (id)
 	) $charset_collate;";
-
-	dbDelta( $sql );
-
-	$sql = "CREATE TABLE $answers_table (
+    
+    dbDelta( $sql );
+    
+    $sql = "CREATE TABLE $answers_table (
 		id INT NOT NULL AUTO_INCREMENT,
 		wheel_id INT NOT NULL,
 		question_id INT NOT NULL,
@@ -39,16 +41,16 @@ function create_db() {
 		link VARCHAR(255),
 		PRIMARY KEY (id)
 	) $charset_collate;";
-
-	dbDelta( $sql );
-	
-	/* Gah, looks like dbdelta dies on foreign keys.  so removed. Ugh.
-		FOREIGN KEY (user_id) references $users_table(id)
-		,
-		FOREIGN KEY (wheel_id) references $wheel_table(id)
-		 */
-	
-	add_role( 'client', __('Client' ), array( ) );
+    
+    dbDelta( $sql );
+    
+    /* Gah, looks like dbdelta dies on foreign keys.  so removed. Ugh.
+     FOREIGN KEY (user_id) references $users_table(id)
+     ,
+     FOREIGN KEY (wheel_id) references $wheel_table(id)
+     */
+    
+    add_role( 'client', __('Client' ), array( ) );
 }
 
 
@@ -75,39 +77,40 @@ add_action( 'init', 'register_data_future_menus' );
  */
 function remove_content_editor() {
     //Check against your meta data here
-    if(get_page_template_slug() === 'scrolling-page.php'){      
-        remove_post_type_support('page', 'editor');         
+    if(get_page_template_slug() === 'scrolling-page.php'){
+        remove_post_type_support('page', 'editor');
     }
-
+    
 }
 
 
 function styles() {
-	wp_deregister_script('jquery');
+    wp_deregister_script('jquery');
     wp_register_script('jquery', 'https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js', false, '2.1.3');
     wp_enqueue_script('jquery');
-
+    
     wp_enqueue_style( 'bootstrap', get_theme_file_uri( '/css/bootstrap.min.css'), array(), null );
     wp_enqueue_script('bootstrap', get_theme_file_uri( '/js/bootstrap.min.js'), array('jquery'), null);
     
-	if (get_page_template_slug() === 'scrolling-page.php') {
-		wp_enqueue_style( 'scrolling', get_theme_file_uri( '/css/scrolling-nav.css'), array(), null );
-		wp_enqueue_script('jquery-easing', get_theme_file_uri( '/js/jquery.easing.min.js'), array(), null);
-		wp_enqueue_script('scrolling', get_theme_file_uri( '/js/scrolling-nav.js'), array(), null);
-	} else if (get_page_template_slug() === 'wheel-page.php') {		
-		wp_enqueue_script( 'lz-string', get_theme_file_uri( '/js/lz-string.js' ), array(), null);
-		wp_enqueue_script( 'bootstrap', 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js', array(), null);
-		wp_enqueue_script( 'bootstrapWizard', get_theme_file_uri( '/js/bootstrapWizard.js' ), array( 'jquery' ), '1.0');
-		wp_enqueue_script( 'debounce', get_theme_file_uri( '/js/jquery.debounce-1.0.5.js' ), array(), null);
-		wp_enqueue_script( 'dataFutures', get_theme_file_uri( '/js/dataFutures.js' ), array(), null);
-	} else if (is_front_page()) {
-		wp_enqueue_script( 'bootstrap', 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js', array(), null);
-	}
-
+    if (get_page_template_slug() === 'scrolling-page.php') {
+        wp_enqueue_style( 'scrolling', get_theme_file_uri( '/css/scrolling-nav.css'), array(), null );
+        wp_enqueue_script('jquery-easing', get_theme_file_uri( '/js/jquery.easing.min.js'), array(), null);
+        wp_enqueue_script('scrolling', get_theme_file_uri( '/js/scrolling-nav.js'), array(), null);
+    } else if (get_page_template_slug() === 'wheel-page.php') {
+        wp_enqueue_script( 'lz-string', get_theme_file_uri( '/js/lz-string.js' ), array(), null);
+        wp_enqueue_script( 'bootstrap', 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js', array(), null);
+        wp_enqueue_script( 'bootstrapWizard', get_theme_file_uri( '/js/bootstrapWizard.js' ), array( 'jquery' ), '1.0');
+        wp_enqueue_script( 'debounce', get_theme_file_uri( '/js/jquery.debounce-1.0.5.js' ), array(), null);
+        wp_enqueue_script( 'dataFutures', get_theme_file_uri( '/js/dataFutures.js' ), array(), null);
+    } else if (is_front_page()) {
+        wp_enqueue_script( 'bootstrap', 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js', array(), null);
+    }
+    
 }
 
 function data_futures_footer($fixed) {
-?>
+    wp_footer();
+    ?>
 <footer>
     <div class="navbar <?php echo $fixed ? 'navbar-fixed-bottom' : ''?>">
 	    <div class="container">
@@ -193,17 +196,16 @@ function data_futures_show_login() {
 ?>
 <div class="container">
 	<div class="row" style="padding-top:60px;">
+		<div class="col-md-12">
+		<h1 class="heading">Create your own data-use dial!</h1>
+		</div>
 		<div class="col-md-6">
-			<h1>Create your own data-use wheel!</h1>
 			<p>By answering the eight questions, you can create an embeddable widget for your website to give your customers surety about how you use their data.</p>
 			<p>Create an account or log in now to continue.</p>
-			<div class="modal-body">
-				<div class="well">
-					<ul class="nav nav-tabs" >
-						<li class="active"><a href="#login" data-toggle="tab">Login</a></li>
-						<li><a href="#create" data-toggle="tab" id="createAccountTab">Create Account</a></li>
-					</ul>
-					<div id="myTabContent" class="tab-content">
+
+
+
+					<div id="loginCreateTabContent" class="tab-content">
 						<div class="tab-pane active in" id="login">
 							<?php if (!empty($message)) { ?>
 							<div class="alert alert-success" role="alert"><?php echo $message ?></div>
@@ -213,22 +215,23 @@ function data_futures_show_login() {
 							<?php } ?>
 							<form action="<?php echo wp_login_url(); ?>" method="post">
 								<div class="form-group">
-				    				<label for="loginEmail">Email address</label>
 				    				<input type="email" class="form-control" id="loginEmail" placeholder="Email" name="log">
 				    			</div>
 				    			<div class="form-group">
-									<label for="loginPassword">Password</label>
 									<input type="password" name="pwd" class="form-control" id="loginPassword" placeholder="Password">
 								</div>
 								<div class="form-group">
-									<labe>
 									<input name="rememberme" type="checkbox" id="rememberme" value="forever" checked="checked">
 									Remember Me
 									</label>
 								</div>
 								
 								<input type="hidden" name="redirect_to" value="<?php echo get_permalink();?>">
-								<button type="submit" name="wp-submit" value="Log in" class="btn btn-default">Log in</button>
+								<ul class="nav nav-pills" >
+									<li><button type="submit" name="wp-submit" value="Log in" class="btn btn-default" style="background-color: #5085a0;color:white">Log in</button></li>
+								
+									<li><a href="#create" data-toggle="tab" id="createAccountTab">Create Account</a></li>
+								</ul>
 							</form>
 						</div>
 						<div class="tab-pane fade" id="create">
@@ -239,23 +242,27 @@ function data_futures_show_login() {
 								<div class="alert alert-danger" role="alert"><?php echo $error ?></div>
 								<?php } ?>
 								<div class="form-group">
-				    				<label for="loginEmail">Email address</label>
 				    				<input type="email" class="form-control" id="createEmail" placeholder="Email" name="email">
 				    			</div>
 				    			<div class="form-group">
-									<label for="loginPassword">Password</label>
 									<input type="password" name="pwd" class="form-control" id="createPassword" placeholder="Password">
 								</div>
 				    			<div class="form-group">
-									<label for="loginPassword">Confirm Password</label>
 									<input type="password" name="pwd2" class="form-control" id="createPassword2" placeholder="Password">
 								</div>
-								<button type="submit" name="wp-submit" value="Log in" class="btn btn-default">Create Account</button>
+								<ul class="nav nav-pills" >
+									<li class="active"><a href="#login" data-toggle="tab">Login</a></li>
+									<li><button type="submit" name="wp-submit" value="Log in" class="btn btn-default">Create Account</button></li>
+								</ul>
+							
+								
 							</form>
 						</div>
 					</div>
-				</div>
-			</div>
+					<ul class="nav nav-pills" >
+						<li class="active"><a href="#login" data-toggle="tab">Login</a></li>
+						<li><a href="#create" data-toggle="tab" id="createAccountTab">Create Account</a></li>
+					</ul>
 		</div>
 		<div class="col-md-6">
 			<div id="dataFutures" data-disclaimer="none" data-style="none"></div>
@@ -396,8 +403,7 @@ function home_page_page_select_metabox($post) {
 
 function home_page_save_select_metabox($post_id) {
 	// Checks save status
-	error_log('saving home page');
-    $is_autosave = wp_is_post_autosave( $post_id );
+	$is_autosave = wp_is_post_autosave( $post_id );
     $is_revision = wp_is_post_revision( $post_id );
     $is_valid_nonce = ( isset( $_POST[ 'home_page_links_nonce' ] ) && wp_verify_nonce( $_POST[ 'home_page_links_nonce' ], basename( __FILE__ ) ) ) ? 'true' : 'false';
 
@@ -487,14 +493,20 @@ function get_wheels() {
 	$wheels = $wpdb->get_results("SELECT * FROM $wheel_table WHERE user_id = ".get_current_user_id());
 
 	if (empty($wheels)) {
-	    create_wheel('New wheel', '');
+	    create_wheel('New dial', '');
 	    return get_wheels();
 	}
 	return $wheels;
 
 }
 
-
+function get_public_wheel_details($id) {
+    $wheel_id = un_hash($id);
+    global $wpdb;
+    $wheel_table = $wpdb->prefix . "data_futures_wheel";
+    $wheel = $wpdb->get_row("SELECT * FROM $wheel_table WHERE id = ".sanitize_key($wheel_id));
+    return $wheel;
+}
 
 function get_wheel() {
     global $wpdb;
@@ -525,7 +537,6 @@ function get_public_wheel() {
     $wheel_id = $_REQUEST['id'];
     $wheel_id = un_hash($wheel_id);
 
-    error_log('public wheel '.id);
     $answers_table = $wpdb->prefix . "data_futures_answers";
     
     $answers = $wpdb->get_results($wpdb->prepare("SELECT * FROM $answers_table WHERE wheel_id = %d", $wheel_id));
@@ -547,7 +558,6 @@ function get_public_wheel_rest($data) {
     $wheel_id = $data['id'];
     $wheel_id = un_hash($wheel_id);
     
-    error_log('public wheel '.id);
     $answers_table = $wpdb->prefix . "data_futures_answers";
     
     $answers = $wpdb->get_results($wpdb->prepare("SELECT * FROM $answers_table WHERE wheel_id = %d", $wheel_id));
@@ -555,6 +565,25 @@ function get_public_wheel_rest($data) {
     $wheel = array("answers" => $answers);
     return $wheel;
 //    wp_die();
+}
+
+add_action( 'rest_api_init', function () {
+    register_rest_route( 'dataFuturesAdmin/v1', '/all', array(
+        'methods' => 'GET',
+        'callback' => 'admin_get_all_wheels',
+    ));
+});
+
+function admin_get_all_wheels($data) {
+    global $wpdb;
+
+    $answers_table = $wpdb->prefix . "data_futures_answers";
+    $wheel_table = $wpdb->prefix . "data_futures_wheel";
+    
+    $answers = $wpdb->get_results($wpdb->prepare("SELECT * FROM $wheel_table JOIN $answers_table ON $answers_table.wheel_id = $wheel_table.id", $wheel_id));
+    
+    $wheel = array("wheels" => $answers);
+    return $wheel;
 }
 
 add_action( 'wp_ajax_public_wheel', get_public_wheel );
@@ -697,11 +726,41 @@ add_shortcode( 'button', 'button_func' );
 
 
 function wheel_embed($atts) {
-    return '<script src="http://localhost:81/dataFutures/wp-content/themes/datafutures/js/dataFutures.js"></script>
+    return '<script src="https://trusteddata.co.nz/media/dataFutures.js"></script>
         <div id="dataFutures" data-wheel-id="'.$atts["id"].'"></div>';
 }
 
 add_shortcode( 'wheel', 'wheel_embed' );
+
+function add_dial_query_vars_filter( $vars ){
+    $vars[] = "dial";
+    return $vars;
+}
+add_filter( 'query_vars', 'add_dial_query_vars_filter' );
+
+function public_dials_rewrite_rule() {
+    add_rewrite_rule('^public-dials/([0-9]+)?','index.php?pagename=public-dial&dial=$matches[1]','top');
+    add_rewrite_endpoint( 'public-dials', EP_PERMALINK | EP_PAGES );
+    add_rewrite_rule('^download-dials/([0-9]+)?','index.php?pagename=download_dials', 'top');
+    add_rewrite_endpoint( 'download-dials', EP_PERMALINK | EP_PAGES );
+}
+add_action('init', 'public_dials_rewrite_rule', 10, 0);
+
+function download_dials_display() {
+    $dials_page = get_query_var('pagename');
+    if ('download_dials' == $dials_page) {
+        header("HTTP/1.1 200 OK");
+        download_image_link();
+        exit;
+    } else if ('public-dial' == $dials_page) {
+        header("HTTP/1.1 200 OK");
+        include( get_template_directory().'/public-dial-page.php');
+        exit;
+    }
+}
+
+//register plugin custom pages display
+add_filter('template_redirect', 'download_dials_display');
 
 function hash_id($n) {
     $upperlimit = 8388608;
@@ -780,4 +839,46 @@ function add_dashboard_widgets() {
 
 // Register the new dashboard widget with the 'wp_dashboard_setup' action
 add_action('wp_dashboard_setup', 'add_dashboard_widgets' );
+
+
+function download_image_link() {
+    $imgPng = imageCreateFromPng(get_template_directory() . '/data-dial.png');
+    imageAlphaBlending($imgPng, true);
+    imageSaveAlpha($imgPng, true);
+    
+    $background_color = imagecolorallocate($imgPng, 0, 0, 0);
+    $text_color = imagecolorallocate($imgPng, 233, 14, 91);
+   
+    $white = imagecolorallocate($imgPng, 255, 255, 255);
+    $grey = imagecolorallocate($imgPng, 128, 128, 128);
+    $black = imagecolorallocate($imgPng, 0, 0, 0);
+    imagefilledrectangle($imgPng, 0, 0, 399, 29, $white);
+    
+    // The text to draw
+    $text = 'Testing...';
+    // Replace path by your own font path
+    $font = get_template_directory() . '/arial.ttf';
+    
+    // Add some shadow to the text
+    imagettftext($imgPng, 10, 0, 11, 21, $grey, $font, $text);
+    
+    // Add the text
+    imagettftext($imgPng, 10, 0, 10, 20, $black, $font, $text);
+    
+    
+//    imagestring($imgPng, 5, 50, 50, "A Simple Text String", $text_color);
+    /* Output image to browser */
+    header("Content-type: image/png");
+    imagePng($imgPng);
+    
+}
+
+function data_futures_title() {
+    $dials_page = get_query_var('pagename');
+    if('public-dial' == $dials_page){
+        echo 'Dial';
+    } else {
+        wp_title('');
+    }
+}
 ?>

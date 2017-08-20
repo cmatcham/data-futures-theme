@@ -11,7 +11,7 @@
     <meta name="author" content="">
 
     <title><?php echo get_bloginfo('name');?> :: <?php echo get_the_title(get_the_ID());?></title>
-
+	<link rel="stylesheet" type="text/css" media="all" href="<?php bloginfo( 'stylesheet_url' ); ?>" />
 
     <?php wp_head(); ?>
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -50,7 +50,7 @@ $child_pages = new WP_Query( array(
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand page-scroll" href="../">Transparent Data Use</a>
+                <a class="navbar-brand page-scroll" href="../"><span class="logo_heading transparent">TRANSPARENT</span> <span class="logo_heading data_use">DATA USE</span></a>
             </div>
 
             <!-- Collect the nav links, forms, and other content for toggling -->
@@ -96,36 +96,17 @@ if ( $child_pages->have_posts() ) : while ( $child_pages->have_posts() ) : $chil
             <div class="row">
             	<div class="col-md-5 col-md-push-7">
                     <div class="scrolling-page-image" style="background-image:url('<?php the_post_thumbnail_url('full'); ?>');">
-                    	<div class="public"></div>
+                    	<div class="public <?php if (get_the_id() == 41) {echo 'noborder';}?>"></div>
                     </div>
             	
             	</div>
                 <div class="col-md-7 col-md-pull-5">
-	                <h1><?php the_title() ?></h1>
+	                <h1 class="heading"><?php the_title() ?></h1>
 	                <?php the_content() ?>
                 </div>
                 
             </div>
-            <div class="row" style="padding-top:30px">
-            <div class="col-md-4"></div>
-            <div class="col-md-4">
-            	<div class="col-xs-6 public-entity-nav public">
-	            	<a href="<?php echo $public_url;?>"><span class="link"></span></a>
-            		<div class="col-xs-4 col-xs-offset-8 col-md-6 col-md-offset-6" >
-            		<h2>PUBLIC</h2>
-            		<span class="glyphicon glyphicon-record"></span>
-            		</div>
-            	</div>
-            	<div class="col-xs-6 public-entity-nav entity" >
-	            	<a href="<?php echo $entity_url;?>"><span class="link"></span></a>
-            		<div class="col-xs-4 col-md-6 ">
-            		<h2>ORGANISATION</h2>
-            		<span class="glyphicon glyphicon-record"></span>
-            		</div>
-            	</div>
-            </div>
-            <div class="col-md-4"></div>
-            </div>
+
 		</div>
 
     </section>
@@ -135,7 +116,7 @@ endwhile; endif;
 
 wp_reset_postdata();
 
-wp_footer();
+
 
 data_futures_footer(false);
 ?>
