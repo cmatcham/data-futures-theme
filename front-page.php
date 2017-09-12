@@ -83,9 +83,23 @@ body {
 }
 
 div.welcome {
-	padding-top: 5%;
 	width: 400px;
-	margin: auto;
+	margin-left: 100px;
+	margin-top: 200px;
+	padding: 20px;
+	background-color: rgba(255,255,255,0.5);
+	color: rgb(0,0,0);
+}
+@media(max-width:600px) {
+	div.welcome {
+		margin: auto;
+		margin-top: 100px;
+	}
+}
+@media(max-height:600px) {
+	div.welcome {
+		margin-top: 100px;
+	}
 }
 div.entry {
 	position:absolute;
@@ -98,10 +112,9 @@ div.entry {
 }
 h1 {
 	font-weight: bold;
-	text-align: center;
 }
 a:link, a:visited {
-    color: #FFFFFF;
+    color: #000000;
     text-decoration: none;
 }
 
@@ -179,33 +192,19 @@ span.icon-bar {
 <div class="welcome">
 <h1><?php the_title() ?></h1>
 <?php echo $page_content ?>
+<?php
+	$public_link = get_post_meta(get_the_ID(), 'public-link', true);
+	$public_url = get_permalink($public_link);
+	$entity_link = get_post_meta(get_the_ID(), 'entity-link', true);
+	$entity_url = get_permalink($entity_link);
+?>
+<p></p>
+<p><strong>
+<a href="<?php echo $public_url;?>">Public</a> | 
+<a href="<?php echo $entity_url;?>">Organisation</a>
+</strong></p>
 </div>
-<div class="container">
-	<div id="entryNav">
-    <div class="row public-entity-nav">
-    <div class="col-md-3"></div>
-    <div class="col-md-6">
-    	<div class="col-xs-6 public">
-    		<?php
-    		$public_link = get_post_meta(get_the_ID(), 'public-link', true);
-    		$public_url = get_permalink($public_link);
-    		$entity_link = get_post_meta(get_the_ID(), 'entity-link', true);
-    		$entity_url = get_permalink($entity_link);
-    		?>
-    		<a href="<?php echo $public_url;?>"><span class="link"></span></a>
-    		<h2>PUBLIC</h2>
-    		<span class="glyphicon glyphicon-record"></span>
-    	</div>
-    	<div class="col-xs-6 entity" >
-    		<a href="<?php echo $entity_url;?>"><span class="link"></span></a>
-    		<h2>ORGANISATION</h2>
-    		<span class="glyphicon glyphicon-record"></span>
-    	</div>
-    </div>
-    <div class="col-md-3"></div>
-    </div>
-	</div>
-</div>
+
 
 <div class="hidden-xs">
 <?php data_futures_footer(true); ?>
