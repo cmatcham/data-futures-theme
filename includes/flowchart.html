@@ -1,0 +1,810 @@
+<style>
+
+.chevron::before {
+	border-style: solid;
+	border-width: 0.15em 0.15em 0 0;
+	content: '';
+	display: inline-block;
+	height: 0.8em;
+	width: 0.8em;
+	left: 0.15em;
+	top: 0.15em;
+	position: relative;
+	transform: rotate(-45deg);
+	vertical-align: top;
+}
+
+.chevron.right:before {
+	left: 0;
+	transform: rotate(45deg);
+}
+
+.chevron.bottom:before {
+	top: 0;
+	transform: rotate(135deg);
+}
+
+.circle {
+	width: 50px;
+	height: 50px;
+	border-radius: 50%;
+	font-size: 12px;
+	color: #000;
+	line-height: 50px;
+	text-align: center;
+	display: inline-block;
+}
+
+.circle.large {
+	width: 105px;
+	height: 105px;
+	line-height: inherit;
+	display: table;
+}
+
+.circle.large p {
+	display: table-cell;
+	padding: 10px;
+	vertical-align: middle;
+	text-align: center;
+}
+
+.circle.orange {
+	background: #f78f33;
+	color: #fff;
+}
+
+.circle.black {
+	border: 1px solid black;
+	background: white;
+}
+
+.circle.blue {
+	background: #5085a0;
+	color: #fff;
+}
+
+.orange {
+	color: #f78f33;
+}
+
+.blue {
+	color: #5085a0;
+}
+
+.leftcol {
+	width: 250px;
+	min-height: 40px;
+}
+
+.morecols {
+	display: inline-block;
+}
+
+span.glyphicon.leftcol {
+	text-align: center;
+}
+
+.flowchartRow {
+	min-width: 710px;
+}
+p.build_button span.link {
+	display:block;
+	padding: 5px;
+	padding-left: 10px;
+	width: 100%;
+	height: 100%;
+}
+
+.annotation {
+	font-style: italic;
+}
+
+.step1 {
+	position: absolute;
+	left: 370px;
+	top: 100px;
+	width: 140px;
+}
+
+.build_button {
+	border-radius: 5px;
+	background: black;
+	color: white;
+	width: 140px;
+	height: 30px;
+	text-transform: uppercase;
+	position: absolute;
+	left: 370px;
+	top: 185px;
+}
+p.build_button:hover {
+	transition: background-color 0.5s ease;
+	background: #666666;
+}
+
+.build_button a {
+	color: white;
+}
+.build_button a:hover {
+	text-decoration:none;
+}
+#flowchart a {
+	color: white;
+}
+#flowchart a:hover {
+	text-decoration: none;
+}
+div.right_arrow {
+	width: 200px;
+	height: 975px;
+	border-top: 2px black solid;
+	border-right: 2px black solid;
+	border-bottom: 2px black solid;
+	border-top-right-radius: 15px;
+	border-bottom-right-radius: 15px;
+	position: absolute;
+	left: 570px;
+	top: 160px;
+	border-top-right-radius: 15px;
+}
+.right_arrow_chevron {
+    position: absolute;
+    transform: rotate(-90deg);
+    left: 571px;
+    top: 153px;
+}
+.step2_arrow {
+	position: absolute;
+	left: 175px;
+	top: 400px;
+}
+
+.step2_arrow_line {
+	position: absolute;
+	border: 1px solid black;
+	height: 30px;
+	left: 181.5px;
+	top: 381px;
+}
+
+.inner_dial {
+	position: absolute;
+	top: 420px;
+	left: 128px;
+}
+
+.annotation.step2 {
+	position: absolute;
+	top: 450px;
+	left: 250px;
+	width: 150px;
+}
+
+.line {
+	position: absolute;
+	border: 1px solid black;
+	height: 30px;
+}
+
+.value_yes {
+	top: 550px;
+	left: 180px;
+}
+.line.value_yes2 {
+	top: 646px;
+	left: 180px;
+}
+.chevron.value_yes2 {
+	top: 659px;
+	left: 177px;
+	position: absolute;
+	transform: rotate(180deg);
+}
+
+.value_no {
+	top: 505px;
+	left: 240px;
+	transform: rotate(-40deg);
+}
+
+.reconsider {
+	top: 570px;
+	left: 320px;
+	transform: rotate(-40deg);
+	height: 100px;
+}
+.line.reconsider_back_to_top {
+    position: absolute;
+    left: 666px;
+    top: 645px;
+    transform: rotate(90deg);
+    height: 170px;
+}
+.chevron.reconsider_back_to_top {
+    position: absolute;
+    left: 740px;
+    top: 718px;
+    transform: rotate(90deg);
+}
+
+.chevron.answer_better {
+	position: absolute;
+	left: 347px;
+	top: 650px;
+	transform: rotate(140deg);
+	height: 10px;
+}
+
+.step2_yes {
+	position: absolute;
+	top: 590px;
+	left: 155px;
+}
+
+.step2_no {
+	position: absolute;
+	top: 530px;
+	left: 242px;
+}
+
+.step3.circle.orange {
+	position: absolute;
+	left: 128px;
+	top: 680px;
+}
+
+.circle.blue.large {
+	position: absolute;
+	left: 360px;
+}
+
+.circle.blue.large.step3 {
+	top: 680px;
+}
+
+.circle.blue.large.step4 {
+	top: 930px;
+}
+
+.circle.black.large.step4 {
+	position: absolute;
+	top: 930px;
+	left: 128px;
+	background: black;
+	color: white;
+}
+
+.circle.blue.large.step5 {
+	top: 1080px;
+}
+
+.annotation.answer_better {
+	position: absolute;
+	left: 480px;
+	top: 690px;
+	width: 100px;
+}
+
+.features {
+	position: absolute;
+	top: 600px;
+	width: 100px;
+}
+
+.features_yes {
+	top: 800px;
+	left: 180px;
+}
+.features_yes2 {
+	top: 900px;
+	left: 180px;
+	height: 20px;
+}
+.chevron.features_yes2 {
+    position: absolute;
+    left: 177px;
+    top: 900px;
+    transform: rotate(180deg);
+}
+
+.features_no {
+	top: 775px;
+	left: 240px;
+	transform: rotate(-40deg);
+}
+
+.step3_no {
+	position: absolute;
+	top: 840px;
+	left: 155px;
+}
+
+.step3_yes {
+	position: absolute;
+	top: 800px;
+	left: 242px;
+}
+
+.line.engagement {
+	top: 840px;
+	left: 320px;
+	transform: rotate(-40deg);
+	height: 100px;
+}
+
+.chevron.engagement {
+	position: absolute;
+	left: 347px;
+	top: 920px;
+	transform: rotate(140deg);
+	height: 10px;
+}
+
+.circle.mask {
+	background: white;
+	z-index: 1;
+	position: absolute;
+}
+
+.mask.arrow {
+	left: 217px;
+	top: 970px;
+	height: 30px;
+	width: 30px;
+}
+
+.mask.image {
+	left: 200px;
+	top: 1000px;
+	height: 60px;
+	width: 60px;
+}
+
+.circle.black.arrow {
+	position: absolute;
+	top: 973px;
+	left: 220px;
+	height: 24px;
+	width: 24px;
+	background: black;
+	color: white;
+	z-index: 4;
+	line-height: inherit;
+	font-weight: bold;
+	font-size: 1.1em;
+}
+
+img.publish_image {
+	position: absolute;
+	left: 203px;
+	top: 1003px;
+	width: 55px;
+	height: 55px;
+	z-index: 3;
+}
+
+.step5_yes {
+	position: absolute;
+	top: 1110px;
+	left: 280px;
+}
+
+.step5_no {
+	position: absolute;
+	top: 1110px;
+	left: 500px;
+}
+
+.publish_arrow {
+	width: 80px;
+	height: 80px;
+	position: absolute;
+	border-bottom-left-radius: 100%;
+	left: 180px;
+	top: 1060px;
+	border-bottom: 2px solid black;
+	border-left: 2px solid black;
+}
+
+p.engagement {
+	position: absolute;
+	left: 480px;
+	top: 930px;
+	width: 170px;
+}
+.acceptance_yes, .acceptance_no {
+	position:absolute;
+	height: 20px;
+	transform: rotate(90deg);
+	top: 1125px;
+}
+.line.acceptance_yes {
+	left: 343px;
+}
+.line.acceptance_no {
+	left: 482px;
+}
+.chevron.publish {
+    position: absolute;
+    left: 173px;
+    top: 1057px;
+}
+.line.engagement_to_acceptance {
+	left: 413px;
+	top: 1041px;
+} 
+.chevron.engagement_to_acceptance {
+    left: 410px;
+    top: 1052px;
+    position: absolute;
+    transform: rotate(180deg);
+}
+
+@media ( max-width :992px) {
+	div.right_arrow {
+		width: 150px;
+	}
+	.chevron.reconsider_back_to_top {
+		left: 704px;
+	}
+}
+
+@media ( max-width :850px) {
+	div.right_arrow {
+		width: 50px;
+	}
+	.chevron.reconsider_back_to_top {
+		left: 604px;
+	}
+	.line.reconsider_back_to_top {
+		left: 590px;
+		top: 705px;
+		height: 50px;
+	}
+	p.engagement {
+		font-size: 0.85em;
+		width: 140px;
+		transform: translateY(10px);
+	}
+}
+/*
+@media(max-width:650px) {
+	#dial_image {
+		width:335px;
+		height:300px;
+		padding-left:35px;
+	}
+	div.right_arrow {
+		left: 470px;
+	}
+}
+*/
+@media ( max-width :650px) {
+	#flowchart {
+		font-size: 0.9em;
+	}
+	#dial_image {
+		width: 200px;
+		height: 200px;
+		padding-left: 0px;
+	}
+	div.right_arrow {
+		left: 320px;
+		top: 90px;
+		width: 20%;
+		height: 947px;
+	}
+	.right_arrow_chevron {
+		left: 321px;
+    	top: 85px;
+	}
+		.step1 {
+		left: 210px;
+		top: 30px;
+		width: 100px;
+	}
+	.build_button {
+		left: 210px;
+		top: 140px;
+		width: 110px;
+	}
+	.inner_dial {
+		top: 280px;
+		left: 50px;
+	}
+	.annotation.step2 {
+		top: 310px;
+		left: 170px;
+	}
+	.step2_arrow_line {
+		left: 103px;
+		top: 221px;
+	}
+	.step2_arrow {
+		left: 97px;
+		top: 242px;
+	}
+	.step2_yes {
+		top: 450px;
+		left: 78px;
+	}
+	.value_yes {
+		top: 400px;
+		left: 103px;
+	}
+	.line.value_yes2 {
+	    top: 503px;
+	    left: 103px;
+	    height: 20px;
+	}
+	.chevron.value_yes2 {
+    	top: 508px;
+    	left: 101px;
+	}
+	.step3.circle.orange {
+		left: 50px;
+		top: 530px;
+	}
+	.features {
+		top: 440px;
+		width: 50px;
+		font-size: 0.9em;
+	}
+	.value_no {
+		top: 367px;
+		left: 160px;
+		transform: rotate(-30deg);
+	}
+	.step2_no {
+		position: absolute;
+		top: 400px;
+		left: 160px;
+	}
+	.reconsider {
+		top: 450px;
+		left: 216px;
+		transform: rotate(-30deg);
+		height: 60px;
+	}
+	.circle.blue.large.step3 {
+		top: 530px;
+	}
+	.circle.blue.large {
+		position: absolute;
+		left: 200px;
+	}
+	.annotation.answer_better {
+		position: absolute;
+		left: 200px;
+		top: 650px;
+		width: 100px;
+	}
+	.features_yes {
+		top: 650px;
+		left: 103px;
+	}
+	.step3_no {
+		position: absolute;
+		top: 690px;
+		left: 78px;
+	}
+	.step3_yes {
+		position: absolute;
+		top: 740px;
+		left: 180px;
+	}
+	.features_no {
+		top: 642px;
+		left: 160px;
+		transform: rotate(-30deg);
+		height: 100px;
+	}
+	.line.engagement {
+		top: 790px;
+		left: 222px;
+		transform: rotate(-30deg);
+		height: 10px;
+	}
+	.circle.blue.large.step4 {
+		top: 800px;
+	}
+	.circle.black.large.step4, img.publish_image, .circle.black.arrow, .mask.arrow,
+		.mask.image {
+		transform: translateY(-130px) translateX(-120px);
+	}
+	.chevron.answer_better {
+		left: 227px;
+		top: 497px;
+		transform: rotate(150deg);
+	}
+	p.engagement {
+		width: 80px;
+		transform: translateY(-140px) translateX(-170px);
+	}
+	.chevron.engagement {
+	    left: 220px;
+	    top: 790px;
+	    transform: rotate(150deg);
+    }
+    .features_yes2 {
+	    top: 750px;
+	    left: 88px;
+	    height: 40px;
+	    transform: rotate(20deg);
+	}
+	.chevron.features_yes2 {
+	    left: 86px;
+	    top: 754px;
+	    transform: rotate(205deg);
+	}
+	.circle.blue.large.step5 {
+    top: 985px;
+	}	
+	.step5_yes, .step5_no, .publish_arrow {
+	transform: translate(-154px, -100px);
+	}
+	.publish_arrow {
+		width: 60px;
+		transform: translate(-130px, -100px);
+	}
+	.chevron.publish {
+	    position: absolute;
+	    left: 44px;
+	    top: 957px;
+	}
+	.line.acceptance_yes, .line.acceptance_no {
+		display: none;
+	}
+	.line.reconsider_back_to_top {
+	    left: 362px;
+	    top: 538px;
+	    height: 92px;
+	}
+	.chevron.reconsider_back_to_top {
+	    left: 398px;
+	    top: 573px;
+	}
+	.line.engagement_to_acceptance {
+	    left: 254px;
+	    top: 942px;
+	}
+	.chevron.engagement_to_acceptance {
+	    left: 252px;
+	    top: 956px;
+	    position: absolute;
+	    transform: rotate(180deg);
+	}
+}
+@media ( max-width :430px) {
+	div.right_arrow {
+		width: 40px;
+		left: 290px;
+		height: 977px;
+	}
+	.right_arrow_chevron {
+		left: 292px;
+	}
+	.build_button {
+		left: 190px;
+		top: 160px;
+	}
+	.circle.blue.large.step5 {
+		top: 1013px;
+		left: 100px;
+	}
+	.step5_yes, .step5_no, .publish_arrow {
+	    transform: translate(-264px, -69px);
+	}
+	p.engagement {
+	    width: 118px;
+	    transform: translateY(-20px) translateX(-283px);
+	}
+	.line.reconsider_back_to_top {
+	    left: 316px;
+	    top: 571px;
+	    height: 20px;
+	}
+	.chevron.reconsider_back_to_top {
+	    left: 314px;
+	    top: 570px;
+	}
+	.publish_arrow {
+	    width: 10px;
+	    transform: translate(-138px, -118px);
+	    border-bottom-left-radius: 0px;
+	    border-top-left-radius: 100%;
+	    border-bottom: none;
+	    border-top: 2px solid black;
+	}
+	.line.engagement_to_acceptance {
+	    left: 186px;
+	    top: 981px;
+	    transform: rotate(30deg);
+	}
+	.chevron.engagement_to_acceptance {
+	    left: 180px;
+	    top: 995px;
+	    transform: rotate(210deg);
+	}
+	.chevron.publish {
+	    position: absolute;
+	    left: 42px;
+	    top: 940px;
+	    transform: rotate(10deg);
+	}
+	.line.acceptance_yes, .line.acceptance_no {
+	    display: block;
+	    transform: translateX(-262px) translateY(-68px) rotate(90deg);
+	}
+} 
+</style>
+<div style="position:relative; height: 1300px; width: 100%; overflow: auto;" id="flowchart">
+<img src="https://trusteddata.co.nz/media/dial-355x355_t.png" id="dial_image"/>
+<p class="annotation step1">Organisation answers the eight key questions about data use (proposed or current)</p>
+<p class="build_button"><a href="https://trusteddata.co.nz/create-your-wheel"><span class="link">Build your dial</span></a></p>
+<div class="right_arrow"></div>
+<div class="chevron right_arrow_chevron"></div>
+<div class="step2_arrow_line"></div>
+<div class="chevron bottom step2_arrow"></div>
+<img src="https://trusteddata.co.nz/media/inner-dial.png" class="inner_dial"/>
+<p class="annotation step2">Is there sufficient Value, Protection & Choice?</p>
+<div class="line value_yes"></div>
+<div class="line value_no"></div>
+<div class="circle black step2_yes">If YES</div>
+<div class="circle black step2_no">If NO</div>
+<div class="line value_yes2"></div>
+<div class="chevron value_yes2"></div>
+
+
+<div class="circle orange large step3"><p>Does the data use have one or more of these features</p></div>
+<p class="annotation features">It's novel for community it affects<br/><br/>
+Has a substantial impact on Wh&#257;nau, hap&#363;, iwi or M&#257;ori communities<br/><br/>
+Has a substantial impact on low trust communities</p>
+
+<div class="circle blue large step3"><p>Reconsider data use</p></div>
+<p class="annotation answer_better">Can you answer the 8 key questions in a better way?</p>
+
+<div class="line reconsider"></div>
+<div class="chevron answer_better"></div>
+
+<div class="line reconsider_back_to_top"></div>
+<div class="chevron reconsider_back_to_top"></div>
+
+<div class="line features_yes"></div>
+<div class="line features_no"></div>
+<div class="circle black step3_yes">If YES</div>
+<div class="circle black step3_no">If NO</div>
+<div class="line engagement"></div>
+<div class="chevron engagement"></div>
+
+<div class="line features_yes2"></div>
+<div class="chevron features_yes2"></div>
+
+
+<div class="circle black large step4"><p><a href="https://trusteddata.co.nz/create-your-wheel/"><span class="link2">PUBLISH AND SHARE YOUR DIAL</span></a></p></div>
+<div class="circle mask arrow"></div>
+<div class="circle black arrow">&gt;</div>
+
+<div class="circle mask image"></div>
+<img src="https://trusteddata.co.nz/media/dial-355x355_t.png" width="55px" height="55px" class="publish_image"/>
+
+
+<div class="circle blue large step4"><p>Engagement with affected communities</p></div>
+<p class="annotation engagement">Consider if there is a need for active engagement with affected communities. Be willing to make changes to how data will be used.</p>
+<div class="circle blue large step5"><p>Sufficient Community Acceptance</p></div>
+<div class="line engagement_to_acceptance"></div>
+<div class="chevron engagement_to_acceptance"></div>
+
+<div class="circle black step5_yes">If YES</div>
+<div class="circle black step5_no">If NO</div>
+
+<div class="publish_arrow"></div>
+
+<div class="line acceptance_yes"></div>
+<div class="line acceptance_no"></div>
+
+<div class="chevron publish"></div>
+
+</div>
+
