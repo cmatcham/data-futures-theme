@@ -39,7 +39,8 @@ $page_content = $page_object->post_content;
 	unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215;
 }
 html { 
-	background: url('<?php echo get_the_post_thumbnail_url(get_the_ID(), 'full'); ?>') no-repeat center center fixed; 
+<?php $image = rand(1,5);?>
+	background: url('<?php echo esc_url( get_theme_mod( 'datafutures_background_'.$image )); ?>') no-repeat center center fixed; 
 	-webkit-background-size: cover;
 	-moz-background-size: cover;
 	-o-background-size: cover;
@@ -90,11 +91,35 @@ div.welcome {
 	background-color: rgba(255,255,255,0.5);
 	color: rgb(0,0,0);
 }
+div.welcome a.public:hover {
+    color: #5085a0;
+}
+div.welcome a.organisation:hover {
+    color: #f78f33;
+}
+.logo_heading.transparent {
+	color:#006b8a;
+	font-weight:bold;
+}
+.logo_heading.data_use{
+	color:black;
+}
+p.logo {
+    position: absolute;
+    top: 0;
+    left: 100px;
+}
 @media(max-width:600px) {
 	div.welcome {
 		margin: auto;
 		margin-top: 100px;
+		width: 66.66666667%;
 	}
+	p.logo {
+        position: absolute;
+        top: 0;
+        left: 10px;
+    }
 }
 @media(max-height:600px) {
 	div.welcome {
@@ -130,7 +155,7 @@ span.link {
 
 @media(max-width:767px) {
     .navbar-fixed-bottom {
-		background-color: black;
+		background-color: white;
     }
 
 	.public-entity-nav.row {
@@ -148,8 +173,10 @@ span.icon-bar {
     background-color: white;
 }
 .navbar-collapse.navbar-ex1-collapse.collapsing,.navbar-collapse.navbar-ex1-collapse.in  {
-    background-color: black;
+    background-color: white;
 }
+
+
 </style>
 </head>
 <body>
@@ -187,7 +214,9 @@ span.icon-bar {
         </div>
         <!-- /.container -->
     </nav>
-
+<p class="logo">
+	<a class="navbar-brand page-scroll" href="./"><span class="logo_heading transparent">TRUSTED</span> <span class="logo_heading data_use">DATA</span></a>
+</p>
 
 <div class="welcome">
 <h1><?php the_title() ?></h1>
@@ -200,8 +229,8 @@ span.icon-bar {
 ?>
 <p></p>
 <p><strong>
-<a href="<?php echo $public_url;?>">Public</a> | 
-<a href="<?php echo $entity_url;?>">Organisation</a>
+<a class="public" href="<?php echo $public_url;?>">Public</a> | 
+<a class="organisation" href="<?php echo $entity_url;?>">Organisation</a>
 </strong></p>
 </div>
 

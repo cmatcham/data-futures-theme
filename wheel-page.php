@@ -9,6 +9,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
     <meta name="author" content="">
+    
+        
+    <meta property="og:title" content="Trusted Data Dial" />
+	<meta property="og:description" content="Create your own trusted data dial" />
+	<meta property="og:image" content="https://www.trusteddata.co.nz/media/dial.png" />
+	
 
     <title>Create your dial</title>
 
@@ -43,9 +49,69 @@
 		:placeholder-shown { /* Standard one last! */
             color: #337ab7;
         }
+		
+		
+        .social {
+		    margin: 0;
+		    padding: 0;
+		}
+		
+		.social ul {
+		    margin: 0;
+		    padding: 5px;
+		}
+		
+		.social ul li {
+		    margin: 5px;
+		    list-style: none outside none;
+		    display: inline-block;
+		}
+		
+		.social i {
+		    width: 40px;
+		    height: 40px;
+		    color: #FFF;
+		    background-color: #909AA0;
+		    font-size: 22px;
+		    text-align:center;
+		    padding-top: 12px;
+		    border-radius: 50%;
+		    -moz-border-radius: 50%;
+		    -webkit-border-radius: 50%;
+		    -o-border-radius: 50%;
+		    transition: all ease 0.3s;
+		    -moz-transition: all ease 0.3s;
+		    -webkit-transition: all ease 0.3s;
+		    -o-transition: all ease 0.3s;
+		    -ms-transition: all ease 0.3s;
+		}
+		
+		.social i:hover {
+		    color: #FFF;
+		    text-decoration: none;
+		    transition: all ease 0.3s;
+		    -moz-transition: all ease 0.3s;
+		    -webkit-transition: all ease 0.3s;
+		    -o-transition: all ease 0.3s;
+		    -ms-transition: all ease 0.3s;
+		}
+		
+		.social .fa-facebook:hover { /* round facebook icon*/
+		    background: #4060A5;
+		}
+		
+		.social .fa-twitter:hover { /* round twitter icon*/
+		    background: #00ABE3;
+		}
+		
+		.social .fa-linkedin:hover {
+		    background: #0094BC;
+		}
        
 	</style>
     <?php wp_head(); ?>
+    <!--load font awesome-->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" media="all" href="<?php bloginfo( 'stylesheet_url' ); ?>" />
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -71,7 +137,7 @@ $entity_url = get_permalink($entity_link);
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand page-scroll" href="../">Transparent Data Use</a>
+                <a class="navbar-brand page-scroll" href="../"><span class="logo_heading transparent">TRUSTED</span> <span class="logo_heading data_use">DATA</span></a>
                 
                 
             </div>
@@ -652,7 +718,8 @@ $selected_wheel = get_selected_wheel($wheels);
 	<div class="modal fade" id="linkToYourDial" tabindex="-1" role="dialog" aria-labelledby="linkLink" aria-hidden="true">
 		<div class="modal-dialog modal-lg">
 		<div class="modal-content">
-			<p>From your site, create a link to <a href="../public-dials/" id="linkEmbedCode"></a>
+			<p>From your site, create a link to <a href="../public-dials/" id="linkEmbedCode"></a></p>
+			<p>You can also <a href="../public-pdf/" id="pdfEmbedCode">download a PDF</a> of your answers which you can load onto your website or use in other media.</p>
 		</div>
 		</div>
 	</div>
@@ -695,7 +762,7 @@ $selected_wheel = get_selected_wheel($wheels);
 			<div id="silverstripeEmbed" class="tab-pane fade">
 			<p>If your site is built with Silverstripe, simply download and install the attached addon</p>
 			<p>Once installed in your silverstripe directory, use the shortcode <code>[transparent_data_dial,id=<span id="silverstripeEmbedCode"></span>]</code></p>
-			<p><a href="https://trusteddata.co.nz/media/silverstripe/transparentdata.zip" class="btn btn-default">Download wordpress plugin</a>
+			<p><a href="https://trusteddata.co.nz/media/silverstripe/transparentdata.zip" class="btn btn-default">Download silverstripe module</a>
 			<p></p>
 			</div>
 			<div id="otherEmbed" class="tab-pane fade">
@@ -706,6 +773,16 @@ $selected_wheel = get_selected_wheel($wheels);
 			</div>
 		</div>
 	</div>
+	</div>
+	<h2>Step 4: Share your dial</h2>
+	<div class="social">
+    <ul>
+        <li><a href="#" id="fbshare"><i class="fa fa-lg fa-facebook"></i></a></li>
+        <li><a href="#" id="twittershare"><i class="fa fa-lg fa-twitter"></i></a></li>
+        <li><a href="#" id="lnshare"><i class="fa fa-lg fa-linkedin"></i></a></li>
+        
+    </ul>
+</div>
 	
 <script>
 var ajaxurl = '<?php echo admin_url( "admin-ajax.php" )?>';
@@ -802,7 +879,11 @@ function loadWheel(id) {
 		jQuery('#wordpressEmbedCode').text(json.embedCode);
 		jQuery('#silverstripeEmbedCode').text(json.embedCode);
 		jQuery('#linkEmbedCode').html('<a href="../public-dials/'+json.embedCode+'">https://www.trusteddata.co.nz/public-dials/'+json.embedCode+'</a>');
+		jQuery('#pdfEmbedCode').html('<a href="../pdf-dials/'+json.embedCode+'">download a PDF</a>');
 		jQuery('#testDialLink').attr('href', '../public-dials/'+json.embedCode);
+		jQuery('#fbshare').attr('href', 'http://www.facebook.com/sharer/sharer.php?u=https://trusteddata.co.nz/public-dials/'+json.embedCode+'/');
+		jQuery('#twittershare').attr('href', "http://twitter.com/share?text=I've just made my data dial, visit www.TrustedData.co.nz to create yours!&url=https://trusteddata.co.nz/public-dials/"+json.embedCode+"/");
+		jQuery('#lnshare').attr('href', "http://www.linkedin.com/shareArticle?mini=true&url=https://trusteddata.co.nz/public-dials/"+json.embedCode+"/&title=Trusted Data Dial&summary=I've just made my data dial, visit www.TrustedData.co.nz to create yours!");
 		jQuery('#wheelName').val(json.name);		
 		jQuery('#wheelURL').val(json.url);
 		jQuery('#q1answer').val(getAnswer(1, json.answers));
@@ -834,11 +915,56 @@ function generateEmbed() {
 	var code = LZString.compressToBase64(JSON.stringify(json));
 	//$('#embedCode').text(code);
 }
+
+//https://tc39.github.io/ecma262/#sec-array.prototype.find
+if (!Array.prototype.find) {
+  Object.defineProperty(Array.prototype, 'find', {
+    value: function(predicate) {
+     // 1. Let O be ? ToObject(this value).
+      if (this == null) {
+        throw new TypeError('"this" is null or not defined');
+      }
+
+      var o = Object(this);
+
+      // 2. Let len be ? ToLength(? Get(O, "length")).
+      var len = o.length >>> 0;
+
+      // 3. If IsCallable(predicate) is false, throw a TypeError exception.
+      if (typeof predicate !== 'function') {
+        throw new TypeError('predicate must be a function');
+      }
+
+      // 4. If thisArg was supplied, let T be thisArg; else let T be undefined.
+      var thisArg = arguments[1];
+
+      // 5. Let k be 0.
+      var k = 0;
+
+      // 6. Repeat, while k < len
+      while (k < len) {
+        // a. Let Pk be ! ToString(k).
+        // b. Let kValue be ? Get(O, Pk).
+        // c. Let testResult be ToBoolean(? Call(predicate, T, « kValue, k, O »)).
+        // d. If testResult is true, return kValue.
+        var kValue = o[k];
+        if (predicate.call(thisArg, kValue, k, o)) {
+          return kValue;
+        }
+        // e. Increase k by 1.
+        k++;
+      }
+
+      // 7. Return undefined.
+      return undefined;
+    }
+  });
+}
 </script>
 
 </div>
 
-</div></div>
+</div>
 
 <?php 
 } 

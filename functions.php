@@ -137,7 +137,7 @@ function data_futures_footer($fixed) {
             )); ?>
 
 				<ul class="nav navbar-nav navbar-right">
-      				<li><a>Brought to you by <strong>DATA FUTURES</strong> partnership</a></li>
+      				<li><a href="http://datafutures.co.nz">Brought to you by the <img src="<?php echo get_theme_file_uri('images/dfp_logo.png')?>"/></li>
     			</ul>
     		</div>
     	</div>
@@ -229,8 +229,7 @@ function data_futures_show_login() {
 								<input type="hidden" name="redirect_to" value="<?php echo get_permalink();?>">
 								<ul class="nav nav-pills" >
 									<li><button type="submit" name="wp-submit" value="Log in" class="btn btn-default" style="background-color: #5085a0;color:white">Log in</button></li>
-								
-									<li><a href="#create" data-toggle="tab" id="createAccountTab">Create Account</a></li>
+									<li style="margin-left:20px; padding-left: 20px; border-left:1px #ccc solid;border-radius:inherit;line-height:10px"><a href="#create" id="createAccountTab">Create Account</a></li>
 								</ul>
 							</form>
 						</div>
@@ -248,27 +247,41 @@ function data_futures_show_login() {
 									<input type="password" name="pwd" class="form-control" id="createPassword" placeholder="Password">
 								</div>
 				    			<div class="form-group">
-									<input type="password" name="pwd2" class="form-control" id="createPassword2" placeholder="Password">
+									<input type="password" name="pwd2" class="form-control" id="createPassword2" placeholder="Confirm password">
 								</div>
 								<ul class="nav nav-pills" >
-									<li class="active"><a href="#login" data-toggle="tab">Login</a></li>
-									<li><button type="submit" name="wp-submit" value="Log in" class="btn btn-default">Create Account</button></li>
+									<li style="margin-right:20px; padding-right: 20px; border-right:1px #ccc solid;border-radius:inherit;line-height:10px"><a href="#login" id="loginTab">Login</a></li>
+									<li><button type="submit" name="wp-submit" value="Log in" class="btn btn-default" style="background-color: #5085a0;color:white">Create Account</button></li>
 								</ul>
 							
 								
 							</form>
 						</div>
 					</div>
-					<ul class="nav nav-pills" >
+					<!-- ul class="nav nav-pills" >
 						<li class="active"><a href="#login" data-toggle="tab">Login</a></li>
 						<li><a href="#create" data-toggle="tab" id="createAccountTab">Create Account</a></li>
-					</ul>
+					</ul -->
 		</div>
 		<div class="col-md-6">
 			<div id="dataFutures" data-disclaimer="none" data-style="none"></div>
 		</div>
 	</div>
 </div>
+<script>
+jQuery(document).ready(function() {
+	$('#createAccountTab').click(function(evt) {
+		evt.preventDefault();
+		$('#create').removeClass('fade').addClass('active in');
+		$('#login').removeClass('active in').addClass('fade');
+	});
+	$('#loginTab').click(function(evt) {
+		evt.preventDefault();
+		$('#login').removeClass('fade').addClass('active in');
+		$('#create').removeClass('active in').addClass('fade');
+	});
+});
+</script>
 
 <?php if ($screen == 'create') { ?>
 <script>
@@ -732,6 +745,14 @@ function wheel_embed($atts) {
 
 add_shortcode( 'wheel', 'wheel_embed' );
 
+function flowchart($atts) {
+    $code = file_get_contents(get_theme_file_uri('includes/flowchart.html'));
+    return $code;
+}
+
+add_shortcode('flowchart', 'flowchart');
+
+
 function add_dial_query_vars_filter( $vars ){
     $vars[] = "dial";
     return $vars;
@@ -742,6 +763,8 @@ function public_dials_rewrite_rule() {
     add_rewrite_rule('^public-dials/([0-9]+)?','index.php?pagename=public-dial&dial=$matches[1]','top');
     add_rewrite_endpoint( 'public-dials', EP_PERMALINK | EP_PAGES );
     add_rewrite_rule('^download-dials/([0-9]+)?','index.php?pagename=download_dials', 'top');
+    add_rewrite_endpoint( 'download-dials', EP_PERMALINK | EP_PAGES );
+    add_rewrite_rule('^pdf-dials/([0-9]+)?','index.php?pagename=pdf-dial&dial=$matches[1]', 'top');
     add_rewrite_endpoint( 'download-dials', EP_PERMALINK | EP_PAGES );
 }
 add_action('init', 'public_dials_rewrite_rule', 10, 0);
@@ -755,6 +778,10 @@ function download_dials_display() {
     } else if ('public-dial' == $dials_page) {
         header("HTTP/1.1 200 OK");
         include( get_template_directory().'/public-dial-page.php');
+        exit;
+    } else if ('pdf-dial' == $dials_page) {
+        header("HTTP/1.1 200 OK");
+        include( get_template_directory().'/pdfgen.php');
         exit;
     }
 }
@@ -796,7 +823,7 @@ function dashboard_widget_function( $post, $callback_args ) {
 
     
     <?php 
-    $summary = $wpdb->get_results("SELECT YEAR(creation_time) AS year, MONTH(creation_time) AS month, count(*) AS num FROM $wheel_table WHERE creation_time > CURDATE() - INTERVAL 365 DAY GROUP BY YEAR(creation_time), MONTH(creation_time)", 'ARRAY_N');
+    $summary = $wpdb->get_results("SELECT YEAR(creation_time) AS year, MONTH(creation_time) AS month, count(*) AS num FROM $wheel_table WHERE creation_time >= CURDATE() - INTERVAL 365 DAY GROUP BY YEAR(creation_time), MONTH(creation_time)", 'ARRAY_N');
     
     for ($i = 0; $i < 12; $i++) {
         $months[] = strtotime( date( 'Y-m-01' )." -$i months");
@@ -881,4 +908,57 @@ function data_futures_title() {
         wp_title('');
     }
 }
+
+//customizer
+function datafutures_customize_register( $wp_customize ) {
+    // Do stuff with $wp_customize, the WP_Customize_Manager object.
+    
+    $wp_customize->add_section( 'datafutures_background_section' , array(
+        'title'       => __( 'Background', 'datafutures' ),
+        'priority'    => 30,
+        'description' => 'Upload multiple backgrounds that the homepage will cycle through.',
+    ) );
+    
+    $wp_customize->add_setting( 'datafutures_background_1' );
+    
+    $wp_customize->add_control( new WP_Customize_Image_Control( $wp_customize, 'datafutures_background_1', array(
+        'label'    => __( 'Background 1', 'datafutures' ),
+        'section'  => 'datafutures_background_section',
+        'settings' => 'datafutures_background_1',
+    ) ) );
+    
+    $wp_customize->add_setting( 'datafutures_background_2' );
+    
+    $wp_customize->add_control( new WP_Customize_Image_Control( $wp_customize, 'datafutures_background_2', array(
+        'label'    => __( 'Background 2', 'datafutures' ),
+        'section'  => 'datafutures_background_section',
+        'settings' => 'datafutures_background_2',
+    ) ) );
+
+    $wp_customize->add_setting( 'datafutures_background_3' );
+    
+    $wp_customize->add_control( new WP_Customize_Image_Control( $wp_customize, 'datafutures_background_3', array(
+        'label'    => __( 'Background 3', 'datafutures' ),
+        'section'  => 'datafutures_background_section',
+        'settings' => 'datafutures_background_3',
+    ) ) );
+    
+    $wp_customize->add_setting( 'datafutures_background_4' );
+    
+    $wp_customize->add_control( new WP_Customize_Image_Control( $wp_customize, 'datafutures_background_4', array(
+        'label'    => __( 'Background 4', 'datafutures' ),
+        'section'  => 'datafutures_background_section',
+        'settings' => 'datafutures_background_4',
+    ) ) );
+    
+    $wp_customize->add_setting( 'datafutures_background_5' );
+    
+    $wp_customize->add_control( new WP_Customize_Image_Control( $wp_customize, 'datafutures_background_5', array(
+        'label'    => __( 'Background 5', 'datafutures' ),
+        'section'  => 'datafutures_background_section',
+        'settings' => 'datafutures_background_5',
+    ) ) );
+
+}
+add_action( 'customize_register', 'datafutures_customize_register' );
 ?>

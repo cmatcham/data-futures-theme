@@ -9,7 +9,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
     <meta name="author" content="">
-
+    
+    <meta property="og:title" content="Trusted Data Dial" />
+	<meta property="og:description" content="Create your own trusted data dial" />
+	<meta property="og:image" content="https://www.trusteddata.co.nz/media/dial.png" />
+	
     <title><?php echo get_bloginfo('name');?> :: <?php echo get_the_title(get_the_ID());?></title>
 	<link rel="stylesheet" type="text/css" media="all" href="<?php bloginfo( 'stylesheet_url' ); ?>" />
 
@@ -20,7 +24,44 @@
         <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
         <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
-
+    
+    <script>
+	document.addEventListener("DOMContentLoaded", function() {
+    	var emailForm = document.querySelector('input[type=email]');
+    	var showEmailCheckbox = document.querySelector('.trusted-data-show-email input');
+    	if (emailForm && showEmailCheckbox)  {
+    		emailForm.parentElement.classList.add('hidden');
+    
+    		showEmailCheckbox.addEventListener('change', function() {
+    			if (showEmailCheckbox.checked) {
+    				emailForm.parentElement.classList.remove('hidden');
+    			} else {
+    				emailForm.parentElement.classList.add('hidden');
+    			}
+    		});
+    	}
+	});
+</script>
+<style>
+#dataFutures {
+	width: inherit;
+	min-width:380px;
+}
+#dataFuturesGuidelinesAnswers {
+	width: 40%;
+}
+@media(max-width:767px) {
+    #dataFuturesWheelCanvas {
+		display: block;
+		margin:auto;
+    }
+    #dataFuturesGuidelinesAnswers {
+		display:block;
+		margin: auto;
+    	width: 80%;
+    }
+}
+</style>
 </head>
 
 <?php
@@ -50,7 +91,7 @@ $child_pages = new WP_Query( array(
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand page-scroll" href="../"><span class="logo_heading transparent">TRANSPARENT</span> <span class="logo_heading data_use">DATA USE</span></a>
+                <a class="navbar-brand page-scroll" href="../"><span class="logo_heading transparent">TRUSTED</span> <span class="logo_heading data_use">DATA</span></a>
             </div>
 
             <!-- Collect the nav links, forms, and other content for toggling -->
@@ -94,6 +135,10 @@ if ( $child_pages->have_posts() ) : while ( $child_pages->have_posts() ) : $chil
 	<section id="<?php echo sanitize_title_with_dashes(get_the_title(get_the_ID())); ?>" class="scrolling-section">
         <div class="container">
             <div class="row">
+            	<?php 
+            	$url = get_the_post_thumbnail_url( null, 'full');
+            	if ( $url ) {
+                ?>
             	<div class="col-md-5 col-md-push-7">
                     <div class="scrolling-page-image" style="background-image:url('<?php the_post_thumbnail_url('full'); ?>');">
                     	<div class="public <?php if (get_the_id() == 41) {echo 'noborder';}?>"></div>
@@ -104,7 +149,12 @@ if ( $child_pages->have_posts() ) : while ( $child_pages->have_posts() ) : $chil
 	                <h1 class="heading"><?php the_title() ?></h1>
 	                <?php the_content() ?>
                 </div>
-                
+                <?php } else { ?>
+                <div class="col-md-12">
+	                <h1 class="heading"><?php the_title() ?></h1>
+	                <?php the_content() ?>
+                </div>
+                <?php } ?>
             </div>
 
 		</div>
@@ -120,6 +170,8 @@ wp_reset_postdata();
 
 data_futures_footer(false);
 ?>
+
+
 
 
 </body>

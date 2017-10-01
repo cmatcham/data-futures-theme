@@ -8,6 +8,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
     <meta name="author" content="">
+    
+    <meta property="og:title" content="Trusted Data Dial" />
+	<meta property="og:description" content="Create your own trusted data dial" />
+	<meta property="og:image" content="https://www.trusteddata.co.nz/media/dial.png" />
+	<meta property="og:image:width" content="512px" />
+	<meta property="og:image:height" content="512px" />
 
     <title><?php data_futures_title(); ?></title>
     <?php wp_head(); ?>
@@ -36,7 +42,7 @@ $entity_url = get_permalink($entity_link);
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand page-scroll" href="../"><span class="logo_heading transparent">TRANSPARENT</span> <span class="logo_heading data_use">DATA USE</span></a>
+                <a class="navbar-brand page-scroll" href="../"><span class="logo_heading transparent">TRUSTED</span> <span class="logo_heading data_use">DATA</span></a>
                 
                 
             </div>
