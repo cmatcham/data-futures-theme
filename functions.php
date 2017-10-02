@@ -18,6 +18,7 @@ function create_db() {
     $users_table = $wpdb->prefix . "users";
     $wheel_table = $wpdb->prefix . "data_futures_wheel";
     $answers_table = $wpdb->prefix . "data_futures_answers";
+    $views_table = $wpdb->prefix . "data_futures_views";
     
     $charset_collate = $wpdb->get_charset_collate();
     
@@ -49,6 +50,17 @@ function create_db() {
      ,
      FOREIGN KEY (wheel_id) references $wheel_table(id)
      */
+
+     $sql = "CREATE TABLE $views_table (
+        id INT NOT NULL AUTO_INCREMENT,
+        wheel_id INT NOT NULL,
+        ip VARCHAR(50),
+        view_time DATETIME DEFAULT CURRENT_TIMESTAMP,
+        PRIMARY KEY (id)
+    ) $charset_collate;";
+
+    dbDelta($sql);
+
     
     add_role( 'client', __('Client' ), array( ) );
 }
@@ -137,7 +149,7 @@ function data_futures_footer($fixed) {
             )); ?>
 
 				<ul class="nav navbar-nav navbar-right">
-      				<li><a>Brought to you by <strong>DATA FUTURES</strong> partnership</a></li>
+      				<li><a href="http://datafutures.co.nz">Brought to you by the <img src="<?php echo get_theme_file_uri('images/dfp_logo.png')?>"/></li>
     			</ul>
     		</div>
     	</div>
@@ -229,8 +241,7 @@ function data_futures_show_login() {
 								<input type="hidden" name="redirect_to" value="<?php echo get_permalink();?>">
 								<ul class="nav nav-pills" >
 									<li><button type="submit" name="wp-submit" value="Log in" class="btn btn-default" style="background-color: #5085a0;color:white">Log in</button></li>
-								
-									<li><a href="#create" data-toggle="tab" id="createAccountTab">Create Account</a></li>
+									<li style="margin-left:20px; padding-left: 20px; border-left:1px #ccc solid;border-radius:inherit;line-height:10px"><a href="#create" id="createAccountTab">Create Account</a></li>
 								</ul>
 							</form>
 						</div>
@@ -248,27 +259,41 @@ function data_futures_show_login() {
 									<input type="password" name="pwd" class="form-control" id="createPassword" placeholder="Password">
 								</div>
 				    			<div class="form-group">
-									<input type="password" name="pwd2" class="form-control" id="createPassword2" placeholder="Password">
+									<input type="password" name="pwd2" class="form-control" id="createPassword2" placeholder="Confirm password">
 								</div>
 								<ul class="nav nav-pills" >
-									<li class="active"><a href="#login" data-toggle="tab">Login</a></li>
-									<li><button type="submit" name="wp-submit" value="Log in" class="btn btn-default">Create Account</button></li>
+									<li style="margin-right:20px; padding-right: 20px; border-right:1px #ccc solid;border-radius:inherit;line-height:10px"><a href="#login" id="loginTab">Login</a></li>
+									<li><button type="submit" name="wp-submit" value="Log in" class="btn btn-default" style="background-color: #5085a0;color:white">Create Account</button></li>
 								</ul>
 							
 								
 							</form>
 						</div>
 					</div>
-					<ul class="nav nav-pills" >
+					<!-- ul class="nav nav-pills" >
 						<li class="active"><a href="#login" data-toggle="tab">Login</a></li>
 						<li><a href="#create" data-toggle="tab" id="createAccountTab">Create Account</a></li>
-					</ul>
+					</ul -->
 		</div>
 		<div class="col-md-6">
 			<div id="dataFutures" data-disclaimer="none" data-style="none"></div>
 		</div>
 	</div>
 </div>
+<script>
+jQuery(document).ready(function() {
+	$('#createAccountTab').click(function(evt) {
+		evt.preventDefault();
+		$('#create').removeClass('fade').addClass('active in');
+		$('#login').removeClass('active in').addClass('fade');
+	});
+	$('#loginTab').click(function(evt) {
+		evt.preventDefault();
+		$('#login').removeClass('fade').addClass('active in');
+		$('#create').removeClass('active in').addClass('fade');
+	});
+});
+</script>
 
 <?php if ($screen == 'create') { ?>
 <script>
@@ -439,8 +464,8 @@ function scrolling_page_template_metabox($post) {
     <label for="scrolling-page-class"><?php _e( "Changes colour of page based on target audience.", 'example' ); ?></label>
     <br />
     <select name="scrolling-page-class" id="scrolling-page-class">
-    	<option value="entity" <?php selected( $selected, 'entity'); ?>>Entity</option>
-    	<option value="public" <?php selected( $selected, 'public'); ?>>Public</option>
+    	<option value="entity" <?php selected( $selected, 'entity');Â ?>>Entity</option>
+    	<option value="public" <?php selected( $selected, 'public');Â ?>>Public</option>
     </select>
   </p>
 <?php 
@@ -563,8 +588,28 @@ function get_public_wheel_rest($data) {
     $answers = $wpdb->get_results($wpdb->prepare("SELECT * FROM $answers_table WHERE wheel_id = %d", $wheel_id));
     
     $wheel = array("answers" => $answers);
+
+    log_dial_request($wheel_id);
     return $wheel;
 //    wp_die();
+}
+
+function log_dial_request($wheel_id) {
+    global $wpdb;
+    $ip = $_SERVER['REMOTE_ADDR'];
+    $views_table = $wpdb->prefix . "data_futures_views";
+
+    $wpdb->insert(
+    $views_table,
+    array(
+        'wheel_id' => $wheel_id,
+        'ip'  => $ip
+    ),
+    array(
+        '%d',
+        '%s'
+    ));
+
 }
 
 add_action( 'rest_api_init', function () {
@@ -732,6 +777,13 @@ function wheel_embed($atts) {
 
 add_shortcode( 'wheel', 'wheel_embed' );
 
+function flowchart($atts) {
+    $code = file_get_contents(get_theme_file_uri('includes/flowchart.html'));
+    return $code;
+}
+
+add_shortcode('flowchart', 'flowchart');
+
 function add_dial_query_vars_filter( $vars ){
     $vars[] = "dial";
     return $vars;
@@ -742,6 +794,8 @@ function public_dials_rewrite_rule() {
     add_rewrite_rule('^public-dials/([0-9]+)?','index.php?pagename=public-dial&dial=$matches[1]','top');
     add_rewrite_endpoint( 'public-dials', EP_PERMALINK | EP_PAGES );
     add_rewrite_rule('^download-dials/([0-9]+)?','index.php?pagename=download_dials', 'top');
+    add_rewrite_endpoint( 'download-dials', EP_PERMALINK | EP_PAGES );
+    add_rewrite_rule('^pdf-dials/([0-9]+)?','index.php?pagename=pdf-dial&dial=$matches[1]', 'top');
     add_rewrite_endpoint( 'download-dials', EP_PERMALINK | EP_PAGES );
 }
 add_action('init', 'public_dials_rewrite_rule', 10, 0);
@@ -755,6 +809,10 @@ function download_dials_display() {
     } else if ('public-dial' == $dials_page) {
         header("HTTP/1.1 200 OK");
         include( get_template_directory().'/public-dial-page.php');
+        exit;
+    } else if ('pdf-dial' == $dials_page) {
+        header("HTTP/1.1 200 OK");
+        include( get_template_directory().'/pdfgen.php');
         exit;
     }
 }
@@ -832,9 +890,73 @@ function dashboard_widget_function( $post, $callback_args ) {
     <?php 
 }
 
+// Function that outputs the contents of the dashboard widget
+function dashboard_views_widget_function( $post, $callback_args ) {
+    global $wpdb;
+    $views_table = $wpdb->prefix . "data_futures_views";
+    $number_views = $wpdb->get_var("SELECT count(*) FROM $views_table");
+
+	$top_views = $wpdb->get_results("SELECT count(wheel_id) AS count, wheel_id FROM $views_table GROUP BY wheel_id ORDER BY count(wheel_id) DESC");
+    
+    $number_wheels_week = $wpdb->get_var("SELECT count(*) FROM $views_table WHERE view_time > CURDATE() - INTERVAL 7 DAY");
+    $number_wheels_month = $wpdb->get_var("SELECT count(*) FROM $views_table WHERE view_time > CURDATE() - INTERVAL 30 DAY");
+    $number_wheels_year = $wpdb->get_var("SELECT count(*) FROM $views_table WHERE view_time > CURDATE() - INTERVAL 365 DAY");
+    
+    ?>
+    <p>Since October 2017, a total of <strong><?php echo $number_views; ?></strong> views have been made across all dials. The top three dials are:</p>
+    <ul>
+    	<?php foreach ($top_views AS $result) {
+    		echo "<li><a href='/public-dials/" . hash_id($result->wheel_id) . "'>Wheel " . $result->wheel_id . "</a> with " . $result->count . " views</li>";
+    	} ?>
+    </ul>
+    	
+    <p>Views in the last week: <?php echo $number_wheels_week; ?></p>
+    <p>Views in the last 30 days: <?php echo $number_wheels_month ?></p>
+    <p>Views in the last year: <?php echo $number_wheels_year?></p>
+
+    
+    <?php 
+    $summary = $wpdb->get_results("SELECT YEAR(view_time) AS year, MONTH(view_time) AS month, count(*) AS num FROM $views_table WHERE view_time > CURDATE() - INTERVAL 365 DAY GROUP BY YEAR(view_time), MONTH(view_time)", 'ARRAY_N');
+    
+    for ($i = 0; $i < 12; $i++) {
+        $months[] = strtotime( date( 'Y-m-01' )." -$i months");
+    }
+    $months_desc = array_reverse($months);
+    
+    $graphable = array();
+    foreach ($months_desc as $month) {
+        $month_num = date('n', $month);
+        $year_num = date('Y', $month);
+        $found = 0;
+        foreach ($summary as $result) {
+            if ($result[0] == $year_num && $result[1] == $month_num) {
+                $found = $result[2];
+            }
+        }
+        $graphable[date('M', $month)] = $found;   
+        
+        
+    }
+    ?>
+    <canvas id="viewsSummaryPlot"></canvas> 
+    <script>
+    var ctx = document.getElementById("viewsSummaryPlot").getContext("2d");
+                        
+    var graph = new BarGraph(ctx);
+    graph.margin = 2;
+    graph.width = 350;
+    graph.height = 150;
+    graph.xAxisLabelArr = [<?php foreach ($graphable as $key => $value) { echo '"'.$key.'",';}?>];
+    graph.update([<?php foreach ($graphable as $key => $value) { echo $value.',';}?>]);
+    </script>
+    <?php 
+    
+}
+
 // Function used in the action hook
 function add_dashboard_widgets() {
     wp_add_dashboard_widget('dashboard_widget', 'Wheels Dashboard', 'dashboard_widget_function');
+    wp_add_dashboard_widget('dashboard_views_widget', 'Views Dashboard', 'dashboard_views_widget_function');
 }
 
 // Register the new dashboard widget with the 'wp_dashboard_setup' action
@@ -846,23 +968,23 @@ function download_image_link() {
     imageAlphaBlending($imgPng, true);
     imageSaveAlpha($imgPng, true);
     
-    $background_color = imagecolorallocate($imgPng, 0, 0, 0);
-    $text_color = imagecolorallocate($imgPng, 233, 14, 91);
+    $background_colorÂ = imagecolorallocate($imgPng, 0, 0, 0);
+    $text_colorÂ = imagecolorallocate($imgPng, 233, 14, 91);
    
     $white = imagecolorallocate($imgPng, 255, 255, 255);
-    $grey = imagecolorallocate($imgPng, 128, 128, 128);
-    $black = imagecolorallocate($imgPng, 0, 0, 0);
+    $greyÂ = imagecolorallocate($imgPng, 128, 128, 128);
+    $blackÂ = imagecolorallocate($imgPng, 0, 0, 0);
     imagefilledrectangle($imgPng, 0, 0, 399, 29, $white);
     
-    // The text to draw
+    //Â TheÂ textÂ toÂ draw
     $text = 'Testing...';
-    // Replace path by your own font path
+    //Â ReplaceÂ pathÂ byÂ yourÂ ownÂ fontÂ path
     $font = get_template_directory() . '/arial.ttf';
     
-    // Add some shadow to the text
+    //Â AddÂ someÂ shadowÂ toÂ theÂ text
     imagettftext($imgPng, 10, 0, 11, 21, $grey, $font, $text);
     
-    // Add the text
+    //Â AddÂ theÂ text
     imagettftext($imgPng, 10, 0, 10, 20, $black, $font, $text);
     
     
@@ -881,4 +1003,57 @@ function data_futures_title() {
         wp_title('');
     }
 }
+
+//customizer
+function datafutures_customize_register( $wp_customize ) {
+    // Do stuff with $wp_customize, the WP_Customize_Manager object.
+    
+    $wp_customize->add_section( 'datafutures_background_section' , array(
+        'title'       => __( 'Background', 'datafutures' ),
+        'priority'    => 30,
+        'description' => 'Upload multiple backgrounds that the homepage will cycle through.',
+    ) );
+    
+    $wp_customize->add_setting( 'datafutures_background_1' );
+    
+    $wp_customize->add_control( new WP_Customize_Image_Control( $wp_customize, 'datafutures_background_1', array(
+        'label'    => __( 'Background 1', 'datafutures' ),
+        'section'  => 'datafutures_background_section',
+        'settings' => 'datafutures_background_1',
+    ) ) );
+    
+    $wp_customize->add_setting( 'datafutures_background_2' );
+    
+    $wp_customize->add_control( new WP_Customize_Image_Control( $wp_customize, 'datafutures_background_2', array(
+        'label'    => __( 'Background 2', 'datafutures' ),
+        'section'  => 'datafutures_background_section',
+        'settings' => 'datafutures_background_2',
+    ) ) );
+
+    $wp_customize->add_setting( 'datafutures_background_3' );
+    
+    $wp_customize->add_control( new WP_Customize_Image_Control( $wp_customize, 'datafutures_background_3', array(
+        'label'    => __( 'Background 3', 'datafutures' ),
+        'section'  => 'datafutures_background_section',
+        'settings' => 'datafutures_background_3',
+    ) ) );
+    
+    $wp_customize->add_setting( 'datafutures_background_4' );
+    
+    $wp_customize->add_control( new WP_Customize_Image_Control( $wp_customize, 'datafutures_background_4', array(
+        'label'    => __( 'Background 4', 'datafutures' ),
+        'section'  => 'datafutures_background_section',
+        'settings' => 'datafutures_background_4',
+    ) ) );
+    
+    $wp_customize->add_setting( 'datafutures_background_5' );
+    
+    $wp_customize->add_control( new WP_Customize_Image_Control( $wp_customize, 'datafutures_background_5', array(
+        'label'    => __( 'Background 5', 'datafutures' ),
+        'section'  => 'datafutures_background_section',
+        'settings' => 'datafutures_background_5',
+    ) ) );
+
+}
+add_action( 'customize_register', 'datafutures_customize_register' );
 ?>
