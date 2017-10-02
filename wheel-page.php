@@ -9,6 +9,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
     <meta name="author" content="">
+    
+        
+    <meta property="og:title" content="Trusted Data Dial" />
+	<meta property="og:description" content="Create your own trusted data dial" />
+	<meta property="og:image" content="https://www.trusteddata.co.nz/media/dial.png" />
+	
 
     <title>Create your dial</title>
 
@@ -39,13 +45,157 @@
 		#loginCreateTabContent ::-ms-input-placeholder { /* Microsoft Edge */
 		   color:    #5085a0;
 		}
-
+		#create-your-dial {
+			color: #5085a0;
+		}
 		:placeholder-shown { /* Standard one last! */
             color: #337ab7;
         }
+		
+		
+        .social {
+		    margin: 0;
+		    padding: 0;
+		}
+		
+		.social ul {
+		    margin: 0;
+		    padding: 5px;
+		}
+		
+		.social ul li {
+		    margin: 5px;
+		    list-style: none outside none;
+		    display: inline-block;
+		}
+		
+		.social i {
+		    width: 40px;
+		    height: 40px;
+		    color: #FFF;
+		    background-color: #909AA0;
+		    font-size: 22px;
+		    text-align:center;
+		    padding-top: 12px;
+		    border-radius: 50%;
+		    -moz-border-radius: 50%;
+		    -webkit-border-radius: 50%;
+		    -o-border-radius: 50%;
+		    transition: all ease 0.3s;
+		    -moz-transition: all ease 0.3s;
+		    -webkit-transition: all ease 0.3s;
+		    -o-transition: all ease 0.3s;
+		    -ms-transition: all ease 0.3s;
+		}
+		
+		.social i:hover {
+		    color: #FFF;
+		    text-decoration: none;
+		    transition: all ease 0.3s;
+		    -moz-transition: all ease 0.3s;
+		    -webkit-transition: all ease 0.3s;
+		    -o-transition: all ease 0.3s;
+		    -ms-transition: all ease 0.3s;
+		}
+		
+		.social .fa-facebook:hover { /* round facebook icon*/
+		    background: #4060A5;
+		}
+		
+		.social .fa-twitter:hover { /* round twitter icon*/
+		    background: #00ABE3;
+		}
+		
+		.social .fa-linkedin:hover {
+		    background: #0094BC;
+		}
+		
+		
+		input.text_input {
+			background: #f5f5f5;
+			border-color: #f5f5f5;
+			color: #5085a0;
+		}
+		
+		#rootwizard {
+			background: #f5f5f5;
+			border-radius: 10px;
+			padding-bottom: 50px;
+			margin-bottom: 50px;
+			position: relative;
+		}
+		#rootwizard .jumbotron {
+			background-color: #f5f5f5;
+			padding-left: 0px;
+			padding-top: 0px;
+			padding-bottom: 0px;
+		}
+		#rootwizard .jumbotron p {
+			font-size: 31px;
+		}
+		span.badge {
+			margin: 10px;
+		}
+		li span.badge {
+			background-color: inherit;
+			border: 1px grey solid;
+			color: grey;
+		}
+		li.active span.badge {
+			background-color: #5085a0;
+			border: none;
+			color: white;
+		}
+
+		#rootwizard textarea {
+			border: none;
+			border-radius: 10px;
+			width: 100%;
+			height: 150px;
+			margin-left: 10px;
+		}
+		@media(max-width:767px) {
+			#rootwizard textarea {
+				width: 90%;
+			}
+			p#current-question {
+				padding-left: 10px;
+				padding-top: 20px;
+			}
+			#rootwizard .jumbotron {
+				margin-bottom: 0px;
+			}
+		}
+		ul#navigation {
+			list-style: none;
+			padding-left: 0px;
+		}
+		ul#navigation>li {
+			float: left;
+			position: relative;
+			display: block;
+       }
+       .help-link {
+       	position: absolute;
+       	top: 15px;
+       	right: 15px;
+       	color: grey;
+       }
+       .help-link a {
+       	color: grey;
+       }
+       .modal-content .modal-close {
+       	position: absolute;
+       	top: 10px;
+       	right: 10px;
+       	color: grey;
+       	cursor: pointer;
+       }
        
 	</style>
     <?php wp_head(); ?>
+    <!--load font awesome-->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" media="all" href="<?php bloginfo( 'stylesheet_url' ); ?>" />
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -71,7 +221,7 @@ $entity_url = get_permalink($entity_link);
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand page-scroll" href="../">Transparent Data Use</a>
+                <a class="navbar-brand page-scroll" href="../"><span class="logo_heading transparent">TRUSTED</span> <span class="logo_heading data_use">DATA</span></a>
                 
                 
             </div>
@@ -149,500 +299,482 @@ if (is_user_logged_in()) {
 $selected_wheel = get_selected_wheel($wheels);
 
 ?>
-<div class="container">
-	<div class="row" style="padding-top:60px;">
-<h2>Step 1: Create your data use dial</h2>
-<div class="form-group">
-	<label for="wheelName">Name</label>
-	<input type="text" class="form-control" id="wheelName" placeholder="Enter a name for this wheel (eg. your organisation name)" name="wheelName">
-</div>
-<div class="form-group">
-	<label for="wheelURL">URL</label>
-	<input type="text" class="form-control" id="wheelURL" placeholder="Enter the url of your organisation or business unit" name="wheelName">
+<div class="container" id="create-your-dial">
+<div style="padding-top:60px;">
+<p style="font-size:1.7em; margin-bottom:0px;">STEP 1</p>
+<h1 class="heading" style="margin-top:0px">Create your data use dial</h1>
+<div class="row">
+	<div class="col-sm-6">
+		<div class="form-group">
+			<label for="wheelName">Name</label>
+			<input type="text" class="form-control text_input" id="wheelName" placeholder="Enter a name for this wheel (eg. your organisation name)" name="wheelName">
+		</div>
+	</div>
+	<div class="col-sm-6">
+		<div class="form-group">
+			<label for="wheelURL">URL</label>
+			<input type="text" class="form-control text_input" id="wheelURL" placeholder="Enter the url of your organisation or business unit" name="wheelName">
+		</div>
+	</div>
 </div>
 
+
+<label>Questions</label>
 <div id="rootwizard">
-		<div class="navbar">
-			<div class="navbar-inner">
-				<div class="container">
-					<ul class="nav nav-pills">
-						<li><a href="#tab1" data-toggle="tab">Question 1</a></li>
-						<li><a href="#tab2" data-toggle="tab">Question 2</a></li>
-						<li><a href="#tab3" data-toggle="tab">Question 3</a></li>
-						<li><a href="#tab4" data-toggle="tab">Question 4</a></li>
-						<li><a href="#tab5" data-toggle="tab">Question 5</a></li>
-						<li><a href="#tab6" data-toggle="tab">Question 6</a></li>
-						<li><a href="#tab7" data-toggle="tab">Question 7</a></li>
-						<li><a href="#tab8" data-toggle="tab">Question 8</a></li>
-					</ul>
-				</div>
-			</div>
+<ul id="navigation" class="clearfix">
+<li><a href="#tab1" data-toggle="tab"><span class="badge ">1</span></a></li>
+<li><a href="#tab2" data-toggle="tab"><span class="badge ">2</span></a></li>
+<li><a href="#tab3" data-toggle="tab"><span class="badge ">3</span></a></li>
+<li><a href="#tab4" data-toggle="tab"><span class="badge ">4</span></a></li>
+<li><a href="#tab5" data-toggle="tab"><span class="badge ">5</span></a></li>
+<li><a href="#tab6" data-toggle="tab"><span class="badge ">6</span></a></li>
+<li><a href="#tab7" data-toggle="tab"><span class="badge ">7</span></a></li>
+<li><a href="#tab8" data-toggle="tab"><span class="badge ">8</span></a></li>
+</ul>
+<div class="tab-content">
+<div class="row tab-pane" id="tab1">
+	<div class="col-sm-6 col-sm-push-6">
+		<div class="jumbotron">
+			<p id="current-question">What will my data be used for?</p>
 		</div>
-		<div id="bar" class="progress">
-			<div class="progress-bar" role="progressbar" aria-valuenow="0"
-				aria-valuemin="0" aria-valuemax="100" style="width: 0%;"></div>
+	</div>
+	<div class="col-sm-6 col-sm-pull-6">
+		<textarea id="q1answer" data-question="1" class="form-control" rows="3"></textarea>
+	</div>
+	<div class="help-link"><a href="#" data-toggle="modal" data-target="#q1help"><span class="glyphicon glyphicon-question-sign"></span></a></div>
+</div>
+<div class="row tab-pane" id="tab2">
+	<div class="col-sm-6 col-sm-push-6">
+		<div class="jumbotron">
+			<p id="current-question">What are the benefits and who will benefit?</p>
 		</div>
-		<div class="tab-content">
-			<div class="tab-pane" id="tab1">
-				<div class="question" id="question1">
+	</div>
+	<div class="col-sm-6 col-sm-pull-6">
+		<textarea id="q2answer" data-question="2" class="form-control" rows="3"></textarea>
+	</div>
+	<div class="help-link"><a href="#" data-toggle="modal" data-target="#q2help"><span class="glyphicon glyphicon-question-sign"></span></a></div>
+	
+</div>
+<div class="row tab-pane" id="tab3">
+	<div class="col-sm-6 col-sm-push-6">
+		<div class="jumbotron">
+			<p id="current-question">Who will be using my data?</p>
+		</div>
+	</div>
+	<div class="col-sm-6 col-sm-pull-6">
+		<textarea id="q3answer" data-question="3" class="form-control" rows="3"></textarea>
+	</div>
+	<div class="help-link"><a href="#" data-toggle="modal" data-target="#q3help"><span class="glyphicon glyphicon-question-sign"></span></a></div>
+	
+</div>
+<div class="row tab-pane" id="tab4">
+	<div class="col-sm-6 col-sm-push-6">
+		<div class="jumbotron">
+			<p id="current-question">Is my data secure?</p>
+		</div>
+	</div>
+	<div class="col-sm-6 col-sm-pull-6">
+		<textarea id="q4answer" data-question="4" class="form-control" rows="3"></textarea>
+	</div>
+	<div class="help-link"><a href="#" data-toggle="modal" data-target="#q4help"><span class="glyphicon glyphicon-question-sign"></span></a></div>
+	
+</div>
+<div class="row tab-pane" id="tab5">
+	<div class="col-sm-6 col-sm-push-6">
+		<div class="jumbotron">
+			<p id="current-question">Will my data be anonymous?</p>
+		</div>
+	</div>
+	<div class="col-sm-6 col-sm-pull-6">
+		<textarea id="q5answer" data-question="5" class="form-control" rows="3"></textarea>
+	</div>
+	<div class="help-link"><a href="#" data-toggle="modal" data-target="#q5help"><span class="glyphicon glyphicon-question-sign"></span></a></div>
+	
+</div>
+<div class="row tab-pane" id="tab6">
+	<div class="col-sm-6 col-sm-push-6">
+		<div class="jumbotron">
+			<p id="current-question">Can I see and correct data about me?</p>
+		</div>
+	</div>
+	<div class="col-sm-6 col-sm-pull-6">
+		<textarea id="q6answer" data-question="6" class="form-control" rows="3"></textarea>
+	</div>
+	<div class="help-link"><a href="#" data-toggle="modal" data-target="#q6help"><span class="glyphicon glyphicon-question-sign"></span></a></div>
+	
+</div>
+<div class="row tab-pane" id="tab7">
+	<div class="col-sm-6 col-sm-push-6">
+		<div class="jumbotron">
+			<p id="current-question">Could my data be sold?</p>
+		</div>
+	</div>
+	<div class="col-sm-6 col-sm-pull-6">
+		<textarea id="q7answer" data-question="7" class="form-control" rows="3"></textarea>
+	</div>
+	<div class="help-link"><a href="#" data-toggle="modal" data-target="#q7help"><span class="glyphicon glyphicon-question-sign"></span></a></div>
+	
+</div>
+<div class="row tab-pane" id="tab8">
+	<div class="col-sm-6 col-sm-push-6">
+		<div class="jumbotron">
+			<p id="current-question">Will I be asked for consent?</p>
+		</div>
+	</div>
+	<div class="col-sm-6 col-sm-pull-6">
+		<textarea id="q8answer" data-question="8" class="form-control" rows="3"></textarea>
+	</div>
+	<div class="help-link"><a href="#" data-toggle="modal" data-target="#q8help"><span class="glyphicon glyphicon-question-sign"></span></a></div>
+	
+</div>
 
-					<div class="panel panel-default">
-  						<div class="panel-heading">
-    						<h3 class="panel-title">What will my data be used for?
-    						<span class="label label-info"><a href="#" data-toggle="modal" data-target="#q1help">Help <span class="glyphicon glyphicon-question-sign"></span></a></span></h3>
-	    				</div>
-						<div class="panel-body">
-    					<div class="form-group">
-							<textarea id="q1answer" data-question="1" class="form-control" rows="3"></textarea>
-							<span class="help-block">Answers should be kept short, to a maximum of 500 characters.</span>
-						</div>
-						</div>
-					
-					</div>
-				</div>
+
+</div>
+
+
+<div class="col-sm-12">
+<p>Answers should be kept short, to a maximum of 500 characters.</p>
+</div>
+</div>
+<!-- ul class="pager wizard">
+	<li class="previous first" style="display: none;"><a href="#">First</a></li>
+	<li class="previous"><a href="#">Previous</a></li>
+	<li class="next last" style="display: none;"><a href="#">Last</a></li>
+	<li class="next"><a href="#">Next</a></li>
+</ul -->
+
+
+
+
+
+
+<div class="modal fade" id="q1help" tabindex="-1" role="dialog" aria-labelledby="q1help" aria-hidden="true">
+<div class="modal-dialog modal-lg">
+	<div class="modal-content">
+		<span class="button glyphicon glyphicon-remove-circle modal-close" data-dismiss="modal" aria-label="Close"></span>
+		<h2>Guidelines</h2>
+		<p>The information on purpose needs to include:</p>
+		<ul>
+			<li>a clearly identified, specific purpose for the data</li>
+			<li>a list of the data being collected</li>
+			<li>a description of any algorithms used</li>
+			<li>disclosure of possible future purposes.</li>
+		</ul>
+		<h3>Purpose</h3>
+		<p>
+			Clearly <em>explain</em> the use and purpose of the collection
+			of data, for example &ndash;
+		</p>
+		<blockquote>
+			<p>We only collect data that are necessary to deliver the
+				service we offer, and no more.</p>
+			<p>We will make your medical records accessible online to
+				specialists and hospitals. This will provide access to your
+				medical history if you need treatment, including in an
+				emergency.</p>
+			<p>We use your information to target marketing to you. We
+				also share it with the companies in our loyalty programme and
+				they use it to target marketing material to you by email.</p>
+			<p>We provide your information to charities so that they can
+				approach you for support.</p>
+		</blockquote>
+
+		<p>
+			<strong>Provide</strong> further detail, together with concrete
+			examples, for those interested. Examples might include ways you
+			have used research to improve services in the past.
+		</p>
+		<p>If you can, provide the more detailed information as a
+			click or drill-down option so that it can be skipped by people
+			who are only interested in more general statements about
+			purpose.</p>
+		<h3>Data being collected</h3>
+		<p>
+			<em>List</em> what data you are collecting in these 3
+			categories:
+		</p>
+
+		<table class="table">
+			<tr>
+				<td>1.</td>
+				<td>Data you are requiring as a condition of supplying the
+					service or product.</td>
+				<td>In most cases this should only be the data that is
+					strictly necessary for the service.</td>
+			</tr>
+			<tr>
+				<td>2.</td>
+				<td>Information beyond what is strictly needed for service
+					delivery, but authorised under legislation.</td>
+				<td><p>Describe the purpose for collecting this
+						additional data and state the authorisation clearly.</p>
+					<p>Be explicit about any consequences of not providing
+						this additional information.</p></td>
+			</tr>
+			<tr>
+				<td>3.</td>
+				<td>Information beyond that needed for service delivery or
+					authorised under legislation (eg for marketing or research).</td>
+				<td><p>Describe the purpose.</p>
+					<p>Be explicit about any incentives you are offering in
+						exchange for gaining the right to use customer/client
+						information.</p></td>
+			</tr>
+		</table>
+		<p>
+			Where the data is sensitive, or some client groups are likely to
+			have a low level of trust in your organisation, <em>explain</em>
+			why it isn't possible to achieve the purpose in any other way eg
+			by using anonymous instead of personally-identified data.
+		</p>
+		<h3>Algorithms</h3>
+		<p>If you use algorithms (formula-based decision tools) eg to
+			determine whether to grant loans, what interest rate to charge,
+			or as part of a recruitment process:</p>
+		<ul>
+			<li><em>inform</em> your customers/applicants of how this
+				works and which pieces of data are used</li>
+			<li><em>advise</em> clients of other inputs to your
+				decision processes (eg does a staff member review
+				applications?)</li>
+			<li><em>offer</em> the applicant the right to contest the
+				decision, including the data that was used in the algorithm.</li>
+		</ul>
+		<h3>Future Uses</h3>
+		<p>Explicitly address whether the data may be used for other
+			purposes in the future and if so what.</p>
+		<p>If it isn't possible to be precise about possible future
+			uses, provide an assurance that the person will be asked to give
+			consent to that use before it occurs.</p>
+		</div>
+	</div>
+</div>
 				
-				<div class="modal fade" id="q1help" tabindex="-1" role="dialog"
-					aria-labelledby="q1help" aria-hidden="true">
-					<div class="modal-dialog modal-lg">
-						<div class="modal-content">
-							<h2>Guidelines</h2>
-							<p>The information on purpose needs to include:</p>
-							<ul>
-								<li>a clearly identified, specific purpose for the data</li>
-								<li>a list of the data being collected</li>
-								<li>a description of any algorithms used</li>
-								<li>disclosure of possible future purposes.</li>
-							</ul>
-							<h3>Purpose</h3>
-							<p>
-								Clearly <em>explain</em> the use and purpose of the collection
-								of data, for example &ndash;
-							</p>
-							<blockquote>
-								<p>We only collect data that are necessary to deliver the
-									service we offer, and no more.</p>
-								<p>We will make your medical records accessible online to
-									specialists and hospitals. This will provide access to your
-									medical history if you need treatment, including in an
-									emergency.</p>
-								<p>We use your information to target marketing to you. We
-									also share it with the companies in our loyalty programme and
-									they use it to target marketing material to you by email.</p>
-								<p>We provide your information to charities so that they can
-									approach you for support.</p>
-							</blockquote>
 
-							<p>
-								<strong>Provide</strong> further detail, together with concrete
-								examples, for those interested. Examples might include ways you
-								have used research to improve services in the past.
-							</p>
-							<p>If you can, provide the more detailed information as a
-								click or drill-down option so that it can be skipped by people
-								who are only interested in more general statements about
-								purpose.</p>
-							<h3>Data being collected</h3>
-							<p>
-								<em>List</em> what data you are collecting in these 3
-								categories:
-							</p>
+<div class="modal fade" id="q2help" tabindex="-1" role="dialog"	aria-labelledby="q2help" aria-hidden="true">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">		
+			<span class="button glyphicon glyphicon-remove-circle modal-close" data-dismiss="modal" aria-label="Close"></span>
+		
+			<h2>Guidelines</h2>
+			<p>The information on benefits needs to include:</p>
+			<ul>
+				<li>factual evidence and examples of benefits</li>
+				<li>clarity about both personal and wider benefits.</li>
+				<li>evidence that the proposed data use and sharing will
+					bring about the benefits claimed.</li>
+			</ul>
+			<h3>Benefits</h3>
+			<p>
+				<em>Explain</em> what personal benefits the individual or their
+				family can expect. Also explain any wider benefits (for example
+				to the organisation itself, an iwi, or to society as a whole.)
+			</p>
+			<p>Be specific and provide evidence about how the proposed
+				data use will lead to the benefits claimed.</p>
+			<p>
+				Proven outcomes are the best way to demonstrate benefits. <em>Provide</em>
+				concrete examples of similar data use and the resulting benefits
+				or a concrete example of an anticipated benefit from the current
+				use.
+			</p>
+			<h3>Marketing</h3>
+			<p>Where personally-identifiable data is collected to target
+				people for advertising, the benefit accrues mainly to the
+				company as profit and the level of comfort is likely to be less.
+				Therefore, people might expect to receive a considerable amount
+				of personal benefit.</p>
+			<p>
+				<em>Be explicit</em> about any benefits offered in exchange for
+				the use of personal data eg free services, such as access to a
+				social networking platform, or access to services at a lower
+				charge.
+			</p>
+			<p>
+				<em>Explain</em> whether any other organisations are benefiting
+				from the information. Which organisations? How are they
+				benefiting?
+			</p>
+			<p>If you intend providing information to charities or
+				political organisations, this should also be made clear.</p>
+			<p>
+				<em>Give</em> people the ability to opt out of direct marketing
+				that uses their data. Make this option readily accessible.
+			</p>
+		</div>
+	</div>
+</div>
 
-							<table class="table">
-								<tr>
-									<td>1.</td>
-									<td>Data you are requiring as a condition of supplying the
-										service or product.</td>
-									<td>In most cases this should only be the data that is
-										strictly necessary for the service.</td>
-								</tr>
-								<tr>
-									<td>2.</td>
-									<td>Information beyond what is strictly needed for service
-										delivery, but authorised under legislation.</td>
-									<td><p>Describe the purpose for collecting this
-											additional data and state the authorisation clearly.</p>
-										<p>Be explicit about any consequences of not providing
-											this additional information.</p></td>
-								</tr>
-								<tr>
-									<td>3.</td>
-									<td>Information beyond that needed for service delivery or
-										authorised under legislation (eg for marketing or research).</td>
-									<td><p>Describe the purpose.</p>
-										<p>Be explicit about any incentives you are offering in
-											exchange for gaining the right to use customer/client
-											information.</p></td>
-								</tr>
-							</table>
-							<p>
-								Where the data is sensitive, or some client groups are likely to
-								have a low level of trust in your organisation, <em>explain</em>
-								why it isn�t possible to achieve the purpose in any other way eg
-								by using anonymous instead of personally-identified data.
-							</p>
-							<h3>Algorithms</h3>
-							<p>If you use algorithms (formula-based decision tools) eg to
-								determine whether to grant loans, what interest rate to charge,
-								or as part of a recruitment process:</p>
-							<ul>
-								<li><em>inform</em> your customers/applicants of how this
-									works and which pieces of data are used</li>
-								<li><em>advise</em> clients of other inputs to your
-									decision processes (eg does a staff member review
-									applications?)</li>
-								<li><em>offer</em> the applicant the right to contest the
-									decision, including the data that was used in the algorithm.</li>
-							</ul>
-							<h3>Future Uses</h3>
-							<p>Explicitly address whether the data may be used for other
-								purposes in the future and if so what.</p>
-							<p>If it isn�t possible to be precise about possible future
-								uses, provide an assurance that the person will be asked to give
-								consent to that use before it occurs.</p>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="tab-pane" id="tab2">
-				<div class="question" id="question2">
-					<div class="panel panel-default">
-  						<div class="panel-heading">
-    						<h3 class="panel-title">What are the benefits and who will benefit?
-    						<span class="label label-info"><a href="#" data-toggle="modal" data-target="#q2help">Help <span class="glyphicon glyphicon-question-sign"></span></a></span></h3>
-	    				</div>
-						<div class="panel-body">
-    					<div class="form-group">
-							<textarea id="q2answer" data-question="2" class="form-control" rows="3"></textarea>
-							<span class="help-block">Answers should be kept short, to a maximum of 500 characters.</span>
-						</div>
-						</div>
-					
-					</div>
-				
-				
-				</div>
-				<div class="modal fade" id="q2help" tabindex="-1" role="dialog"
-					aria-labelledby="q2help" aria-hidden="true">
-					<div class="modal-dialog modal-lg">
-						<div class="modal-content">
-							<h2>Guidelines</h2>
-							<p>The information on benefits needs to include:</p>
-							<ul>
-								<li>factual evidence and examples of benefits</li>
-								<li>clarity about both personal and wider benefits.</li>
-								<li>evidence that the proposed data use and sharing will
-									bring about the benefits claimed.</li>
-							</ul>
-							<h3>Benefits</h3>
-							<p>
-								<em>Explain</em> what personal benefits the individual or their
-								family can expect. Also explain any wider benefits (for example
-								to the organisation itself, an iwi, or to society as a whole.)
-							</p>
-							<p>Be specific and provide evidence about how the proposed
-								data use will lead to the benefits claimed.</p>
-							<p>
-								Proven outcomes are the best way to demonstrate benefits. <em>Provide</em>
-								concrete examples of similar data use and the resulting benefits
-								or a concrete example of an anticipated benefit from the current
-								use.
-							</p>
-							<h3>Marketing</h3>
-							<p>Where personally-identifiable data is collected to target
-								people for advertising, the benefit accrues mainly to the
-								company as profit and the level of comfort is likely to be less.
-								Therefore, people might expect to receive a considerable amount
-								of personal benefit.</p>
-							<p>
-								<em>Be explicit</em> about any benefits offered in exchange for
-								the use of personal data eg free services, such as access to a
-								social networking platform, or access to services at a lower
-								charge.
-							</p>
-							<p>
-								<em>Explain</em> whether any other organisations are benefiting
-								from the information. Which organisations? How are they
-								benefiting?
-							</p>
-							<p>If you intend providing information to charities or
-								political organisations, this should also be made clear.</p>
-							<p>
-								<em>Give</em> people the ability to opt out of direct marketing
-								that uses their data. Make this option readily accessible.
-							</p>
-						</div>
-					</div>
-				</div>
-
-			</div>
-			<div class="tab-pane" id="tab3">
-				<div class="question" id="question3">
-					<div class="panel panel-default">
-  						<div class="panel-heading">
-    						<h3 class="panel-title">Who will be using my data?
-    						<span class="label label-info"><a href="#" data-toggle="modal" data-target="#q3help">Help <span class="glyphicon glyphicon-question-sign"></span></a></span></h3>
-	    				</div>
-						<div class="panel-body">
-    					<div class="form-group">
-							<textarea id="q3answer" data-question="3" class="form-control" rows="3"></textarea>
-							<span class="help-block">Answers should be kept short, to a maximum of 500 characters.</span>
-						</div>
-						</div>
-					
-					</div>
-				</div>
-				<div class="modal fade" id="q3help" tabindex="-1" role="dialog"
-					aria-labelledby="q3help" aria-hidden="true">
-					<div class="modal-dialog modal-lg">
-						<div class="modal-content">
-							<h2>Guidelines</h2>
-							<p>
-								If you will not be linking the data with any other datasets or
-								sharing the data with any other organisations, <em>state</em>
-								this clearly.
-							</p>
-							<p>
-								Otherwise &mdash;<br /> <em>Identify</em> which data will be
-								linked, what data it will be linked with, and for what purposes.
-							</p>
-							<p>
-								<em>Identify</em> which data will be shared 10 with other
-								organisations &mdash; which organisations and for what purposes.
-							</p>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="tab-pane" id="tab4">
-				<div class="question" id="question4">
-					<div class="panel panel-default">
-  						<div class="panel-heading">
-    						<h3 class="panel-title">Is my data secure?
-    						<span class="label label-info"><a href="#" data-toggle="modal" data-target="#q4help">Help <span class="glyphicon glyphicon-question-sign"></span></a></span></h3>
-	    				</div>
-						<div class="panel-body">
-    					<div class="form-group">
-							<textarea id="q4answer" data-question="4" class="form-control" rows="3"></textarea>
-							<span class="help-block">Answers should be kept short, to a maximum of 500 characters.</span>
-						</div>
-						</div>
-					
-					</div>	
-					</div>
-				<div class="modal fade" id="q4help" tabindex="-1" role="dialog"
-					aria-labelledby="q4help" aria-hidden="true">
-					<div class="modal-dialog modal-lg">
-						<div class="modal-content">
-							<h2>Guidelines</h2>
-							<p>
-								<em>Build</em> data protection safeguards into your products and
-								services from the earliest stages of development.
-							</p>
-							<p>
-								<em>Outline</em> the measures you have in place to keep data
-								secure and measures taken by other agencies that you are sharing
-								data with. This might include:
-							</p>
-							<ul>
-								<li>describing who will have access to data and their
-									training, credentials and referee checks, declarations of
-									confidentiality</li>
-								<li>the rules and protocols in place and any consequences
-									for staff who break them</li>
-								<li>security arrangements that prevent unauthorised access
-									to the data.</li>
-							</ul>
-							<p>
-								If there is a data breach, <em>inform</em> the people affected
-								as soon as possible. This will give your clients or customers
-								the best opportunity to protect themselves.
-							</p>
-							<p>(Note that the guidelines in the next section also assist
-								with data security.)</p>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="tab-pane" id="tab5">
-				<div class="question" id="question5">
-					<div class="panel panel-default">
-  						<div class="panel-heading">
-    						<h3 class="panel-title">Will my data be anonymous?
-    						<span class="label label-info"><a href="#" data-toggle="modal" data-target="#q5help">Help <span class="glyphicon glyphicon-question-sign"></span></a></span></h3>
-	    				</div>
-						<div class="panel-body">
-    					<div class="form-group">
-							<textarea id="q5answer" data-question="5" class="form-control" rows="3"></textarea>
-							<span class="help-block">Answers should be kept short, to a maximum of 500 characters.</span>
-						</div>
-						</div>
-					
-					</div>
-				</div>
-				<div class="modal fade" id="q5help" tabindex="-1" role="dialog"
-					aria-labelledby="q5help" aria-hidden="true">
-					<div class="modal-dialog modal-lg">
-						<div class="modal-content">
-							<h2>Guidelines</h2>
-							<p>Unless data needs to be personally-identified to achieve its purpose, always use de-identified data.</p>
-							<p>In situations where you intend that data be anonymous, rather than providing a guarantee, many people may be satisfied with a high level assurance like:  </p>
-							<blockquote>
-								We use data in a form that does not identify you personally and we do not use it to target you or other individuals.  While it may be theoretically possible to re-identify you from the data we hold, we use a number of measures to make that highly unlikely.
-							</blockquote>
-							<p>For those clients with a greater level of concern, or where the data is of a more sensitive nature, you will increase comfort by describing the measures you have in place, and providing assurances, such as:</p>
-							<ul>
-								<li>techniques you are using that make re-identification more difficult, such as encryption, pseudonymisation, data being analysed at an aggregated rather than at the individual level, adding 'noise'</li>
-								<li>controls on who will be able to access the data and for what purposes</li>
-								<li>assurances regarding sharing the data � with whom and for what purpose</li>
-								<li>assurances regarding linking the data with other datasets and steps to minimise the risk of re-identification</li>
-								<li>that those accessing the data are prohibited from attempting to identify individuals</li>
-								<li>a date for the destruction of data after use.</li>
-							</ul>
-							<p>Providing these details through a link that allows people to drill down if they want to will avoid your statement appearing too long and complex.   People who already have a high level of trust in your organisation and the proposed data use are unlikely to need this further detail.</p>
-						</div>
-					</div>
-				</div>				
-			</div>
-			<div class="tab-pane" id="tab6">
-				<div class="question" id="question6">
-					<div class="panel panel-default">
-  						<div class="panel-heading">
-    						<h3 class="panel-title">Can I see and correct data about me?
-    						<span class="label label-info"><a href="#" data-toggle="modal" data-target="#q6help">Help <span class="glyphicon glyphicon-question-sign"></span></a></span></h3>
-	    				</div>
-						<div class="panel-body">
-    					<div class="form-group">
-							<textarea id="q6answer" data-question="6" class="form-control" rows="3"></textarea>
-							<span class="help-block">Answers should be kept short, to a maximum of 500 characters.</span>
-						</div>
-						</div>
-					
-					</div>
-				</div>
-				<div class="modal fade" id="q6help" tabindex="-1" role="dialog"
-					aria-labelledby="q6help" aria-hidden="true">
-					<div class="modal-dialog modal-lg">
-						<div class="modal-content">
-							<h2>Guidelines</h2>
-							<h3>Client's ability to see their data</h3>
-							<p>Be clear about how people can find out what information is currently held about them, by whom and for what purpose, and how it is currently used and shared.</p>
-							<p>People will have higher comfort if the organisation makes a commitment to providing an individual with the information held about them, whether �readily retrievable� or not.</p>
-							<p><em>Set out</em> any circumstances in which this information will not be provided (ie circumstances particular to that organisation rather than the list in the Privacy Act).
-							<h3>Client's ability to ask that their data be transferred</h3>
-							<p>Organisations should be clear about whether they are willing and able to transfer data to another organisation at the customer's request.  </p>
-							<h3>Correcting Data</h3> 
-							<p>Organisations should <em>supply</em> a phone number that will directly connect an individual with someone qualified to deal with sensitive requests.</p>
-							<p><em>Ensure</em> you have suitable safeguards to prove that the person requesting the information is the person to whom the data relates.</p>
-							<p><em>Act</em> promptly on requests to correct data.</p>
-							<p><em>Establish</em> a process, complete with a timeline for responding, and include this in the information provided to your customers.   This process needs to include how data that has been shared with another agency will also be corrected.</p>
-							<p><em>Explain</em> how you will be accountable for any failures to correct wrong information about clients or customers, eg what are the consequences if your staff disregard requests to correct information? </p>
-							<p><em>Offer</em> to meet with any individual who has made a request that you have not acted on.  This provides an opportunity to discuss your reasons, and for the person seeking a correction to explain their situation.</p>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="tab-pane" id="tab7">
-				<div class="question" id="question7">
-					<div class="panel panel-default">
-  						<div class="panel-heading">
-    						<h3 class="panel-title">Could my data be sold?
-    						<span class="label label-info"><a href="#" data-toggle="modal" data-target="#q7help">Help <span class="glyphicon glyphicon-question-sign"></span></a></span></h3>
-	    				</div>
-						<div class="panel-body">
-    					<div class="form-group">
-							<textarea id="q7answer" data-question="7" class="form-control" rows="3"></textarea>
-							<span class="help-block">Answers should be kept short, to a maximum of 500 characters.</span>
-						</div>
-						</div>
-					</div>	
-				</div>
-				<div class="modal fade" id="q7help" tabindex="-1" role="dialog"
-					aria-labelledby="q7help" aria-hidden="true">
-					<div class="modal-dialog modal-lg">
-						<div class="modal-content">
-							<h2>Guidelines</h2>
-							<p>If there is no possibility that your organisation will sell personal data &mdash; information about individuals, whether personally-identified or not &mdash; <em>state</em> this clearly and simply.</p>
-							<h3>Identified information</h3>
-							<p>If the data you collect from customers could be sold in an identified form, you need to seek consent unless the sale is part of the sale of a business as a going concern. (The guidelines in the eighth question cover consent processes.)</p>
-							<p>If the business is being sold as a going concern, <em>advise</em> customers and <em>provide</em> an opportunity to opt-off the customer database.</p>
-							<h3>Non-identified information</h3>
-							<p>Information sold in a non-identified form could potentially be linked or matched with data that could make it identifiable. If you intend selling such information, it would therefore be preferable to &ndash;</p>
-							<ul>
-								<li><em>tell</em> customers who the data is being sold to and for what purposes (eg marketing)</li>
-								<li><em>ask</em> customers for their consent first.
-							</ul>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="tab-pane" id="tab8">
-				<div class="question" id="question8">
-					<div class="panel panel-default">
-  						<div class="panel-heading">
-    						<h3 class="panel-title">Will I be asked for consent?
-    						<span class="label label-info"><a href="#" data-toggle="modal" data-target="#q8help">Help <span class="glyphicon glyphicon-question-sign"></span></a></span></h3>
-	    				</div>
-						<div class="panel-body">
-    					<div class="form-group">
-							<textarea id="q8answer" data-question="8" class="form-control" rows="3"></textarea>
-							<span class="help-block">Answers should be kept short, to a maximum of 500 characters.</span>
-						</div>
-						</div>
-					
-					</div>
-				</div>
-				<div class="modal fade" id="q8help" tabindex="-1" role="dialog"
-					aria-labelledby="q8help" aria-hidden="true">
-					<div class="modal-dialog modal-lg">
-						<div class="modal-content">
-							<h2>Guidelines</h2>
-							<h3>Ensuring consent is informed</h3>
-							<p>Provide information by answering the Eight Key Questions to inform customers or clients about the data use.   </p>
-							<p>Be clear about where people have choice and where data provision is a condition of receiving the service or product, using these 3 categories:</p>
-							<table class="table">
-								<tr>
-									<td>1.</td>
-									<td>Data you are requiring as a condition of supplying the
-										service or product.</td>
-									<td>In most cases this should only be the data that is
-										strictly necessary for the service.</td>
-								</tr>
-								<tr>
-									<td>2.</td>
-									<td>Information beyond what is strictly needed for service
-										delivery, but authorised under legislation.</td>
-									<td><p>Be explicit about any consequences of not providing
-											this additional information.</p></td>
-								</tr>
-								<tr>
-									<td>3.</td>
-									<td>Information beyond that needed for service delivery or
-										authorised under legislation (eg for marketing or research).</td>
-									<td><p>Consider seeking this information, and consent for its use, separately.  In some cases this might best be done after the service or product has been delivered.</p>
-										<p>Be explicit about any incentives you are offering in exchange for gaining the right to use customer/client information.</p>
-									</td>
-								</tr>
-							</table>
-							<h3>Obtaining consent</h3>
-							<p>Clients and customers should be asked to give consent through a positive action, eg by ticking a box or clicking an 'I agree' statement.  </p>
-							<p>Make the request for consent short and easy to understand � present it separately rather than as part of a lengthy terms and conditions statement.</p>
-							<p>Give clients or customers as much flexibility as you can to make choices about the use and sharing of data about them.  Make it easy for them adjust those choices over time.</p>
-							<p>Make it as easy to withdraw consent as it is to give it.</p>
-							<p>Where people are in vulnerable situations (eg a person using a rape counselling service or a women�s refuge for the first time, or a homeless person) it is especially important to limit the initial data collection to the minimum needed for service delivery.  Issues of data use and consent should be addressed at a later stage.  </p>
-							<p>Where the information being collected relates to a child under 16, seek consent from the child�s parent or guardian.</p>
-						</div>
-					</div>
-				</div>
-			</div>
-			<ul class="pager wizard">
-				<li class="previous first" style="display: none;"><a href="#">First</a></li>
-				<li class="previous"><a href="#">Previous</a></li>
-				<li class="next last" style="display: none;"><a href="#">Last</a></li>
-				<li class="next"><a href="#">Next</a></li>
+<div class="modal fade" id="q3help" tabindex="-1" role="dialog"
+	aria-labelledby="q3help" aria-hidden="true">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<span class="button glyphicon glyphicon-remove-circle modal-close" data-dismiss="modal" aria-label="Close"></span>
+			<h2>Guidelines</h2>
+			<p>
+				If you will not be linking the data with any other datasets or
+				sharing the data with any other organisations, <em>state</em>
+				this clearly.
+			</p>
+			<p>
+				Otherwise &mdash;<br /> <em>Identify</em> which data will be
+				linked, what data it will be linked with, and for what purposes.
+			</p>
+			<p>
+				<em>Identify</em> which data will be shared 10 with other
+				organisations &mdash; which organisations and for what purposes.
+			</p>
+		</div>
+	</div>
+</div>
+<div class="modal fade" id="q4help" tabindex="-1" role="dialog"
+	aria-labelledby="q4help" aria-hidden="true">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<span class="button glyphicon glyphicon-remove-circle modal-close" data-dismiss="modal" aria-label="Close"></span>
+			<h2>Guidelines</h2>
+			<p>
+				<em>Build</em> data protection safeguards into your products and
+				services from the earliest stages of development.
+			</p>
+			<p>
+				<em>Outline</em> the measures you have in place to keep data
+				secure and measures taken by other agencies that you are sharing
+				data with. This might include:
+			</p>
+			<ul>
+				<li>describing who will have access to data and their
+					training, credentials and referee checks, declarations of
+					confidentiality</li>
+				<li>the rules and protocols in place and any consequences
+					for staff who break them</li>
+				<li>security arrangements that prevent unauthorised access
+					to the data.</li>
+			</ul>
+			<p>
+				If there is a data breach, <em>inform</em> the people affected
+				as soon as possible. This will give your clients or customers
+				the best opportunity to protect themselves.
+			</p>
+			<p>(Note that the guidelines in the next section also assist
+				with data security.)</p>
+		</div>
+	</div>
+</div>
+<div class="modal fade" id="q5help" tabindex="-1" role="dialog"
+	aria-labelledby="q5help" aria-hidden="true">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<span class="button glyphicon glyphicon-remove-circle modal-close" data-dismiss="modal" aria-label="Close"></span>
+			<h2>Guidelines</h2>
+			<p>Unless data needs to be personally-identified to achieve its purpose, always use de-identified data.</p>
+			<p>In situations where you intend that data be anonymous, rather than providing a guarantee, many people may be satisfied with a high level assurance like:  </p>
+			<blockquote>
+				We use data in a form that does not identify you personally and we do not use it to target you or other individuals.  While it may be theoretically possible to re-identify you from the data we hold, we use a number of measures to make that highly unlikely.
+			</blockquote>
+			<p>For those clients with a greater level of concern, or where the data is of a more sensitive nature, you will increase comfort by describing the measures you have in place, and providing assurances, such as:</p>
+			<ul>
+				<li>techniques you are using that make re-identification more difficult, such as encryption, pseudonymisation, data being analysed at an aggregated rather than at the individual level, adding 'noise'</li>
+				<li>controls on who will be able to access the data and for what purposes</li>
+				<li>assurances regarding sharing the data &mdash; with whom and for what purpose</li>
+				<li>assurances regarding linking the data with other datasets and steps to minimise the risk of re-identification</li>
+				<li>that those accessing the data are prohibited from attempting to identify individuals</li>
+				<li>a date for the destruction of data after use.</li>
+			</ul>
+			<p>Providing these details through a link that allows people to drill down if they want to will avoid your statement appearing too long and complex.   People who already have a high level of trust in your organisation and the proposed data use are unlikely to need this further detail.</p>
+		</div>
+	</div>
+</div>				
+			
+<div class="modal fade" id="q6help" tabindex="-1" role="dialog"
+	aria-labelledby="q6help" aria-hidden="true">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<span class="button glyphicon glyphicon-remove-circle modal-close" data-dismiss="modal" aria-label="Close"></span>
+			<h2>Guidelines</h2>
+			<h3>Client's ability to see their data</h3>
+			<p>Be clear about how people can find out what information is currently held about them, by whom and for what purpose, and how it is currently used and shared.</p>
+			<p>People will have higher comfort if the organisation makes a commitment to providing an individual with the information held about them, whether 'readily retrievable' or not.</p>
+			<p><em>Set out</em> any circumstances in which this information will not be provided (ie circumstances particular to that organisation rather than the list in the Privacy Act).
+			<h3>Client's ability to ask that their data be transferred</h3>
+			<p>Organisations should be clear about whether they are willing and able to transfer data to another organisation at the customer's request.  </p>
+			<h3>Correcting Data</h3> 
+			<p>Organisations should <em>supply</em> a phone number that will directly connect an individual with someone qualified to deal with sensitive requests.</p>
+			<p><em>Ensure</em> you have suitable safeguards to prove that the person requesting the information is the person to whom the data relates.</p>
+			<p><em>Act</em> promptly on requests to correct data.</p>
+			<p><em>Establish</em> a process, complete with a timeline for responding, and include this in the information provided to your customers.   This process needs to include how data that has been shared with another agency will also be corrected.</p>
+			<p><em>Explain</em> how you will be accountable for any failures to correct wrong information about clients or customers, eg what are the consequences if your staff disregard requests to correct information? </p>
+			<p><em>Offer</em> to meet with any individual who has made a request that you have not acted on.  This provides an opportunity to discuss your reasons, and for the person seeking a correction to explain their situation.</p>
+		</div>
+	</div>
+</div>
+			
+<div class="modal fade" id="q7help" tabindex="-1" role="dialog"
+	aria-labelledby="q7help" aria-hidden="true">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<span class="button glyphicon glyphicon-remove-circle modal-close" data-dismiss="modal" aria-label="Close"></span>
+			<h2>Guidelines</h2>
+			<p>If there is no possibility that your organisation will sell personal data &mdash; information about individuals, whether personally-identified or not &mdash; <em>state</em> this clearly and simply.</p>
+			<h3>Identified information</h3>
+			<p>If the data you collect from customers could be sold in an identified form, you need to seek consent unless the sale is part of the sale of a business as a going concern. (The guidelines in the eighth question cover consent processes.)</p>
+			<p>If the business is being sold as a going concern, <em>advise</em> customers and <em>provide</em> an opportunity to opt-off the customer database.</p>
+			<h3>Non-identified information</h3>
+			<p>Information sold in a non-identified form could potentially be linked or matched with data that could make it identifiable. If you intend selling such information, it would therefore be preferable to &ndash;</p>
+			<ul>
+				<li><em>tell</em> customers who the data is being sold to and for what purposes (eg marketing)</li>
+				<li><em>ask</em> customers for their consent first.
 			</ul>
 		</div>
 	</div>
-	<h2>Step 2: Test your dial</h2>
+</div>
+
+<div class="modal fade" id="q8help" tabindex="-1" role="dialog"
+	aria-labelledby="q8help" aria-hidden="true">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<span class="button glyphicon glyphicon-remove-circle modal-close" data-dismiss="modal" aria-label="Close"></span>
+			<h2>Guidelines</h2>
+			<h3>Ensuring consent is informed</h3>
+			<p>Provide information by answering the Eight Key Questions to inform customers or clients about the data use.   </p>
+			<p>Be clear about where people have choice and where data provision is a condition of receiving the service or product, using these 3 categories:</p>
+			<table class="table">
+				<tr>
+					<td>1.</td>
+					<td>Data you are requiring as a condition of supplying the
+						service or product.</td>
+					<td>In most cases this should only be the data that is
+						strictly necessary for the service.</td>
+				</tr>
+				<tr>
+					<td>2.</td>
+					<td>Information beyond what is strictly needed for service
+						delivery, but authorised under legislation.</td>
+					<td><p>Be explicit about any consequences of not providing
+							this additional information.</p></td>
+				</tr>
+				<tr>
+					<td>3.</td>
+					<td>Information beyond that needed for service delivery or
+						authorised under legislation (eg for marketing or research).</td>
+					<td><p>Consider seeking this information, and consent for its use, separately.  In some cases this might best be done after the service or product has been delivered.</p>
+						<p>Be explicit about any incentives you are offering in exchange for gaining the right to use customer/client information.</p>
+					</td>
+				</tr>
+			</table>
+			<h3>Obtaining consent</h3>
+			<p>Clients and customers should be asked to give consent through a positive action, eg by ticking a box or clicking an 'I agree' statement.  </p>
+			<p>Make the request for consent short and easy to understand &mdash; present it separately rather than as part of a lengthy terms and conditions statement.</p>
+			<p>Give clients or customers as much flexibility as you can to make choices about the use and sharing of data about them.  Make it easy for them adjust those choices over time.</p>
+			<p>Make it as easy to withdraw consent as it is to give it.</p>
+			<p>Where people are in vulnerable situations (eg a person using a rape counselling service or a women's refuge for the first time, or a homeless person) it is especially important to limit the initial data collection to the minimum needed for service delivery.  Issues of data use and consent should be addressed at a later stage.  </p>
+			<p>Where the information being collected relates to a child under 16, seek consent from the child's parent or guardian.</p>
+		</div>
+	</div>
+</div>
+			
+
+	<h1 class="heading">Step 2: Test your dial</h1>
 	<p>See how your dial will look with your answers: <a href="../public-dials/" class="btn btn-default" id="testDialLink">Test your dial</a></p>
 
 	<h2>Step 3: Display your dial</h2>
@@ -652,7 +784,8 @@ $selected_wheel = get_selected_wheel($wheels);
 	<div class="modal fade" id="linkToYourDial" tabindex="-1" role="dialog" aria-labelledby="linkLink" aria-hidden="true">
 		<div class="modal-dialog modal-lg">
 		<div class="modal-content">
-			<p>From your site, create a link to <a href="../public-dials/" id="linkEmbedCode"></a>
+			<p>From your site, create a link to <a href="../public-dials/" id="linkEmbedCode"></a></p>
+			<p>You can also <a href="../public-pdf/" id="pdfEmbedCode">download a PDF</a> of your answers which you can load onto your website or use in other media.</p>
 		</div>
 		</div>
 	</div>
@@ -695,7 +828,7 @@ $selected_wheel = get_selected_wheel($wheels);
 			<div id="silverstripeEmbed" class="tab-pane fade">
 			<p>If your site is built with Silverstripe, simply download and install the attached addon</p>
 			<p>Once installed in your silverstripe directory, use the shortcode <code>[transparent_data_dial,id=<span id="silverstripeEmbedCode"></span>]</code></p>
-			<p><a href="https://trusteddata.co.nz/media/silverstripe/transparentdata.zip" class="btn btn-default">Download wordpress plugin</a>
+			<p><a href="https://trusteddata.co.nz/media/silverstripe/transparentdata.zip" class="btn btn-default">Download silverstripe module</a>
 			<p></p>
 			</div>
 			<div id="otherEmbed" class="tab-pane fade">
@@ -706,18 +839,23 @@ $selected_wheel = get_selected_wheel($wheels);
 			</div>
 		</div>
 	</div>
+	</div>
+	<h2>Step 4: Share your dial</h2>
+	<div class="social">
+    <ul>
+        <li><a href="#" id="fbshare"><i class="fa fa-lg fa-facebook"></i></a></li>
+        <li><a href="#" id="twittershare"><i class="fa fa-lg fa-twitter"></i></a></li>
+        <li><a href="#" id="lnshare"><i class="fa fa-lg fa-linkedin"></i></a></li>
+        
+    </ul>
+</div>
 	
 <script>
 var ajaxurl = '<?php echo admin_url( "admin-ajax.php" )?>';
 var wheelId = <?php echo $selected_wheel->id;?>;
 
 jQuery(document).ready(function() {
-	jQuery('#rootwizard').bootstrapWizard({onTabShow: function(tab, navigation, index) {
-		var $total = navigation.find('li').length;
-		var $current = index+1;
-		var $percent = ($current/$total) * 100;
-		jQuery('#rootwizard .progress-bar').css({width:$percent+'%'});
-	}});
+	jQuery('#rootwizard').bootstrapWizard({tabClass: ''});
   	
   	jQuery('a.loadWheel').click(function(e) {
   	     e.preventDefault(); 
@@ -802,7 +940,11 @@ function loadWheel(id) {
 		jQuery('#wordpressEmbedCode').text(json.embedCode);
 		jQuery('#silverstripeEmbedCode').text(json.embedCode);
 		jQuery('#linkEmbedCode').html('<a href="../public-dials/'+json.embedCode+'">https://www.trusteddata.co.nz/public-dials/'+json.embedCode+'</a>');
+		jQuery('#pdfEmbedCode').html('<a href="../pdf-dials/'+json.embedCode+'">download a PDF</a>');
 		jQuery('#testDialLink').attr('href', '../public-dials/'+json.embedCode);
+		jQuery('#fbshare').attr('href', 'http://www.facebook.com/sharer/sharer.php?u=https://trusteddata.co.nz/public-dials/'+json.embedCode+'/');
+		jQuery('#twittershare').attr('href', "http://twitter.com/share?text=I've just made my data dial, visit www.TrustedData.co.nz to create yours!&url=https://trusteddata.co.nz/public-dials/"+json.embedCode+"/");
+		jQuery('#lnshare').attr('href', "http://www.linkedin.com/shareArticle?mini=true&url=https://trusteddata.co.nz/public-dials/"+json.embedCode+"/&title=Trusted Data Dial&summary=I've just made my data dial, visit www.TrustedData.co.nz to create yours!");
 		jQuery('#wheelName').val(json.name);		
 		jQuery('#wheelURL').val(json.url);
 		jQuery('#q1answer').val(getAnswer(1, json.answers));
@@ -838,7 +980,7 @@ function generateEmbed() {
 
 </div>
 
-</div></div>
+</div>
 
 <?php 
 } 
