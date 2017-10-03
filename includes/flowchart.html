@@ -1,34 +1,4 @@
-<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 <style>
-@font-face {
-	font-family: MyriadPro;
-	src: url("../fonts/MyriadPro-Light.otf") format("opentype");
-}
-
-@font-face {
-	font-family: MyriadPro;
-	font-style: normal;
-	font-weight: 100;
-	src: url("../fonts/MyriadPro-Light.otf") format("opentype");
-}
-
-@font-face {
-	font-family: MyriadPro;
-	font-style: normal;
-	font-weight: 500;
-	src: url("../fonts/MyriadPro-Bold.otf") format("opentype");
-}
-
-@font-face {
-	font-family: MyriadPro;
-	font-style: normal;
-	font-weight: bold;
-	src: url("../fonts/MyriadPro-BoldSemiCn.otf") format("opentype");
-}
-
-p, body {
-	font-family: 'MyriadPro';
-}
 
 .chevron::before {
 	border-style: solid;
@@ -118,6 +88,13 @@ span.glyphicon.leftcol {
 .flowchartRow {
 	min-width: 710px;
 }
+p.build_button span.link {
+	display:block;
+	padding: 5px;
+	padding-left: 10px;
+	width: 100%;
+	height: 100%;
+}
 
 .annotation {
 	font-style: italic;
@@ -131,28 +108,39 @@ span.glyphicon.leftcol {
 }
 
 .build_button {
-	padding: 5px;
-	padding-left: 10px;
 	border-radius: 5px;
 	background: black;
 	color: white;
-	width: 160px;
+	width: 140px;
+	height: 30px;
 	text-transform: uppercase;
 	position: absolute;
 	left: 370px;
 	top: 185px;
 }
+p.build_button:hover {
+	transition: background-color 0.5s ease;
+	background: #666666;
+}
 
 .build_button a {
 	color: white;
 }
-
+.build_button a:hover {
+	text-decoration:none;
+}
+#flowchart a {
+	color: white;
+}
+#flowchart a:hover {
+	text-decoration: none;
+}
 div.right_arrow {
 	width: 200px;
 	height: 975px;
-	border-top: 1px black solid;
-	border-right: 1px black solid;
-	border-bottom: 1px black solid;
+	border-top: 2px black solid;
+	border-right: 2px black solid;
+	border-bottom: 2px black solid;
 	border-top-right-radius: 15px;
 	border-bottom-right-radius: 15px;
 	position: absolute;
@@ -160,7 +148,12 @@ div.right_arrow {
 	top: 160px;
 	border-top-right-radius: 15px;
 }
-
+.right_arrow_chevron {
+    position: absolute;
+    transform: rotate(-90deg);
+    left: 571px;
+    top: 153px;
+}
 .step2_arrow {
 	position: absolute;
 	left: 175px;
@@ -198,6 +191,16 @@ div.right_arrow {
 	top: 550px;
 	left: 180px;
 }
+.line.value_yes2 {
+	top: 646px;
+	left: 180px;
+}
+.chevron.value_yes2 {
+	top: 659px;
+	left: 177px;
+	position: absolute;
+	transform: rotate(180deg);
+}
 
 .value_no {
 	top: 505px;
@@ -210,6 +213,19 @@ div.right_arrow {
 	left: 320px;
 	transform: rotate(-40deg);
 	height: 100px;
+}
+.line.reconsider_back_to_top {
+    position: absolute;
+    left: 666px;
+    top: 645px;
+    transform: rotate(90deg);
+    height: 170px;
+}
+.chevron.reconsider_back_to_top {
+    position: absolute;
+    left: 740px;
+    top: 718px;
+    transform: rotate(90deg);
 }
 
 .chevron.answer_better {
@@ -414,16 +430,37 @@ p.engagement {
     left: 173px;
     top: 1057px;
 }
+.line.engagement_to_acceptance {
+	left: 413px;
+	top: 1041px;
+} 
+.chevron.engagement_to_acceptance {
+    left: 410px;
+    top: 1052px;
+    position: absolute;
+    transform: rotate(180deg);
+}
 
 @media ( max-width :992px) {
 	div.right_arrow {
 		width: 150px;
+	}
+	.chevron.reconsider_back_to_top {
+		left: 704px;
 	}
 }
 
 @media ( max-width :850px) {
 	div.right_arrow {
 		width: 50px;
+	}
+	.chevron.reconsider_back_to_top {
+		left: 604px;
+	}
+	.line.reconsider_back_to_top {
+		left: 590px;
+		top: 705px;
+		height: 50px;
 	}
 	p.engagement {
 		font-size: 0.85em;
@@ -458,7 +495,11 @@ p.engagement {
 		width: 20%;
 		height: 947px;
 	}
-	.step1 {
+	.right_arrow_chevron {
+		left: 321px;
+    	top: 85px;
+	}
+		.step1 {
 		left: 210px;
 		top: 30px;
 		width: 100px;
@@ -466,7 +507,7 @@ p.engagement {
 	.build_button {
 		left: 210px;
 		top: 140px;
-		width: 120px;
+		width: 110px;
 	}
 	.inner_dial {
 		top: 280px;
@@ -491,6 +532,15 @@ p.engagement {
 	.value_yes {
 		top: 400px;
 		left: 103px;
+	}
+	.line.value_yes2 {
+	    top: 503px;
+	    left: 103px;
+	    height: 20px;
+	}
+	.chevron.value_yes2 {
+    	top: 508px;
+    	left: 101px;
 	}
 	.step3.circle.orange {
 		left: 50px;
@@ -606,24 +656,95 @@ p.engagement {
 	.line.acceptance_yes, .line.acceptance_no {
 		display: none;
 	}
+	.line.reconsider_back_to_top {
+	    left: 362px;
+	    top: 538px;
+	    height: 92px;
+	}
+	.chevron.reconsider_back_to_top {
+	    left: 398px;
+	    top: 573px;
+	}
+	.line.engagement_to_acceptance {
+	    left: 254px;
+	    top: 942px;
+	}
+	.chevron.engagement_to_acceptance {
+	    left: 252px;
+	    top: 956px;
+	    position: absolute;
+	    transform: rotate(180deg);
+	}
 }
-/*
 @media ( max-width :430px) {
 	div.right_arrow {
 		width: 40px;
 		left: 290px;
+		height: 977px;
+	}
+	.right_arrow_chevron {
+		left: 292px;
 	}
 	.build_button {
 		left: 190px;
 		top: 160px;
 	}
-} */
+	.circle.blue.large.step5 {
+		top: 1013px;
+		left: 100px;
+	}
+	.step5_yes, .step5_no, .publish_arrow {
+	    transform: translate(-264px, -69px);
+	}
+	p.engagement {
+	    width: 118px;
+	    transform: translateY(-20px) translateX(-283px);
+	}
+	.line.reconsider_back_to_top {
+	    left: 316px;
+	    top: 571px;
+	    height: 20px;
+	}
+	.chevron.reconsider_back_to_top {
+	    left: 314px;
+	    top: 570px;
+	}
+	.publish_arrow {
+	    width: 10px;
+	    transform: translate(-138px, -118px);
+	    border-bottom-left-radius: 0px;
+	    border-top-left-radius: 100%;
+	    border-bottom: none;
+	    border-top: 2px solid black;
+	}
+	.line.engagement_to_acceptance {
+	    left: 186px;
+	    top: 981px;
+	    transform: rotate(30deg);
+	}
+	.chevron.engagement_to_acceptance {
+	    left: 180px;
+	    top: 995px;
+	    transform: rotate(210deg);
+	}
+	.chevron.publish {
+	    position: absolute;
+	    left: 42px;
+	    top: 940px;
+	    transform: rotate(10deg);
+	}
+	.line.acceptance_yes, .line.acceptance_no {
+	    display: block;
+	    transform: translateX(-262px) translateY(-68px) rotate(90deg);
+	}
+} 
 </style>
-<div style="position:relative; height: 1200px; width: 100%; overflow: scroll;" id="flowchart">
+<div style="position:relative; height: 1300px; width: 100%; overflow: auto;" id="flowchart">
 <img src="https://trusteddata.co.nz/media/dial-355x355_t.png" id="dial_image"/>
 <p class="annotation step1">Organisation answers the eight key questions about data use (proposed or current)</p>
-<p class="build_button"><a href="https://trusteddata.co.nz/create-your-wheel">Build your dial &nbsp; &gt;</a></p>
+<p class="build_button"><a href="https://trusteddata.co.nz/create-your-wheel"><span class="link">Build your dial</span></a></p>
 <div class="right_arrow"></div>
+<div class="chevron right_arrow_chevron"></div>
 <div class="step2_arrow_line"></div>
 <div class="chevron bottom step2_arrow"></div>
 <img src="https://trusteddata.co.nz/media/inner-dial.png" class="inner_dial"/>
@@ -632,6 +753,9 @@ p.engagement {
 <div class="line value_no"></div>
 <div class="circle black step2_yes">If YES</div>
 <div class="circle black step2_no">If NO</div>
+<div class="line value_yes2"></div>
+<div class="chevron value_yes2"></div>
+
 
 <div class="circle orange large step3"><p>Does the data use have one or more of these features</p></div>
 <p class="annotation features">It's novel for community it affects<br/><br/>
@@ -644,6 +768,8 @@ Has a substantial impact on low trust communities</p>
 <div class="line reconsider"></div>
 <div class="chevron answer_better"></div>
 
+<div class="line reconsider_back_to_top"></div>
+<div class="chevron reconsider_back_to_top"></div>
 
 <div class="line features_yes"></div>
 <div class="line features_no"></div>
@@ -656,7 +782,7 @@ Has a substantial impact on low trust communities</p>
 <div class="chevron features_yes2"></div>
 
 
-<div class="circle black large step4"><p>PUBLISH AND SHARE YOUR DIAL</p></div>
+<div class="circle black large step4"><p><a href="https://trusteddata.co.nz/create-your-wheel/"><span class="link2">PUBLISH AND SHARE YOUR DIAL</span></a></p></div>
 <div class="circle mask arrow"></div>
 <div class="circle black arrow">&gt;</div>
 
@@ -667,6 +793,8 @@ Has a substantial impact on low trust communities</p>
 <div class="circle blue large step4"><p>Engagement with affected communities</p></div>
 <p class="annotation engagement">Consider if there is a need for active engagement with affected communities. Be willing to make changes to how data will be used.</p>
 <div class="circle blue large step5"><p>Sufficient Community Acceptance</p></div>
+<div class="line engagement_to_acceptance"></div>
+<div class="chevron engagement_to_acceptance"></div>
 
 <div class="circle black step5_yes">If YES</div>
 <div class="circle black step5_no">If NO</div>
@@ -679,3 +807,4 @@ Has a substantial impact on low trust communities</p>
 <div class="chevron publish"></div>
 
 </div>
+
