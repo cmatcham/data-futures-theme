@@ -330,6 +330,12 @@
 			    } else {
 			    	console.log('No context!');
 			    }
+			},
+			load: function(id) {
+				$.get('https://trusteddata.co.nz/wp-json/dataFutures/v1/wheel/'+id, {}, function(response) {
+					dataFuturesWheel.answers = response.answers;
+					dataFuturesWheel.rotate(0);
+				});
 			}
 			
 		}
@@ -362,6 +368,12 @@
 			var ctx = canvas.getContext('2d');
 			dataFuturesWheel.init();
 			dataFuturesWheel.drawSlices(ctx, 0);
+			
+			if (typeof dataFuturesDialCallback === "function") {
+				dataFuturesDialCallback(dataFuturesWheel);
+			}
+			
+			document.getElementById('dataFutures').dataset.dial = dataFuturesWheel;
 			
 			if (elem.data('wheel-id')) {
 				var data = {'action':'public_wheel', 'id':elem.data('wheel-id')};

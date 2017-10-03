@@ -791,16 +791,22 @@ aria-labelledby="q8help" aria-hidden="true">
 
 
 <div class="panel">
-<p><a data-toggle="collapse" data-parent="#accordion" href="#step2">Step 2</a></p>
+<p class="step-heading"><a data-toggle="collapse" data-parent="#accordion" href="#step2">STEP 2</a></p>
 <div id="step2" class="panel-collapse collapse">
 	<div class="panel-body">
 		<h1 class="heading">Step 2: Test your dial</h1>
+		<div id="dataFutures" data-wheel-id="[your code]"></div>
 		<p>See how your dial will look with your answers: <a href="../public-dials/" class="btn btn-default" id="testDialLink">Test your dial</a></p>
 	</div>
 </div>
 </div>
 
-<h2>Step 3: Display your dial</h2>
+<div class="panel">
+<p class="step-heading"><a data-toggle="collapse" data-parent="#accordion" href="#step3">STEP 3</a></p>
+<div id="step3" class="panel-collapse collapse">
+	<div class="panel-body">
+
+<h1 class="heading">Step 3: Display your dial</h1>
 <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#embedYourDial">Add the data dial to your website</a>
 <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#linkToYourDial">Link to the dial on our website</a>
 
@@ -863,6 +869,17 @@ aria-labelledby="q8help" aria-hidden="true">
 	</div>
 </div>
 </div>
+
+	</div>
+</div>
+</div>
+
+<div class="panel">
+<p class="step-heading"><a data-toggle="collapse" data-parent="#accordion" href="#step4">STEP 4</a></p>
+<div id="step4" class="panel-collapse collapse">
+	<div class="panel-body">
+
+
 <h2>Step 4: Share your dial</h2>
 <div class="social">
 <ul>
@@ -872,12 +889,18 @@ aria-labelledby="q8help" aria-hidden="true">
 	
 </ul>
 </div>
+</div></div></div>
 
 <script>
 var ajaxurl = '<?php echo admin_url( "admin-ajax.php" )?>';
 var wheelId = <?php echo $selected_wheel->id;?>;
 
 var activeTextArea = null;
+
+var wheelRef = null;
+function dataFuturesDialCallback(wheel) {
+	wheelRef = wheel;
+}
 
 jQuery(document).ready(function() {
 	jQuery('#rootwizard').bootstrapWizard({
@@ -911,6 +934,10 @@ jQuery(document).ready(function() {
 	monitorAnswers();
 	
 	jQuery("#createAccountTab").tab('show');
+	
+	$('#step2').on('show.bs.collapse', function () {
+		console.log('being shown!');
+	});
 
 });
 
