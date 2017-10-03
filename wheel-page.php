@@ -446,7 +446,7 @@ $selected_wheel = get_selected_wheel($wheels);
 
 
 	<div class="col-sm-12">
-	<p>Answers should be kept short, to a maximum of 500 characters.</p>
+	<p>Answers should be kept short, to a maximum of 500 characters. You've written <span id="characterCount">0 characters</span></p>
 	</div>
 	</div>
 	<!-- ul class="pager wizard">
@@ -877,61 +877,82 @@ aria-labelledby="q8help" aria-hidden="true">
 var ajaxurl = '<?php echo admin_url( "admin-ajax.php" )?>';
 var wheelId = <?php echo $selected_wheel->id;?>;
 
+var activeTextArea = null;
+
 jQuery(document).ready(function() {
-jQuery('#rootwizard').bootstrapWizard({tabClass: ''});
-
-jQuery('a.loadWheel').click(function(e) {
-	 e.preventDefault(); 
-	 loadWheel(jQuery(this).data('target'));
- });
-
-jQuery('#wheelName').on('change keyup paste', jQuery.debounce(function(evt) {
-	jQuery('#wheelLink'+wheelId).text(jQuery('#wheelName').val());
-	saveWheel();
-}, 1000));
-
-jQuery('#wheelURL').on('change keyup paste', jQuery.debounce(function(evt) {
-	saveWheel();
-}, 1000));
-
-jQuery('#createNewWheel').click(function(e) {
-	e.preventDefault();
-	createWheel();
-});
-
-loadWheel(wheelId);
-monitorAnswers();
-
-jQuery("#createAccountTab").tab('show');
+	jQuery('#rootwizard').bootstrapWizard({
+		tabClass: '', 
+		onTabShow: function(tab, nav, index) {
+			activeTextArea = $('#q'+(index+1)+'answer')[0];
+			countChars({target:activeTextArea});
+		}
+	});
+	
+	jQuery('a.loadWheel').click(function(e) {
+		 e.preventDefault(); 
+		 loadWheel(jQuery(this).data('target'));
+	 });
+	
+	jQuery('#wheelName').on('change keyup paste', jQuery.debounce(function(evt) {
+		jQuery('#wheelLink'+wheelId).text(jQuery('#wheelName').val());
+		saveWheel();
+	}, 1000));
+	
+	jQuery('#wheelURL').on('change keyup paste', jQuery.debounce(function(evt) {
+		saveWheel();
+	}, 1000));
+	
+	jQuery('#createNewWheel').click(function(e) {
+		e.preventDefault();
+		createWheel();
+	});
+	
+	loadWheel(wheelId);
+	monitorAnswers();
+	
+	jQuery("#createAccountTab").tab('show');
 
 });
 
 function monitorAnswers() {
-jQuery("textarea").each(function(idx, element) {
-	jQuery(element).on('change keyup paste', jQuery.debounce(function(evt) {
-		localStorage.setItem(evt.target.id, evt.target.value);
-		
-		ajaxSave(jQuery(evt.target).data('question'), evt.target.value);
-		
-		//generateEmbed();
-	}, 2000));
-});
+	jQuery("textarea").each(function(idx, element) {
+		jQuery(element).on('change keyup paste', countChars);
+	
+		jQuery(element).on('change keyup paste', jQuery.debounce(function(evt) {
+			localStorage.setItem(evt.target.id, evt.target.value);
+			
+			ajaxSave(jQuery(evt.target).data('question'), evt.target.value);
+			
+			//generateEmbed();
+		}, 2000));
+	});
+}
+
+function countChars(evt) {
+	var length = evt.target.value.length;
+	
+	jQuery("#characterCount").text(length + ' characters.');
+	if (length > 500) {
+		jQuery("#characterCount").css('color', 'red');
+	} else {
+		jQuery("#characterCount").css('color', 'inherit');
+	}
 }
 
 function createWheel() {
-var ajaxurl = '<?php echo admin_url( "admin-ajax.php" )?>';
-var data = {'action':'create_wheel'};
-jQuery.post(ajaxurl, data, function(response) {
-});
+	var ajaxurl = '<?php echo admin_url( "admin-ajax.php" )?>';
+	var data = {'action':'create_wheel'};
+	jQuery.post(ajaxurl, data, function(response) {
+	});
 }
 
 function saveWheel() {
-var ajaxurl = '<?php echo admin_url( "admin-ajax.php" )?>';
-var data = {
-		'action':'save_wheel',
-		'id':wheelId,
-		'name':jQuery('#wheelName').val(),
-		'url':jQuery('#wheelURL').val()
+	var ajaxurl = '<?php echo admin_url( "admin-ajax.php" )?>';
+	var data = {
+			'action':'save_wheel',
+			'id':wheelId,
+			'name':jQuery('#wheelName').val(),
+			'url':jQuery('#wheelURL').val()
 	};
 	jQuery.post(ajaxurl, data, function(response) {
 	});
@@ -939,46 +960,48 @@ var data = {
 }
 
 function ajaxSave(id, value) {
-var ajaxurl = '<?php echo admin_url( "admin-ajax.php" )?>';
-var data = {
-	'action':'save_answer',
-	'id':wheelId,
-	'question':id,
-	'answer':value
-};
-jQuery.post(ajaxurl, data, function(response) {
-});
+	var ajaxurl = '<?php echo admin_url( "admin-ajax.php" )?>';
+	var data = {
+		'action':'save_answer',
+		'id':wheelId,
+		'question':id,
+		'answer':value
+	};
+	jQuery.post(ajaxurl, data, function(response) {
+	
+	});
 }
 
 function loadWheel(id) {
-wheelId = id;
-var ajaxurl = '<?php echo admin_url( "admin-ajax.php" )?>';
-var data = {
-	'action':'get_wheel',
-	'id':id
-};
-jQuery.post(ajaxurl, data, function(response) {
-	var json = JSON.parse(response);
-	jQuery('#embedCode').text(json.embedCode);
-	jQuery('#wordpressEmbedCode').text(json.embedCode);
-	jQuery('#silverstripeEmbedCode').text(json.embedCode);
-	jQuery('#linkEmbedCode').html('<a href="../public-dials/'+json.embedCode+'">https://www.trusteddata.co.nz/public-dials/'+json.embedCode+'</a>');
-	jQuery('#pdfEmbedCode').html('<a href="../pdf-dials/'+json.embedCode+'">download a PDF</a>');
-	jQuery('#testDialLink').attr('href', '../public-dials/'+json.embedCode);
-	jQuery('#fbshare').attr('href', 'http://www.facebook.com/sharer/sharer.php?u=https://trusteddata.co.nz/public-dials/'+json.embedCode+'/');
-	jQuery('#twittershare').attr('href', "http://twitter.com/share?text=I've just made my data dial, visit www.TrustedData.co.nz to create yours!&url=https://trusteddata.co.nz/public-dials/"+json.embedCode+"/");
-	jQuery('#lnshare').attr('href', "http://www.linkedin.com/shareArticle?mini=true&url=https://trusteddata.co.nz/public-dials/"+json.embedCode+"/&title=Trusted Data Dial&summary=I've just made my data dial, visit www.TrustedData.co.nz to create yours!");
-	jQuery('#wheelName').val(json.name);		
-	jQuery('#wheelURL').val(json.url);
-	jQuery('#q1answer').val(getAnswer(1, json.answers));
-	jQuery('#q2answer').val(getAnswer(2, json.answers));
-	jQuery('#q3answer').val(getAnswer(3, json.answers));
-	jQuery('#q4answer').val(getAnswer(4, json.answers));
-	jQuery('#q5answer').val(getAnswer(5, json.answers));
-	jQuery('#q6answer').val(getAnswer(6, json.answers));
-	jQuery('#q7answer').val(getAnswer(7, json.answers));
-	jQuery('#q8answer').val(getAnswer(8, json.answers));
-});
+	wheelId = id;
+	var ajaxurl = '<?php echo admin_url( "admin-ajax.php" )?>';
+	var data = {
+		'action':'get_wheel',
+		'id':id
+	};
+	jQuery.post(ajaxurl, data, function(response) {
+		var json = JSON.parse(response);
+		jQuery('#embedCode').text(json.embedCode);
+		jQuery('#wordpressEmbedCode').text(json.embedCode);
+		jQuery('#silverstripeEmbedCode').text(json.embedCode);
+		jQuery('#linkEmbedCode').html('<a href="../public-dials/'+json.embedCode+'">https://www.trusteddata.co.nz/public-dials/'+json.embedCode+'</a>');
+		jQuery('#pdfEmbedCode').html('<a href="../pdf-dials/'+json.embedCode+'">download a PDF</a>');
+		jQuery('#testDialLink').attr('href', '../public-dials/'+json.embedCode);
+		jQuery('#fbshare').attr('href', 'http://www.facebook.com/sharer/sharer.php?u=https://trusteddata.co.nz/public-dials/'+json.embedCode+'/');
+		jQuery('#twittershare').attr('href', "http://twitter.com/share?text=I've just made my data dial, visit www.TrustedData.co.nz to create yours!&url=https://trusteddata.co.nz/public-dials/"+json.embedCode+"/");
+		jQuery('#lnshare').attr('href', "http://www.linkedin.com/shareArticle?mini=true&url=https://trusteddata.co.nz/public-dials/"+json.embedCode+"/&title=Trusted Data Dial&summary=I've just made my data dial, visit www.TrustedData.co.nz to create yours!");
+		jQuery('#wheelName').val(json.name);		
+		jQuery('#wheelURL').val(json.url);
+		jQuery('#q1answer').val(getAnswer(1, json.answers));
+		jQuery('#q2answer').val(getAnswer(2, json.answers));
+		jQuery('#q3answer').val(getAnswer(3, json.answers));
+		jQuery('#q4answer').val(getAnswer(4, json.answers));
+		jQuery('#q5answer').val(getAnswer(5, json.answers));
+		jQuery('#q6answer').val(getAnswer(6, json.answers));
+		jQuery('#q7answer').val(getAnswer(7, json.answers));
+		jQuery('#q8answer').val(getAnswer(8, json.answers));
+		countChars({target:activeTextArea});
+	});
 }
 
 function getAnswer(id, array) {
