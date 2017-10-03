@@ -217,7 +217,10 @@
 				if (canvas.getContext) {
 			    	var ctx = canvas.getContext('2d');
 				}
-			    drawSlices(ctx, 0);
+				var f = new FontFace('MyriadPro', 'url(https://trusteddata.co.nz/fonts/wp-content/themes/datafutures/fonts/MyriadPro-Light.otf)');
+				f.load().then(function() {
+					drawSlices(ctx, 0);
+				});
 
 			},
 			
@@ -275,7 +278,7 @@
 			 */
 			writeTextWrap	:	function(canvas, x, y, w, h, text, fh, spl) {
 			    var Paint = {
-			        VALUE_FONT : '12px Arial'
+			        VALUE_FONT : '12px MyriadPro'
 			    }
 			    /*
 			     * @param ctx   : The 2d context 
@@ -371,6 +374,7 @@
 			}
 			
 			canvas.addEventListener('click', function(evt) {
+				
 				if (dataFuturesWheel.rotating) {
 					return;
 				}
@@ -378,6 +382,16 @@
 			    
 				var mousePos = dataFuturesWheel.getMousePos(canvas, evt);
 
+				var cx = dataFuturesWheel.centerX;
+				var cy = dataFuturesWheel.centerY;
+				var innerRadii = 40;
+				ctx.beginPath();
+				ctx.arc(cx, cy, innerRadii, 0, Math.PI * 2, false);
+				if (ctx.isPointInPath(mousePos.x,mousePos.y)) {
+					window.location = 'https://trusteddata.co.nz/';
+					return;
+				}
+				
 				var clicked = -1;
 				
 				for(var i=0;i<8;i++){
@@ -411,6 +425,17 @@
 				mouseX=mousePos.x;
 				mouseY=mousePos.y;
 				var isPointer = false;
+				
+				var cx = dataFuturesWheel.centerX;
+				var cy = dataFuturesWheel.centerY;
+				var innerRadii = 40;
+				ctx.beginPath();
+				ctx.arc(cx, cy, innerRadii, 0, Math.PI * 2, false);
+				if (ctx.isPointInPath(mouseX, mouseY)) {
+					canvas.style.cursor='alias';
+					return;
+				}
+				
 				for(var i=0;i<8;i++){
 					dataFuturesWheel.arcPath(ctx, (i*45)+210+dataFuturesWheel.rotation,((i+1)*45)+210+dataFuturesWheel.rotation,165);
 					if(ctx.isPointInPath(mouseX,mouseY)){
@@ -419,7 +444,7 @@
 			    	}
 			    }
 			    if(isPointer){
-					canvas.style.cursor='pointer';              
+			    	canvas.style.cursor = 'pointer';
 				} else {
 					canvas.style.cursor = 'default';
 				}
@@ -442,23 +467,30 @@ CanvasRenderingContext2D.prototype.fillTextCircle = function(text,x,y,radius,sta
 	this.rotate(startRotation);
 	startRotation = startRotation % (2 * Math.PI);
 	endRotation = endRotation % (2 * Math.PI);
-
+	var numIs = 0;
+	
 	if (startRotation > (3 * Math.PI / 8) && startRotation < (13 * Math.PI) / 8 && endRotation > (3 * Math.PI / 8) && endRotation < (13 * Math.PI) / 8) {
 		this.rotate(Math.PI);
 		this.rotate(numRadsPerLetter);
 		for(var i=0;i<text.length;i++){
 			this.save();
-			this.rotate(i*numRadsPerLetter);
-
+			if (text[text.length - 1 - i] === 'I') {
+				numIs++;
+			}
+			this.rotate(i*numRadsPerLetter - (numIs*numRadsPerLetter/2));
+			
 			this.fillText(text[text.length - 1 - i],0,radius+6);
 			this.restore();
 		}
 	} else {
 		for(var i=0;i<text.length;i++){
 			this.save();
-			this.rotate(i*numRadsPerLetter);
+			this.rotate(i*numRadsPerLetter - (numIs * numRadsPerLetter/2));
 
 			this.fillText(text[i],0,-radius);
+			if (text[i] === 'I') {
+				numIs++;
+			}
 			this.restore();
 		}
 	}
