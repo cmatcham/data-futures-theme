@@ -25,8 +25,7 @@ $dial = get_query_var('dial');
 $wheel = get_public_wheel_details($dial);
 ?>
 <h1><?php echo $wheel->name; ?></h1>
-<!-- script src="https://trusteddata.co.nz/media/dataFutures.js"></script -->
-<script src="http://localhost:81/dataFutures/wp-content/themes/dataFutures/js/dataFutures.js"></script>
+<script src="https://trusteddata.co.nz/media/dataFutures.js"></script>
 <div id="dataFutures" data-wheel-id="<?php echo $dial?>"></div>
 
 <p></p>
