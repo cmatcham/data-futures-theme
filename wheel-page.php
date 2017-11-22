@@ -834,7 +834,7 @@ aria-labelledby="q8help" aria-hidden="true">
 	<div class="panel-body">
 		<h1 class="heading">Test your dial</h1>
 		<p>This is how your dial will appear when published on your site, or <a href="../public-dials/" id="testDialLink">linked to on our site</a>.  Check everything is working, then on to step 3!</p>
-		<div id="dataFutures"></div>
+		<div id="dataFutures" data-style="none"></div>
 	</div>
 </div>
 </div>
@@ -893,7 +893,8 @@ aria-labelledby="q8help" aria-hidden="true">
 
 <div id="silverstripeEmbed" class="collapse">
 	<div class="well">
-		<p>If your site is built with Silverstripe, simply download and install the attached addon</p>
+		<p>If your site is built with Silverstripe, you can use a shortcode to embed your dial.  The simplest way to use this is with composer.  </p>
+		<p>Run <code>composer require parhelion-nz/transparentdatadial:*</code> to install the module.  If you do not use composer, simply download and install the attached addon.</p>
 		<p>Once installed in your silverstripe directory, use the shortcode <code>[transparent_data_dial,id=<span id="silverstripeEmbedCode"></span>]</code></p>
 		<p><a href="https://trusteddata.co.nz/media/silverstripe/transparentdata.zip" class="btn btn-default">Download silverstripe module</a>
 		<p></p>

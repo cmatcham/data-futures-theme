@@ -1057,4 +1057,5 @@ function datafutures_customize_register( $wp_customize ) {
 }
 add_action( 'customize_register', 'datafutures_customize_register' );
 
+
 ?>
