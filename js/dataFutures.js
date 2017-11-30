@@ -213,11 +213,15 @@
 			},
 
 			draw		:	function () {
+				var self = this;
 				var canvas = document.getElementById('dataFuturesWheelCanvas');
 				if (canvas.getContext) {
 			    	var ctx = canvas.getContext('2d');
 				}
-			    drawSlices(ctx, 0);
+				var f = new FontFace('MyriadPro', 'url(https://trusteddata.co.nz/dial-font)');
+				f.load().then(function() {
+					self.drawSlices(ctx, 0);
+				});
 
 			},
 			
@@ -275,7 +279,7 @@
 			 */
 			writeTextWrap	:	function(canvas, x, y, w, h, text, fh, spl) {
 			    var Paint = {
-			        VALUE_FONT : '12px Arial'
+			        VALUE_FONT : '12px MyriadPro'
 			    }
 			    /*
 			     * @param ctx   : The 2d context 
@@ -352,9 +356,9 @@
 			var style_link = $("<style>");
 			style_link.text(
 					"h1.dataFuturesQuestion {font-size:1.2em;font-weight:bold;}" +
-					"#dataFutures { width:700px; border:1px solid rgba(200,200,200,0.8);padding:10px;-webkit-box-shadow: 6px 3px 20px 2px rgba(0,0,0,0.75);-moz-box-shadow: 6px 3px 20px 2px rgba(0,0,0,0.75);box-shadow: 6px 3px 20px 2px rgba(0,0,0,0.75);} " +
+					"#dataFutures { max-width:700px;} " +
 					"#dataFuturesGuidelinesAnswers {width:270px;display:inline-block;vertical-align: top;padding:40px;font-size:1.1em;}" +
-					"#dataFuturesWheelCanvas{display:inline-block;width:350px;vertical-align: top}" +
+					"#dataFuturesWheelCanvas{display:inline-block;max-width:350px;width:100%;vertical-align: top}" +
 					"#dataFutures .dataFuturesDisclaimer {font-size:0.9em;}");
 			
 			if (elem.data('style') != 'none') {
@@ -367,7 +371,7 @@
 			canvas = document.getElementById('dataFuturesWheelCanvas');
 			var ctx = canvas.getContext('2d');
 			dataFuturesWheel.init();
-			dataFuturesWheel.drawSlices(ctx, 0);
+			dataFuturesWheel.draw();
 			
 			if (typeof dataFuturesDialCallback === "function") {
 				dataFuturesDialCallback(dataFuturesWheel);
@@ -383,6 +387,7 @@
 			}
 			
 			canvas.addEventListener('click', function(evt) {
+				
 				if (dataFuturesWheel.rotating) {
 					return;
 				}
@@ -390,11 +395,24 @@
 			    
 				var mousePos = dataFuturesWheel.getMousePos(canvas, evt);
 
+				var actualX = mousePos.x * canvas.width / canvas.clientWidth;
+				var actualY = mousePos.y * canvas.height / canvas.clientHeight;
+				
+				var cx = dataFuturesWheel.centerX;
+				var cy = dataFuturesWheel.centerY;
+				var innerRadii = 40;
+				ctx.beginPath();
+				ctx.arc(cx, cy, innerRadii, 0, Math.PI * 2, false);
+				if (ctx.isPointInPath(actualX,actualY)) {
+					window.location = 'https://trusteddata.co.nz/';
+					return;
+				}
+				
 				var clicked = -1;
 				
 				for(var i=0;i<8;i++){
 					dataFuturesWheel.arcPath(ctx, (i*45)+210+dataFuturesWheel.rotation,((i+1)*45)+210+dataFuturesWheel.rotation,165);
-					if(ctx.isPointInPath(mousePos.x,mousePos.y)){
+					if(ctx.isPointInPath(actualX,actualY)){
 						clicked = i;
 						break;
 					}
@@ -420,9 +438,21 @@
 				evt.preventDefault();
 				evt.stopPropagation();
 
-				mouseX=mousePos.x;
-				mouseY=mousePos.y;
+				mouseX = mousePos.x * canvas.width / canvas.clientWidth;
+				mouseY = mousePos.y * canvas.height / canvas.clientHeight;
+				
 				var isPointer = false;
+				
+				var cx = dataFuturesWheel.centerX;
+				var cy = dataFuturesWheel.centerY;
+				var innerRadii = 40;
+				ctx.beginPath();
+				ctx.arc(cx, cy, innerRadii, 0, Math.PI * 2, false);
+				if (ctx.isPointInPath(mouseX, mouseY)) {
+					canvas.style.cursor='alias';
+					return;
+				}
+				
 				for(var i=0;i<8;i++){
 					dataFuturesWheel.arcPath(ctx, (i*45)+210+dataFuturesWheel.rotation,((i+1)*45)+210+dataFuturesWheel.rotation,165);
 					if(ctx.isPointInPath(mouseX,mouseY)){
@@ -431,7 +461,7 @@
 			    	}
 			    }
 			    if(isPointer){
-					canvas.style.cursor='pointer';              
+			    	canvas.style.cursor = 'pointer';
 				} else {
 					canvas.style.cursor = 'default';
 				}
@@ -454,25 +484,76 @@ CanvasRenderingContext2D.prototype.fillTextCircle = function(text,x,y,radius,sta
 	this.rotate(startRotation);
 	startRotation = startRotation % (2 * Math.PI);
 	endRotation = endRotation % (2 * Math.PI);
-
+	var numIs = 0;
+	
 	if (startRotation > (3 * Math.PI / 8) && startRotation < (13 * Math.PI) / 8 && endRotation > (3 * Math.PI / 8) && endRotation < (13 * Math.PI) / 8) {
 		this.rotate(Math.PI);
 		this.rotate(numRadsPerLetter);
 		for(var i=0;i<text.length;i++){
 			this.save();
-			this.rotate(i*numRadsPerLetter);
-
+			if (text[text.length - 1 - i] === 'I') {
+				numIs++;
+			}
+			this.rotate(i*numRadsPerLetter - (numIs*numRadsPerLetter/2));
+			
 			this.fillText(text[text.length - 1 - i],0,radius+6);
 			this.restore();
 		}
 	} else {
 		for(var i=0;i<text.length;i++){
 			this.save();
-			this.rotate(i*numRadsPerLetter);
+			this.rotate(i*numRadsPerLetter - (numIs * numRadsPerLetter/2));
 
 			this.fillText(text[i],0,-radius);
+			if (text[i] === 'I') {
+				numIs++;
+			}
 			this.restore();
 		}
 	}
 	this.restore();
+}
+//https://tc39.github.io/ecma262/#sec-array.prototype.find
+if (!Array.prototype.find) {
+  Object.defineProperty(Array.prototype, 'find', {
+    value: function(predicate) {
+     // 1. Let O be ? ToObject(this value).
+      if (this == null) {
+        throw new TypeError('"this" is null or not defined');
+      }
+
+      var o = Object(this);
+
+      // 2. Let len be ? ToLength(? Get(O, "length")).
+      var len = o.length >>> 0;
+
+      // 3. If IsCallable(predicate) is false, throw a TypeError exception.
+      if (typeof predicate !== 'function') {
+        throw new TypeError('predicate must be a function');
+      }
+
+      // 4. If thisArg was supplied, let T be thisArg; else let T be undefined.
+      var thisArg = arguments[1];
+
+      // 5. Let k be 0.
+      var k = 0;
+
+      // 6. Repeat, while k < len
+      while (k < len) {
+        // a. Let Pk be ! ToString(k).
+        // b. Let kValue be ? Get(O, Pk).
+        // c. Let testResult be ToBoolean(? Call(predicate, T, « kValue, k, O »)).
+        // d. If testResult is true, return kValue.
+        var kValue = o[k];
+        if (predicate.call(thisArg, kValue, k, o)) {
+          return kValue;
+        }
+        // e. Increase k by 1.
+        k++;
+      }
+
+      // 7. Return undefined.
+      return undefined;
+    }
+  });
 }

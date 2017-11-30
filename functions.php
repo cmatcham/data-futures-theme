@@ -2,6 +2,13 @@
 
 add_action( 'after_switch_theme', 'create_db' );
 
+include_once 'includes/trusted-data-settings.php';
+
+//Our class extends the WP_List_Table class, so we need to make sure that it's there
+if(!class_exists('WP_List_Table')){
+   require_once( ABSPATH . 'wp-admin/includes/class-wp-list-table.php' );
+}
+
 /* add_action( 'template_redirect', 'wpse_76802_maintance_mode' );
 function wpse_76802_maintance_mode() {
     if ( is_page( 48 ) ) {
@@ -29,6 +36,7 @@ function create_db() {
 		url VARCHAR(255),
         creation_time DATETIME DEFAULT CURRENT_TIMESTAMP,
         modification_time DATETIME ON UPDATE CURRENT_TIMESTAMP,
+        public_library BIT(1),
 		PRIMARY KEY (id)
 	) $charset_collate;";
     
@@ -797,6 +805,12 @@ function public_dials_rewrite_rule() {
     add_rewrite_endpoint( 'download-dials', EP_PERMALINK | EP_PAGES );
     add_rewrite_rule('^pdf-dials/([0-9]+)?','index.php?pagename=pdf-dial&dial=$matches[1]', 'top');
     add_rewrite_endpoint( 'download-dials', EP_PERMALINK | EP_PAGES );
+    
+    add_rewrite_rule('^public-dials/library?','index.php?pagename=library', 'top');
+    add_rewrite_endpoint( 'dial-library', EP_PERMALINK | EP_PAGES );
+    
+    add_rewrite_rule('^dial-font', 'index.php?pagename=dial-font', 'top');
+    add_rewrite_endpoint( 'dial-font', EP_PERMALINK | EP_PAGES );
 }
 add_action('init', 'public_dials_rewrite_rule', 10, 0);
 
@@ -813,6 +827,19 @@ function download_dials_display() {
     } else if ('pdf-dial' == $dials_page) {
         header("HTTP/1.1 200 OK");
         include( get_template_directory().'/pdfgen.php');
+        exit;
+    } else if ('dial-font' == $dials_page) {
+		$name = get_template_directory().'/fonts/MyriadPro-Light.otf';
+    	$rsc = fopen($name, 'rb');
+    	header("HTTP/1.1 200 OK");
+    	header("Access-Control-Allow-Origin: *");
+    	header("Content-Type: application/x-font-opentype");
+    	header("Content-Length: " . filesize($name));
+    	fpassthru($rsc);
+    	exit;
+    } else if ('dial-library' == $dials_page) {
+    	header("HTTP/1.1 200 OK");
+        include( get_template_directory().'/library-page.php');
         exit;
     }
 }
@@ -894,9 +921,10 @@ function dashboard_widget_function( $post, $callback_args ) {
 function dashboard_views_widget_function( $post, $callback_args ) {
     global $wpdb;
     $views_table = $wpdb->prefix . "data_futures_views";
+    $wheel_table = $wpdb->prefix . "data_futures_wheel";
     $number_views = $wpdb->get_var("SELECT count(*) FROM $views_table");
 
-	$top_views = $wpdb->get_results("SELECT count(wheel_id) AS count, wheel_id FROM $views_table GROUP BY wheel_id ORDER BY count(wheel_id) DESC");
+	$top_views = $wpdb->get_results("SELECT count($views_table.wheel_id) AS count, $views_table.wheel_id, $wheel_table.name FROM $views_table JOIN $wheel_table ON $views_table.wheel_id = $wheel_table.id GROUP BY wheel_id, name ORDER BY count(wheel_id) DESC");
     
     $number_wheels_week = $wpdb->get_var("SELECT count(*) FROM $views_table WHERE view_time > CURDATE() - INTERVAL 7 DAY");
     $number_wheels_month = $wpdb->get_var("SELECT count(*) FROM $views_table WHERE view_time > CURDATE() - INTERVAL 30 DAY");
@@ -905,8 +933,8 @@ function dashboard_views_widget_function( $post, $callback_args ) {
     ?>
     <p>Since October 2017, a total of <strong><?php echo $number_views; ?></strong> views have been made across all dials. The top three dials are:</p>
     <ul>
-    	<?php foreach ($top_views AS $result) {
-    		echo "<li><a href='/public-dials/" . hash_id($result->wheel_id) . "'>Wheel " . $result->wheel_id . "</a> with " . $result->count . " views</li>";
+    	<?php foreach (array_slice($top_views,0,3) AS $result) {
+    		echo "<li><a href='/public-dials/" . hash_id($result->wheel_id) . "'>Wheel " . $result->wheel_id . ": " . $result->name . "</a> with " . $result->count . " views</li>";
     	} ?>
     </ul>
     	
@@ -1056,4 +1084,209 @@ function datafutures_customize_register( $wp_customize ) {
 
 }
 add_action( 'customize_register', 'datafutures_customize_register' );
+
+class Dial_List_Table extends WP_List_Table {
+
+   /**
+    * Constructor, we override the parent to pass our own arguments
+    * We usually focus on three parameters: singular and plural labels, as well as whether the class supports AJAX.
+    */
+    function __construct() {
+       parent::__construct( array(
+      'singular'=> 'wp_list_text_link', //Singular label
+      'plural' => 'wp_list_test_links', //plural label, also this well be one of the table css class
+      'ajax'   => false //We won't support Ajax for this table
+      ) );
+    }
+    
+    /**
+	 * Add extra markup in the toolbars before or after the list
+	 * @param string $which, helps you decide if you add the markup after (bottom) or before (top) the list
+	 */
+	function extra_tablenav( $which ) {
+	   if ( $which == "top" ){
+	      //The code that goes before the table is here
+	      //echo"Hello, I'm before the table";
+	   }
+	   if ( $which == "bottom" ){
+	      //The code that goes after the table is there
+	      //echo"Hi, I'm after the table";
+	   }
+	}
+	
+	/**
+	 * Define the columns that are going to be used in the table
+	 * @return array $columns, the array of columns to use with the table
+	 */
+	function get_columns() {
+	   return $columns = array(
+	      'id'=>__('ID'),
+	      'name'=>__('Name'),
+	      'url'=>__('Url'),
+	      'public_library' => 'Public library'
+	   );
+	}
+	
+	/**
+	 * Decide which columns to activate the sorting functionality on
+	 * @return array $sortable, the array of columns that can be sorted by the user
+	 */
+	function get_sortable_columns() {
+	   return $sortable = array(
+	      'id'=> array('id', false),
+	      'name'=> array('name', false),
+	      'url'=> array('url', false),
+	      'public_library' => array('public_library', false)
+	   );
+	}
+	
+	/**
+	 * Prepare the table with different parameters, pagination, columns and table elements
+	 */
+	function prepare_items() {
+	   global $wpdb, $_wp_column_headers;
+	   $screen = get_current_screen();
+	   $wheel_table = $wpdb->prefix . "data_futures_wheel";
+	
+	   /* -- Preparing your query -- */
+	        $query = "SELECT * FROM $wheel_table";
+	
+	   /* -- Ordering parameters -- */
+	       //Parameters that are going to be used to order the result
+	       $orderby = !empty($_GET["orderby"]) ? $_GET["orderby"] : 'ASC';
+	       $order = !empty($_GET["order"]) ? $_GET["order"] : '';
+	       if(!empty($orderby) & !empty($order)){ $query.=' ORDER BY '.$orderby.' '.$order; }
+	
+	   /* -- Pagination parameters -- */
+	        //Number of elements in your table?
+	        $totalitems = $wpdb->query($query); //return the total number of affected rows
+	        //How many to display per page?
+	        $perpage = 5;
+	        //Which page is this?
+	        $paged = !empty($_GET["paged"]) ? $_GET["paged"] : '';
+	        //Page Number
+	        if(empty($paged) || !is_numeric($paged) || $paged<=0 ){ $paged=1; } //How many pages do we have in total? 
+	        $totalpages = ceil($totalitems/$perpage); //adjust the query to take pagination into account 
+	        if(!empty($paged) && !empty($perpage)){ 
+	        	$offset=($paged-1)*$perpage; $query.=' LIMIT '.(int)$offset.','.(int)$perpage; 
+	        } /* -- Register the pagination -- */ 
+	        $this->set_pagination_args( array(
+	         "total_items" => $totalitems,
+	         "total_pages" => $totalpages,
+	         "per_page" => $perpage,
+	      ) );
+	      //The pagination links are automatically built according to those parameters
+	
+	   /* -- Register the Columns -- */
+	      $columns = $this->get_columns();
+	      $_wp_column_headers[$screen->id]=$columns;
+	      
+	      $this->_column_headers = array( 
+			 $this->get_columns(),		// columns
+			 array(),			// hidden
+			 $this->get_sortable_columns(),	// sortable
+		);
+	
+	   /* -- Fetch the items -- */
+	      $this->items = $wpdb->get_results($query);
+	}
+	
+	/**
+	 * Display the rows of records in the table
+	 * @return string, echo the markup of the rows
+	 */
+	function display_rows() {
+	
+	   //Get the records registered in the prepare_items method
+	   $records = $this->items;
+	
+	   //Get the columns registered in the get_columns and get_sortable_columns methods
+	   list( $columns, $hidden ) = $this->get_column_info();
+		$columns = $this->get_columns();
+	
+	   //Loop for each record
+	   if(!empty($records)){
+	   	foreach($records as $rec) {
+	
+	      //Open the line
+	        echo '<tr id="record_'.$rec->id.'">';
+	        foreach ( $columns as $column_name => $column_display_name ) {
+			
+	         //Style attributes for each col
+	         $class = "class='$column_name column-$column_name'";
+	         $style = "";
+	         if ( in_array( $column_name, $hidden ) ) $style = ' style="display:none;"';
+	         $attributes = $class . $style;
+	
+	         //edit link
+	         $editlink  = '/wp-admin/link.php?action=edit&link_id='.(int)$rec->link_id;
+	
+	         //Display the cell
+	         switch ( $column_name ) {
+	            case "id":  echo '<td '.$attributes.'><a href="/public_dials/'.hash_id($rec->id).'">'.$rec->id.'</a></td>';   break;
+	            case "name": echo '<td '.$attributes.'>'.stripslashes($rec->name).'</td>'; break;
+	            case "url": echo '<td '.$attributes.'>'.stripslashes($rec->url).'</td>'; break;
+	            case "public_library": echo '<td '.$attributes.'>'.($rec->public_library === 1 ? 'Yes' : 'No') .'</td>'; break;
+	         }
+	      }
+	
+	      //Close the line
+	      echo'</tr>';
+	   }}
+	}
+
+}
+
+/** Step 2 (from text above). */
+add_action( 'admin_menu', 'list_dials_menu' );
+
+/** Step 1. */
+function list_dials_menu() {
+	add_options_page( 'Dials', 'Dials', 'manage_options', 'list-dials', 'list_dials_cb' );
+}
+
+/** Step 3. */
+function list_dials_cb() {
+	if ( !current_user_can( 'manage_options' ) )  {
+		wp_die( __( 'You do not have sufficient permissions to access this page.' ) );
+	}
+	echo '<div class="wrap">';
+	$wp_list_table = new Dial_List_Table();
+	$wp_list_table->prepare_items();
+	$wp_list_table->display();
+	echo '</div>';
+}
+
+function send_library_approval_mail($hashed_dial_id) {
+	if (!is_user_logged_in()) {
+		return;
+	}
+	
+	global $current_user;
+    get_currentuserinfo();
+	
+	$dial = get_public_wheel_details($hashed_dial_id);
+	
+	if ($dial -> user_id != $current_user -> ID) {
+		return;
+	}
+	
+	$to = $current_user->user_email;
+	//$subject = get_option
+	
+
+      echo 'Username: ' . $current_user->user_login . "\n";
+      echo 'User email: ' . $current_user->user_email . "\n";
+      echo 'User level: ' . $current_user->user_level . "\n";
+      echo 'User first name: ' . $current_user->user_firstname . "\n";
+      echo 'User last name: ' . $current_user->user_lastname . "\n";
+      echo 'User display name: ' . $current_user->display_name . "\n";
+      echo 'User ID: ' . $current_user->ID . "\n";
+	$to = 'emailsendto@example.com';
+	$subject = 'The subject';
+	$body = 'The email body content';
+	$headers = array('Content-Type: text/html; charset=UTF-8','From: My Site Name <support@example.com');
+ 
+	wp_mail( $to, $subject, $body, $headers );
+}
 ?>

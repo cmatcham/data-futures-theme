@@ -21,6 +21,7 @@
 <style>
    .modal-content { padding: 15px;}
 	h1.dataFuturesQuestion {display:none;}
+    #create-your-dial h1.dataFuturesQuestion {display:block;}
    .modal-content .tab-content{ padding-top:20px;padding-bottom:50px;}
    .question .label-info {float:right;}
    
@@ -199,6 +200,43 @@
    	color: #5085a0;
    	text-decoration: none;
    }
+   
+   .button-image:before {
+    content: "";
+    width: 24px;
+    height: 24px;
+    display: inline-block;
+    margin-right: 5px;
+    vertical-align: text-top;
+    background-color: transparent;
+    background-position : center center;
+    background-repeat:no-repeat;
+    }
+
+    .button-image.html:before{
+        background-image : url(<?php echo get_theme_file_uri('images/html-24.png');?>);
+    }
+    .button-image.wordpress:before{
+        background-image : url(<?php echo get_theme_file_uri('images/wordpress-logo-24.png');?>);
+    }
+    .button-image.wordpress:hover:before{
+        background-image : url(<?php echo get_theme_file_uri('images/wordpress-logo-24-blue.png');?>);
+    }
+    .button-image.silverstripe:before{
+        background-image : url(<?php echo get_theme_file_uri('images/silverstripe-logo-24.png');?>);
+    }
+    .button-image.silverstripe:hover:before{
+        background-image : url(<?php echo get_theme_file_uri('images/silverstripe-logo-24-blue.png');?>);
+    }
+    .button-image.pdf:before{
+        background-image : url(<?php echo get_theme_file_uri('images/pdf-24.png');?>);
+    }
+    .button-image.pdf:hover:before{
+        background-image : url(<?php echo get_theme_file_uri('images/pdf-24-red.png');?>);
+    }
+    .button-image.link:before{
+        background-image : url(<?php echo get_theme_file_uri('images/link-24.png');?>);
+    }
    
 </style>
 <?php wp_head(); ?>
@@ -449,6 +487,8 @@ $selected_wheel = get_selected_wheel($wheels);
 	<p>Answers should be kept short, to a maximum of 500 characters. You've written <span id="characterCount">0 characters</span></p>
 	</div>
 	</div>
+	<label>Public library</label>
+	<div>Kittens</div>
 	<!-- ul class="pager wizard">
 	<li class="previous first" style="display: none;"><a href="#">First</a></li>
 	<li class="previous"><a href="#">Previous</a></li>
@@ -794,9 +834,9 @@ aria-labelledby="q8help" aria-hidden="true">
 <p class="step-heading"><a data-toggle="collapse" data-parent="#accordion" href="#step2">STEP 2</a></p>
 <div id="step2" class="panel-collapse collapse">
 	<div class="panel-body">
-		<h1 class="heading">Step 2: Test your dial</h1>
-		<div id="dataFutures" data-wheel-id="[your code]"></div>
-		<p>See how your dial will look with your answers: <a href="../public-dials/" class="btn btn-default" id="testDialLink">Test your dial</a></p>
+		<h1 class="heading">Test your dial</h1>
+		<p>This is how your dial will appear when published on your site, or <a href="../public-dials/" id="testDialLink">linked to on our site</a>.  Check everything is working, then on to step 3!</p>
+		<div id="dataFutures"></div>
 	</div>
 </div>
 </div>
@@ -806,17 +846,83 @@ aria-labelledby="q8help" aria-hidden="true">
 <div id="step3" class="panel-collapse collapse">
 	<div class="panel-body">
 
-<h1 class="heading">Step 3: Display your dial</h1>
-<a href="#" class="btn btn-primary" data-toggle="modal" data-target="#embedYourDial">Add the data dial to your website</a>
-<a href="#" class="btn btn-primary" data-toggle="modal" data-target="#linkToYourDial">Link to the dial on our website</a>
+<h1 class="heading">Display your dial</h1>
+<p>Add the data dial to your website</p>
 
-<div class="modal fade" id="linkToYourDial" tabindex="-1" role="dialog" aria-labelledby="linkLink" aria-hidden="true">
-	<div class="modal-dialog modal-lg">
-	<div class="modal-content">
-		<p>From your site, create a link to <a href="../public-dials/" id="linkEmbedCode"></a></p>
-		<p>You can also <a href="../public-pdf/" id="pdfEmbedCode">download a PDF</a> of your answers which you can load onto your website or use in other media.</p>
+<div id="embedParent">
+
+<a href="#" class="btn btn-default btn-lg button-image html" data-toggle="collapse" data-parent="#embedParent" data-target="#htmlEmbed">Direct HTML</a>
+<a href="#" class="btn btn-default btn-lg button-image wordpress" data-toggle="collapse"  data-parent="#embedParent" data-target="#wordPressEmbed">Wordpress</a>
+<a href="#" class="btn btn-default btn-lg button-image silverstripe" data-toggle="collapse"  data-parent="#embedParent" data-target="#silverstripeEmbed">Silverstripe</a>
+<a href="#" class="btn btn-default btn-lg" data-toggle="collapse" data-target="#otherEmbed">Other</a>
+|
+<a href="#" class="btn btn-default btn-lg button-image link" data-toggle="collapse" data-target="#linkToYourDial">Link to the dial on our website</a>
+<a href="#" class="btn btn-default btn-lg button-image pdf" data-toggle="collapse" data-target="#pdfLink">Generate a PDF</a>
+
+
+
+<div class="accordion-group">
+<div class="collapse" id="htmlEmbed">
+	<div class="well">
+		<p>To enable your data dial on your own website, please cut and paste the following code. You may wish to send the code and instructions to your web developer.</p>
+		<p>	In your html
+			<code>&lt;head&gt;</code>
+			block, include the widget code:
+			<code>
+				<pre>&lt;script src="https://trusteddata.co.nz/media/dataFutures.js">&lt;/script></pre>
+			</code>
+			Then in the location you want the widget, create a
+			<code>&lt;div&gt;</code>
+			block with the id
+			<code>dataFutures</code>
+			and a
+			<code>data-wheel-id</code>
+			attribute as generated from your answers
+			<code>
+				<pre>&lt;div id="dataFutures" data-wheel-id="<span id="embedCode"></span>"&gt;</pre>
+			</code>
+		</p>
 	</div>
+</div>
+<div class="collapse" id="wordPressEmbed">
+	<div class="well">
+	<p>If your site is built with Wordpress, simply download and install the attached plugin</p>
+	<p>Once installed, use the shortcode <code>[data-dial id="<span id="wordpressEmbedCode"></span>"]</code></p>
+	<p><a href="https://trusteddata.co.nz/media/wordpress/transparent-data-dial.zip" class="btn btn-default">Download wordpress plugin</a>
+	<p></p>
 	</div>
+</div>
+
+<div id="silverstripeEmbed" class="collapse">
+	<div class="well">
+		<p>If your site is built with Silverstripe, you can use a shortcode to embed your dial.  The simplest way to use this is with composer.  </p>
+		<p>Run <code>composer require parhelion-nz/transparentdatadial:*</code> to install the module.  If you do not use composer, simply download and install the attached addon.</p>
+		<p>Once installed in your silverstripe directory, use the shortcode <code>[transparent_data_dial,id=<span id="silverstripeEmbedCode"></span>]</code></p>
+		<p><a href="https://trusteddata.co.nz/media/silverstripe/transparentdata.zip" class="btn btn-default">Download silverstripe module</a>
+		<p></p>
+	</div>
+</div>
+
+<div id="otherEmbed" class="collapse">
+	<div class="well">
+		<p>If you use an alternative CMS, or need assistance, the team at <a href="http://tagtheagency.com">TAG The Agency</a> can help.  Please contact <a href="mailto:info@tagtheagency.com">info@tagtheagency.com</a> to discuss a professional services contract.</p>
+	</div>
+</div>
+
+<div class="collapse" id="linkToYourDial" aria-labelledby="linkLink" aria-hidden="true">
+	<div class="well">
+		<p>If you would prefer to link to the Dial on our site, create a link from your site to <a href="../public-dials/" id="linkEmbedCode"></a>.</p>
+	</div>
+</div>
+
+<div class="collapse" id="pdfLink" aria-labelledby="linkLink" aria-hidden="true">
+	<div class="well">
+		<p><a href="../public-pdf/" id="pdfEmbedCode">Download a PDF</a> of your answers which you can load onto your website or use in other media.</p>
+	</div>
+</div>
+
+
+</div>
 </div>
 <div class="modal fade" id="embedYourDial" tabindex="-1" role="dialog" aria-labelledby="embedLink" aria-hidden="true">
 	<div class="modal-dialog modal-lg">
@@ -880,7 +986,7 @@ aria-labelledby="q8help" aria-hidden="true">
 	<div class="panel-body">
 
 
-<h2>Step 4: Share your dial</h2>
+<h2>Share your dial</h2>
 <div class="social">
 <ul>
 	<li><a href="#" id="fbshare"><i class="fa fa-lg fa-facebook"></i></a></li>
@@ -936,7 +1042,20 @@ jQuery(document).ready(function() {
 	jQuery("#createAccountTab").tab('show');
 	
 	$('#step2').on('show.bs.collapse', function () {
-		console.log('being shown!');
+		wheelRef.answers = [];
+		for (var i = 1; i < 9; i++) {
+			wheelRef.answers.push({question_id:i, answer: $('#q'+(i)+'answer')[0].value});
+		}
+		wheelRef.rotate(0);
+		$('#dataFuturesGuidelinesAnswersQuestion').text('');
+		$('#dataFuturesGuidelinesAnswersAnswer').text('');
+//		wheelRef.load(wheelId);
+	});
+
+
+	var $myGroup = $('#embedParent');
+	$myGroup.on('show.bs.collapse','.collapse', function() {
+	    $myGroup.find('.collapse.in').collapse('hide');
 	});
 
 });
@@ -1012,7 +1131,7 @@ function loadWheel(id) {
 		jQuery('#wordpressEmbedCode').text(json.embedCode);
 		jQuery('#silverstripeEmbedCode').text(json.embedCode);
 		jQuery('#linkEmbedCode').html('<a href="../public-dials/'+json.embedCode+'">https://www.trusteddata.co.nz/public-dials/'+json.embedCode+'</a>');
-		jQuery('#pdfEmbedCode').html('<a href="../pdf-dials/'+json.embedCode+'">download a PDF</a>');
+		jQuery('#pdfEmbedCode').html('<a href="../pdf-dials/'+json.embedCode+'">Download a PDF</a>');
 		jQuery('#testDialLink').attr('href', '../public-dials/'+json.embedCode);
 		jQuery('#fbshare').attr('href', 'http://www.facebook.com/sharer/sharer.php?u=https://trusteddata.co.nz/public-dials/'+json.embedCode+'/');
 		jQuery('#twittershare').attr('href', "http://twitter.com/share?text=I've just made my data dial, visit www.TrustedData.co.nz to create yours!&url=https://trusteddata.co.nz/public-dials/"+json.embedCode+"/");
