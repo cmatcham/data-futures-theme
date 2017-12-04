@@ -487,6 +487,23 @@ $selected_wheel = get_selected_wheel($wheels);
 	<p>Answers should be kept short, to a maximum of 500 characters. You've written <span id="characterCount">0 characters</span></p>
 	</div>
 	</div>
+	<label>Public library</label>
+	<div id="no_public_library" class="alert alert-info public_library_alert" role="alert" style="display:none;">
+		<p>The Trusted Data site hosts a public library of dials, and we would like to include this dial in that library, but we need your permission.</p>
+		<p><a href="#" class="btn btn-info" data-toggle="collapse">Email me a permission link</a></p>
+	</div>
+	<div id="yes_public_library" class="alert alert-success public_library_alert" role="alert" style="display:none;">
+  		<h4 class="alert-heading">Thank you!</h4>
+  		<p>Your dial is currently published in the <a class="alert-link" href="../library">library</a>.  Note that if you make any changes you will need to re-approve this.</p>
+	</div>
+	<div id="reapprove_public_library" class="alert alert-warning public_library_alert" role="alert" style="display:none;">
+		<p>As you have made changes to your dial, it has been un-published from the public library.  If you would like to re-publish it, click the button below.</p>
+		<p><a href="#" class="btn btn-warning" data-toggle="collapse">Email me a permission link</a></p>
+	</div>
+	<div id="public_library_approval_sent" class="alert alert-success public_library_alert" style="display:none;">
+		<p>Thank you for requesting that your dial is published in the public library.  You have been sent an email, please follow the instructions in that email.</p>
+	</div>
+	
 	<!-- ul class="pager wizard">
 	<li class="previous first" style="display: none;"><a href="#">First</a></li>
 	<li class="previous"><a href="#">Previous</a></li>
@@ -834,7 +851,7 @@ aria-labelledby="q8help" aria-hidden="true">
 	<div class="panel-body">
 		<h1 class="heading">Test your dial</h1>
 		<p>This is how your dial will appear when published on your site, or <a href="../public-dials/" id="testDialLink">linked to on our site</a>.  Check everything is working, then on to step 3!</p>
-		<div id="dataFutures" data-style="none"></div>
+		<div id="dataFutures"></div>
 	</div>
 </div>
 </div>
@@ -1125,6 +1142,7 @@ function loadWheel(id) {
 	};
 	jQuery.post(ajaxurl, data, function(response) {
 		var json = JSON.parse(response);
+		console.log('loaded wheel',json);
 		jQuery('#embedCode').text(json.embedCode);
 		jQuery('#wordpressEmbedCode').text(json.embedCode);
 		jQuery('#silverstripeEmbedCode').text(json.embedCode);
@@ -1145,6 +1163,17 @@ function loadWheel(id) {
 		jQuery('#q7answer').val(getAnswer(7, json.answers));
 		jQuery('#q8answer').val(getAnswer(8, json.answers));
 		countChars({target:activeTextArea});
+
+		
+		jQuery('.public_library_alert').hide();
+		var publicLibrary = json.library === "1";
+		if (publicLibrary) {
+			jQuery('#yes_public_library').show();
+			console.log('showing yes');
+		} else {
+			jQuery('#no_public_library').show();
+		}
+		
 	});
 }
 

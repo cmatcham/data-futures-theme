@@ -1,10 +1,6 @@
 <?php /* Template Name: Public dials display */ ?>
 <?php get_header(); ?>
 <style>
-#dataFutures {
-	width: inherit;
-	min-width:380px;
-}
 #dataFuturesGuidelinesAnswers {
 	width: 40%;
 }

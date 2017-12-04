@@ -2,17 +2,38 @@
 require_once('pdf/tcpdf.php');
 require_once('pdf/fpdi/fpdi.php'); // the addon
 
+function substrwords($text, $maxchar, $end='...') {
+    if (strlen($text) > $maxchar || $text == '') {
+        $words = preg_split('/\s/', $text);
+        $output = '';
+        $i      = 0;
+        while (1) {
+            $length = strlen($output)+strlen($words[$i]);
+            if ($length > $maxchar) {
+                break;
+            }
+            else {
+                $output .= " " . $words[$i];
+                ++$i;
+            }
+        }
+        $output .= $end;
+    }
+    else {
+        $output = $text;
+    }
+    return $output;
+}
+
 // FPDI extends the TCPDF class, so you keep all TCPDF functionality
 $pdf = new FPDI();
 
 $pdf->AddPage();
 $pdf->setSourceFile(get_template_directory() . '/dial_base.pdf');
 // FPDI's importPage returns an object that you can insert with TCPDF's useTemplate
-$pdf->useTemplate($pdf->importPage(1)); 
+$pdf->useTemplate($pdf->importPage(1));
 $pdf->AddPage();
 $pdf->useTemplate($pdf->importPage(2));
-$pdf->AddPage();
-$pdf->useTemplate($pdf->importPage(3));
 
 
 $dial = get_query_var('dial');
@@ -94,9 +115,39 @@ $html = <<<EOD
 <img src="https://trusteddata.co.nz/media/dial.png" width="180px" height="180px" align="center" style="display:block;margin:auto"/>
 <h1>Trusted data answers</h1 -->
 
-<table border="0" height="210px"><tr height="210px"><td height="300px"></td></tr></table>
+<table border="0" height="111px"><tr height="111px"><td height="111px"></td></tr></table>
+<table border="0" height="10px" cellpadding="10px"><tr height="10px"><td width="170px">&nbsp;</td><td height="10px"><h1>$wheel->name</h1></td></tr></table>
+<table border="0" height="35px"><tr height="35px"><td height="35px"></td></tr></table>
+<table border="0" bordercolor="red" cellpadding="14"><tr>
+<td width="38px"></td>
+<td width="560px">
+<h4>What will my data be used for?</h4>
+<p>$answer0</p>
+<p></p>
+<h4>What are the benefits and who will benefit?</h4>
+<p>$answer1</p>
+<p></p>
+<h4>Who will be using my data?</h4>
+<p>$answer2</p>
+<p></p>
+<h4>Is my data secure?</h4>
+<p>$answer3</p>
+<p></p>
+<h4>Will my data be anonymous?</h4>
+<p>$answer4</p>
+<p></p>
+<h4>Can I see and correct data about me?</h4>
+<p>$answer5</p>
+<p></p>
+<h4>Could my data be sold?</h4>
+<p>$answer6</p>
+<p></p>
+<h4>Will I be asked for consent?</h4>
+<p>$answer7</p>
+<p></p>
+</td></tr></table>
 
-<table border="0" bordercolor="red" cellpadding="14">
+<!-- table border="0" bordercolor="red" cellpadding="14">
     <tr height="125px">
         <td width="50px">&nbsp;</td>
         <td height="125px" width="260px">$answer0</td>
@@ -130,10 +181,10 @@ $html = <<<EOD
         <td width="40px">&nbsp;</td>
         <td height="125px" width="260px">$answer7</td>
     </tr>
-
-
-
-</table>
+    
+    
+    
+</table -->
 
 
 EOD;
@@ -144,7 +195,7 @@ $pdf->writeHTMLCell(0, 0, '', '', $html, 0, 1, 0, true, '', true);
 // ---------------------------------------------------------
 
 $pdf->AddPage();
-$pdf->useTemplate($pdf->importPage(4));
+$pdf->useTemplate($pdf->importPage(3));
 // Close and output PDF document
 // This method has several options, check the source code documentation for more information.
 $pdf->Output('data_dial.pdf', 'I');
