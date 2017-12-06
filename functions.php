@@ -611,6 +611,26 @@ function get_public_wheel_rest($data) {
 //    wp_die();
 }
 
+function get_public_library_dials() {
+    global $wpdb;
+    $wheel_table = $wpdb->prefix . "data_futures_wheel";
+    $answers_table = $wpdb->prefix . "data_futures_answers";
+    
+    $wheels = $wpdb->get_results("SELECT * FROM $wheel_table WHERE public_library = true");
+
+    if (count($wheels) == 0) {
+        return array();
+    }
+
+    foreach ($wheels as $wheel) {
+        $answers = $wpdb->get_results($wpdb->prepare("SELECT * FROM $answers_table WHERE wheel_id = %d", $wheel_id));
+        $wheel -> answers = $answers;
+    }
+        
+    return $wheels;
+
+}
+
 function log_dial_request($wheel_id) {
     global $wpdb;
     $ip = $_SERVER['REMOTE_ADDR'];
@@ -1310,7 +1330,7 @@ function generate_public_library_hash($wheel_id) {
 }
 
 function send_library_approval_mail() {
-    $hashed_dial_id = $_REQUEST['id'];
+    $dial_id = $_REQUEST['id'];
 
     if (!is_user_logged_in()) {
 		return;
@@ -1319,7 +1339,7 @@ function send_library_approval_mail() {
 	global $current_user;
     get_currentuserinfo();
 	
-	$dial = get_public_wheel_details($hashed_dial_id);
+	$dial = get_public_wheel_details(hash_id($dial_id));
 	
 	if ($dial -> user_id != $current_user -> ID) {
 	    echo $dial->user_id;

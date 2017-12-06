@@ -490,15 +490,15 @@ $selected_wheel = get_selected_wheel($wheels);
 	<label>Public library</label>
 	<div id="no_public_library" class="alert alert-info public_library_alert" role="alert" style="display:none;">
 		<p>The Trusted Data site hosts a public library of dials, and we would like to include this dial in that library, but we need your permission.</p>
-		<p><a href="#" class="btn btn-info" data-toggle="collapse">Email me a permission link</a></p>
+		<p><a href="#" class="btn btn-info public-library-permission">Email me a permission link</a></p>
 	</div>
 	<div id="yes_public_library" class="alert alert-success public_library_alert" role="alert" style="display:none;">
   		<h4 class="alert-heading">Thank you!</h4>
-  		<p>Your dial is currently published in the <a class="alert-link" href="../library">library</a>.  Note that if you make any changes you will need to re-approve this.</p>
+  		<p>Your dial is currently published in the <a class="alert-link" href="<?php echo get_site_url(); ?>/library">library</a>.  Note that if you make any changes you will need to re-approve this.</p>
 	</div>
 	<div id="reapprove_public_library" class="alert alert-warning public_library_alert" role="alert" style="display:none;">
 		<p>As you have made changes to your dial, it has been un-published from the public library.  If you would like to re-publish it, click the button below.</p>
-		<p><a href="#" class="btn btn-warning" data-toggle="collapse">Email me a permission link</a></p>
+		<p><a href="#" class="btn btn-warning public-library-permission" data-toggle="collapse">Email me a permission link</a></p>
 	</div>
 	<div id="public_library_approval_sent" class="alert alert-success public_library_alert" style="display:none;">
 		<p>Thank you for requesting that your dial is published in the public library.  You have been sent an email, please follow the instructions in that email.</p>
@@ -1050,6 +1050,10 @@ jQuery(document).ready(function() {
 		e.preventDefault();
 		createWheel();
 	});
+	jQuery('a.public-library-permission').click(function(e) {
+		e.preventDefault();
+		sendPermissionEmail();
+	});
 	
 	loadWheel(wheelId);
 	monitorAnswers();
@@ -1129,7 +1133,19 @@ function ajaxSave(id, value) {
 		'answer':value
 	};
 	jQuery.post(ajaxurl, data, function(response) {
-	
+		if (jQuery('#yes_public_library:hidden').length == 0) {
+			jQuery('#yes_public_library').hide();
+			jQuery('#reapprove_public_library').show();
+		}
+	});
+}
+
+function sendPermissionEmail() {
+	var ajaxurl = '<?php echo admin_url( "admin-ajax.php" )?>';
+	jQuery.post(ajaxurl, {'action':'library_approval', 'id':wheelId}, function(response) {
+		jQuery('#no_public_library').hide();
+		jQuery('#reapprove_public_library').hide();
+		jQuery('#public_library_approval_sent').show();
 	});
 }
 
@@ -1169,7 +1185,6 @@ function loadWheel(id) {
 		var publicLibrary = json.library === "1";
 		if (publicLibrary) {
 			jQuery('#yes_public_library').show();
-			console.log('showing yes');
 		} else {
 			jQuery('#no_public_library').show();
 		}
