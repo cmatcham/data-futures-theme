@@ -623,7 +623,7 @@ function get_public_library_dials() {
     }
 
     foreach ($wheels as $wheel) {
-        $answers = $wpdb->get_results($wpdb->prepare("SELECT * FROM $answers_table WHERE wheel_id = %d", $wheel_id));
+        $answers = $wpdb->get_results($wpdb->prepare("SELECT * FROM $answers_table WHERE wheel_id = %d", $wheel->id));
         $wheel -> answers = $answers;
     }
         

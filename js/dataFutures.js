@@ -78,6 +78,10 @@
 		canvas = document.getElementById('dataFuturesWheelCanvas');
 		var ctx = canvas.getContext('2d');
 		dataFuturesWheel = new DataFuturesWheel();
+		if (elem.data('greyscale')) {
+			dataFuturesWheel.colour = false;
+		}
+		
 		dataFuturesWheel.init(canvas, document.getElementById('dataFuturesGuidelinesAnswersQuestion'), document.getElementById('dataFuturesGuidelinesAnswersAnswer'));
 		dataFuturesWheel.draw();
 		
@@ -107,15 +111,21 @@ var DataFuturesWheel = function() {
 	this.centerY = 175;
 	this.rotation = 0;
 	this.rotating = false;
+	
+	this.colour = true;
+	
+	this.colours = ['#F78F33', '#5085a0', '#9352a0'];
+	this.greyScale = ['#B5B7BB', '#939597', '#6C6E71'];
+	
 	this.slices = [
-		{'start':210,'end':255,'color':'#F78F33', 'text':'What will my data be used for?', 'src':'images/Icons-08.png'},
-		{'start':255,'end':300,'color':'#F78F33', 'text':'What are the benefits and who will benefit?', 'src':'images/Icons-10.png'},
-		{'start':300,  'end':345, 'color':'#F78F33', 'text':'Who will be using my data?', 'src':'images/Icons-09.png'},
-		{'start':345, 'end':390, 'color':'#5085a0', 'text':'Is my data secure?', 'src':'images/Icons-07.png'},
-		{'start':30, 'end':75,'color':'#5085a0', 'text':'Will my data be anonymous?', 'src':'images/Icons-06.png'},
-		{'start':75,'end':120,'color':'#5085a0', 'text':'Can I see and correct data about me?', 'src':'images/Icons-04.png'},
-		{'start':120,'end':165,'color':'#9352a0', 'text':'Could my data be sold?', 'src':'images/Icons-05.png'},
-		{'start':165,'end':210,'color':'#9352a0', 'text':'Will I be asked for consent?', 'src':'images/Icons-03.png'}
+		{'start':210,'end':255, 'color':0, 'text': 'What will my data be used for?', 'src':'images/Icons-08.png'},
+		{'start':255,'end':300, 'color':0, 'text': 'What are the benefits and who will benefit?', 'src':'images/Icons-10.png'},
+		{'start':300,'end':345, 'color':0, 'text': 'Who will be using my data?', 'src':'images/Icons-09.png'},
+		{'start':345,'end':390, 'color':1, 'text': 'Is my data secure?', 'src':'images/Icons-07.png'},
+		{'start':30, 'end':75,  'color':1, 'text': 'Will my data be anonymous?', 'src':'images/Icons-06.png'},
+		{'start':75, 'end':120, 'color':1, 'text': 'Can I see and correct data about me?', 'src':'images/Icons-04.png'},
+		{'start':120,'end':165, 'color':2, 'text': 'Could my data be sold?', 'src':'images/Icons-05.png'},
+		{'start':165,'end':210, 'color':2, 'text': 'Will I be asked for consent?', 'src':'images/Icons-03.png'}
 	];
 	this.answers = [];
 	this.init = function(canvasElement, questionElement, answerElement) {
@@ -275,7 +285,8 @@ var DataFuturesWheel = function() {
 		var self = this;
 		var toRadians = this.toRadians;
 		this.slices.forEach(function(slice) {
-			self.drawSlice(ctx, slice.color, slice.start + rotation, slice.end + rotation, outerRadii);
+			var color = self.colour ? self.colours[slice.color] : self.greyScale[slice.color];
+			self.drawSlice(ctx, color, slice.start + rotation, slice.end + rotation, outerRadii);
 			self.drawText(self.canvas, (rotation + slice.start + 22.5) % 360, slice.text);
 			//self.drawImage(ctx, rotation + slice.start + 22.5, slice.img);
 		});
@@ -293,9 +304,9 @@ var DataFuturesWheel = function() {
 		ctx.fill(); 
 
 		//draw inner slices out to middleRadii
-		self.drawInnerSlice(ctx, '#9352a0', this.slices[6].start + rotation, this.slices[7].end + rotation, middleRadii);
-		self.drawInnerSlice(ctx, '#F78F33', this.slices[0].start + rotation, this.slices[2].end + rotation, middleRadii);
-		self.drawInnerSlice(ctx, '#5085a0', this.slices[3].start + rotation, this.slices[5].end + 360 + rotation, middleRadii);
+		self.drawInnerSlice(ctx, this.colour ? this.colours[2] : this.greyScale[2], this.slices[6].start + rotation, this.slices[7].end + rotation, middleRadii);
+		self.drawInnerSlice(ctx, this.colour ? this.colours[0] : this.greyScale[0], this.slices[0].start + rotation, this.slices[2].end + rotation, middleRadii);
+		self.drawInnerSlice(ctx, this.colour ? this.colours[1] : this.greyScale[1], this.slices[3].start + rotation, this.slices[5].end + 360 + rotation, middleRadii);
 		
 		//fill center with white out to innerRadii + padding
 		ctx.fillStyle = '#ffffff';
@@ -308,7 +319,7 @@ var DataFuturesWheel = function() {
 		ctx.lineTo(cx, cy);
 		ctx.closePath();
 		ctx.fill();  
-		 		
+		
 		//draw text on paths
 		var textRadius = innerRadii + 9;
 		ctx.font = 'bold 10px Arial';
@@ -395,6 +406,14 @@ var DataFuturesWheel = function() {
 			self.rotate(desiredRotation);
 	    });
 	};
+	
+	this.redraw = function() {
+		var self = this;
+		var ctx = self.canvas.getContext('2d');
+		ctx.fillStyle = '#ffffff';
+		ctx.clearRect(0,0,350,350);
+		self.drawSlices(ctx, self.rotation);
+	}
 	
 	this.getMousePos = function(evt) {
 		var rect = this.canvas.getBoundingClientRect();

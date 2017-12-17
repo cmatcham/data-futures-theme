@@ -851,6 +851,15 @@ aria-labelledby="q8help" aria-hidden="true">
 	<div class="panel-body">
 		<h1 class="heading">Test your dial</h1>
 		<p>This is how your dial will appear when published on your site, or <a href="../public-dials/" id="testDialLink">linked to on our site</a>.  Check everything is working, then on to step 3!</p>
+		<div class="form-check form-inline">View in 
+  			<label class="form-check-label" style="font-weight: normal">
+    		<input class="form-check-input" type="radio" name="wheelColor" id="wheelColorGrey" value="grey" onClick="wheelRef.colour = false;wheelRef.redraw();"/> Greyscale
+  			</label>
+		
+  			<label class="form-check-label" style="font-weight: normal">
+    		<input class="form-check-input" type="radio" name="wheelColor" id="wheelColorColor" value="colour" checked="checked" onClick="wheelRef.colour = true;wheelRef.redraw();"/> Colour
+  			</label>
+		</div>
 		<div id="dataFutures"></div>
 	</div>
 </div>
