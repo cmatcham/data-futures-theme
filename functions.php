@@ -631,6 +631,31 @@ function get_public_library_dials() {
 
 }
 
+function get_public_library_dial_by_approval($hash) {
+	global $wpdb;
+    $wheel_table = $wpdb->prefix . "data_futures_wheel";
+    $wheels = $wpdb->get_row("SELECT * FROM $wheel_table WHERE public_library_hash = '$hash'");
+
+    if (empty($wheels)) {
+		return false;
+    }
+    
+    $wpdb->update(
+        $wheel_table,
+        array(
+            'public_library'   => 1
+        ),
+        array(
+            'id' => $wheels->id
+        ),
+        array( '%d'),
+        array( '%d')
+        );
+        
+	return true;
+    
+}
+
 function log_dial_request($wheel_id) {
     global $wpdb;
     $ip = $_SERVER['REMOTE_ADDR'];
@@ -841,6 +866,7 @@ add_shortcode('flowchart', 'flowchart');
 
 function add_dial_query_vars_filter( $vars ){
     $vars[] = "dial";
+    $vars[] = "approve";
     return $vars;
 }
 add_filter( 'query_vars', 'add_dial_query_vars_filter' );
@@ -885,7 +911,9 @@ function download_dials_display() {
     	fpassthru($rsc);
     	exit;
     } else if ('library' == $dials_page) {
-        error_log('is library');
+    	error_log("approval: " . get_query_var('approve'));
+
+		
         header("HTTP/1.1 200 OK");
         include( get_template_directory().'/library-page.php');
         exit;
@@ -1075,6 +1103,8 @@ function data_futures_title() {
     $dials_page = get_query_var('pagename');
     if('public-dial' == $dials_page){
         echo 'Dial';
+    } else if ('library' == $dials_page) {
+    	echo 'Public library';
     } else {
         wp_title('');
     }
@@ -1354,14 +1384,27 @@ function send_library_approval_mail() {
 	$to = $current_user->user_email;
 
     $subject = 'Publish your Trusted Data Dial to the public library?';
-	$body = '<html><body><p>To publish your trusted data dial to the public library please click the link below</p>';
-	$body .= '<p><a href="https://trusteddata.co.nz/public-dials/library?approve=${hash}">Approve your dial being published to the library</a></p>';
-	$headers = array('Content-Type: text/html; charset=UTF-8','From: Trusted Data <info@datafutures.co.nz');
+	$body = <<<EOD
+Thank you for agreeing to publish your trusted data dial to the public library.  To complete the process, please click the link below:
+
+https://trusteddata.co.nz/dial-library?approve=${hash}
+
+If you make any changes to your dial, it will be removed from the library and you will need to approve it again.
+
+The Data Futures team.
+EOD;
+	$headers = array('From: Trusted Data <info@datafutures.co.nz');
  
 	wp_mail( $to, $subject, $body, $headers );
 	
 	echo json_encode(array("email" => $current_user->user_email));
 	wp_die();
+}
+
+function approve_library($hash) {
+	$approved = get_public_library_dial_by_approval($hash);	
+	return $approved;
+	
 }
 
 add_action( 'wp_ajax_library_approval', send_library_approval_mail );

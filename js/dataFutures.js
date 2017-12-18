@@ -12,7 +12,7 @@
  * <div id="dataFutures" data-wheel-id="[your code]"></div>
  * 
  * Styling:
- * The wheel itself is sized at 350x350px.  Your answers will be injected into a named div inside the 
+ * The dial itself is sized at 350x350px.  Your answers will be injected into a named div inside the 
  * div you inserted above, with the id 'dataFuturesGuidelinesAnswers'.
  * The script will inject standard styling for these elements.  To suppress this and use your own CSS, 
  * append data-style="none" to the #dataFutures div above.  The hierarchy of injected content is shown below.
@@ -26,6 +26,11 @@
  * 					[question shown here]
  * 				div#dataFuturesGuidelinesAnswersAnswer
  * 					[answer shown here]
+ * 
+ * Colour:
+ * By default the dial will display with the Trusted Data branding colours of orange, purple and blue.  We
+ * recognise that these branding colours may not fit well with your site branding, in which case you can 
+ * convert the dial to greyscale by appending data-greyscale="true" to the #dataFutures div.
  * 
  * 
  * For further assistance contact colin@parhelion.co.nz
