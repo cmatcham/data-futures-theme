@@ -1,5 +1,6 @@
 <?php /* Template Name: Public dials display */ ?>
 <?php get_header(); ?>
+
 <style>
 #dataFuturesGuidelinesAnswers {
 	width: 40%;
@@ -19,35 +20,70 @@
     display: inline-block;
     vertical-align: top;
 }
+.answers {
+	max-width: 550px;
+	padding-left: 20px;
+}
+.question h1 {
+	font-size: 14pt;
+}
 </style>
 
 <h1>Public library</h1>
+<?php
+if (get_query_var('approve') != null) {
+	$approved = approve_library(get_query_var('approve'));
+	if ($approved) {
+		?>
+		<div class="alert alert-success" role="alert">Thank you for approving your dial to the public library.  You'll be able to see it below.</div>
+		<?php
+	} else {
+		?>
+		<div class="alert alert-warning" role="alert">That approval code wasn't recognised!  Please go to the dial creation page to generate a new approval code.</div>
+		<?php
+	}
+}
+
+$dials = get_public_library_dials();
+
+
+if (count($dials) == 0) {
+	?><p>Currently there are no dials published to the library</p><?php	
+} else {
+?>
+
+
 <script src="<?php  echo get_theme_file_uri( '/js/dataFutures.js' )?>"></script>
 
 <div id="library">
+<?php 
+foreach ($dials as $dial) {
+	?>
+	<div style="padding-bottom: 10px; border-bottom: 1px grey solid; margin-bottom: 20px" id="dial<?php echo $dial->id;?>">
+		<h2><?php echo $dial->name ?></h2>
+		<div id="lib<?php echo $dial->id;?>">
+			<canvas id="dataFuturesWheelCanvas<?php echo $dial->id;?>" class="inline" width='350px' height='350px'></canvas>
+			<div id="dataFuturesGuidelinesAnswers<?php echo $dial->id;?>" class="inline answers">
+				<div id="dataFuturesGuidelinesAnswersQuestion<?php echo $dial->id;?>" class="question"></div>
+				<div id="dataFuturesGuidelinesAnswersAnswer<?php echo $dial->id;?>"></div>
+			</div>
+		</div>
+		<script>
+		var lib<?php echo $dial->id;?> = new DataFuturesWheel();
+		lib<?php echo $dial->id;?>.init(
+			document.getElementById('dataFuturesWheelCanvas<?php echo $dial->id;?>'),
+			document.getElementById('dataFuturesGuidelinesAnswersQuestion<?php echo $dial->id;?>'), 
+			document.getElementById('dataFuturesGuidelinesAnswersAnswer<?php echo $dial->id;?>'));
+		lib<?php echo $dial->id;?>.draw();
+		lib<?php echo $dial->id;?>.answers = <?php echo json_encode($dial->answers)?>;
+		
+		</script>
+	</div>
+<?php 
+}
+?>
 
 </div>
 
-<script>
-jQuery('#library').append("<div id='lib1'><canvas id='dataFuturesWheelCanvas1' class='inline' width='350px' height='350px'></canvas><div id='dataFuturesGuidelinesAnswers1' class='inline' ><div id='dataFuturesGuidelinesAnswersQuestion1'></div><div id='dataFuturesGuidelinesAnswersAnswer1'></div></div></div>");
-var lib1 = new DataFuturesWheel();
-lib1.init(document.getElementById('dataFuturesWheelCanvas1'), document.getElementById('dataFuturesGuidelinesAnswersQuestion1'), document.getElementById('dataFuturesGuidelinesAnswersAnswer1'));
-jQuery('#library').append("<div id='lib2'><canvas id='dataFuturesWheelCanvas2' class='inline' width='350px' height='350px'></canvas><div id='dataFuturesGuidelinesAnswers2' class='inline' ><div id='dataFuturesGuidelinesAnswersQuestion2'></div><div id='dataFuturesGuidelinesAnswersAnswer2'></div></div></div>");
-var lib2 = new DataFuturesWheel();
-lib2.init(document.getElementById('dataFuturesWheelCanvas2'), document.getElementById('dataFuturesGuidelinesAnswersQuestion2'), document.getElementById('dataFuturesGuidelinesAnswersAnswer2'));
-
-lib1.draw();
-lib2.draw();
-
-var data = {'action':'public_wheel', 'id':4849664};
-$.get('https://trusteddata.co.nz/wp-json/dataFutures/v1/wheel/'+data.id, data, function(response) {
-	lib1.answers = response.answers;
-});
-var data = {'action':'public_wheel', 'id':2228224};
-$.get('https://trusteddata.co.nz/wp-json/dataFutures/v1/wheel/'+data.id, data, function(response) {
-	lib1.answers = response.answers;
-});
-
-
-</script>
+<?php } ?>
 <?php get_footer(); ?>

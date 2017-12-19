@@ -69,8 +69,7 @@ function trusted_data_options_page() {
  */
 
 // section content cb
-function trusted_data_settings_section_cb()
-{
+function trusted_data_settings_section_cb() {
     echo '<p>To fully activate the RWNZ theme, you need to complete this section with your API keys etc.</p>';
 }
 
