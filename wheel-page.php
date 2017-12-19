@@ -1177,6 +1177,16 @@ function loadWheel(id) {
 	});
 }
 
+function triggerLibraryApproval() {
+	wheelId = id;
+	var ajaxurl = '<?php echo admin_url( "admin-ajax.php" )?>';
+	var data = {
+		'action':'get_wheel',
+		'id':id
+	};
+	jQuery.post(ajaxurl, data, function(response) {
+}
+
 function getAnswer(id, array) {
 var object = array.find(function(el){return el.question_id == id});
 if (typeof(object) !== 'undefined') {
