@@ -3,6 +3,8 @@
 add_action( 'after_switch_theme', 'create_db' );
 
 include_once 'includes/trusted-data-settings.php';
+include_once 'advanced-custom-fields/acf.php';
+
 
 //Our class extends the WP_List_Table class, so we need to make sure that it's there
 if(!class_exists('WP_List_Table')){
