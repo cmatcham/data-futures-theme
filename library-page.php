@@ -28,8 +28,9 @@
 	font-size: 14pt;
 }
 </style>
-
-<h1>Public library</h1>
+<div class="public">
+<h1 class="heading">Public library</h1>
+</div>
 <?php
 if (get_query_var('approve') != null) {
 	$approved = approve_library(get_query_var('approve'));

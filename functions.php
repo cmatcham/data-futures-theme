@@ -26,6 +26,8 @@ function create_db() {
     $wheel_table = $wpdb->prefix . "data_futures_wheel";
     $answers_table = $wpdb->prefix . "data_futures_answers";
     $views_table = $wpdb->prefix . "data_futures_views";
+    $library_image_table = $wpdb->prefix . "data_futures_library_image";
+    
     
     $charset_collate = $wpdb->get_charset_collate();
     
@@ -34,6 +36,7 @@ function create_db() {
 		user_id BIGINT(20) UNSIGNED NOT NULL,
 		name TEXT,
 		url VARCHAR(255),
+		industry VARCHAR(2),
         creation_time DATETIME DEFAULT CURRENT_TIMESTAMP,
         modification_time DATETIME ON UPDATE CURRENT_TIMESTAMP,
         public_library BIT(1),
@@ -68,6 +71,13 @@ function create_db() {
         PRIMARY KEY (id)
     ) $charset_collate;";
 
+    dbDelta($sql);
+    
+    $sql = "CREATE TABLE $library_image_table (
+	    wheel_id INT NOT NULL,
+		answer TEXT
+    ) $charset_collate;";
+    
     dbDelta($sql);
 
     
@@ -562,6 +572,7 @@ function get_wheel() {
         "id" => $wheels->id, 
         "name" => $wheels->name, 
         "url" => $wheels->url, 
+        "industry" => $wheels->industry,
         "library" => $wheels-> public_library,
         "public_library_hash" => $wheels -> public_library_hash,
         "answers" => $answers
@@ -714,8 +725,10 @@ function save_wheel() {
     global $wpdb;
     $wheel_table = $wpdb->prefix . "data_futures_wheel";
     $wheel_id = $_REQUEST['id'];
+    
     $name = sanitize_text_field($_REQUEST['name']);
     $url = sanitize_text_field($_REQUEST['url']);
+    $industry = sanitize_text_field($_REQUEST['industry']);
     
     
     
@@ -728,13 +741,14 @@ function save_wheel() {
         array(
             'name' => stripslashes($name),
             'url'  => stripslashes($url),
+            'industry' => stripslashes($industry),
             'public_library'    => 0,
             'public_library_hash'   => null
         ),
         array(
             'id' => $wheel_id
         ),
-        array( '%s', '%s', '%d', '%s'),
+        array( '%s', '%s', '%s', '%d', '%s'),
         array( '%d')
     );
 }
@@ -1345,6 +1359,10 @@ function generate_public_library_hash($wheel_id) {
     
     $hash = substr(base64_encode(mt_rand()), 0, 15);
     
+    print_r('updating wheel '.$wheel_id.' with hash '.$hash);
+    echo('updating wheel '.$wheel_id.' with hash '.$hash);
+    
+    
     $wpdb->update(
         $wheel_table,
         array(
@@ -1409,4 +1427,29 @@ function approve_library($hash) {
 
 add_action( 'wp_ajax_library_approval', send_library_approval_mail );
 add_action( 'wp_ajax_nopriv_library_approval', send_library_approval_mail );
+
+function get_industry_codes() {
+	return array(
+		'A'	=> 'Agriculture, Forestry and Fishing',
+		'B'	=> 'Mining',
+		'C' => 'Manufacturing',
+		'D' => 'Electricity, Gas, Water and Waste Services',
+		'E' => 'Construction',
+		'F' => 'Wholesale Trade',
+		'G' => 'Retail Trade',
+		'H' => 'Accommodation and Food Services',
+		'I' => 'Transport, Postal and Warehousing',
+		'J' => 'Information Media and Telecommunications',
+		'K' => 'Financial and Insurance Services',
+		'L' => 'Rental, Hiring and Real Estate Services',
+		'M' => 'Professional, Scientific and Technical Services',
+		'N' => 'Administrative and Support Services',
+		'O' => 'Public Administration and Safety',
+		'P' => 'Education and Training',
+		'Q' => 'Health Care and Social Assistance',
+		'R' => 'Arts and Recreation Services',
+		'S' => 'Other Services'
+	);
+}
+
 ?>
