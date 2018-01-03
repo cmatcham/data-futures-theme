@@ -355,18 +355,36 @@ $selected_wheel = get_selected_wheel($wheels);
 	<div class="panel-body">
 	<h1 class="heading" style="margin-top:0px">Create your data use dial</h1>
 	<div class="row">
-	<div class="col-sm-6">
+	<div class="col-sm-4">
 		<div class="form-group">
 			<label for="wheelName">Name</label>
 			<input type="text" class="form-control text_input" id="wheelName" placeholder="Enter a name for this wheel (eg. your organisation name)" name="wheelName">
 		</div>
 	</div>
-	<div class="col-sm-6">
+	<div class="col-sm-4">
 		<div class="form-group">
 			<label for="wheelURL">URL</label>
 			<input type="text" class="form-control text_input" id="wheelURL" placeholder="Enter the url of your organisation or business unit" name="wheelName">
 		</div>
 	</div>
+	<div class="col-sm-4">
+		<div class="form-group">
+			<label for="wheelIndustry">Industry</label>
+			<select name="wheelIndustry" id="wheelIndustry" class="form-control">
+				<option value="-1">Please select your industry</option>
+				<?php
+				$industries = get_industry_codes();
+				foreach ($industries as $key => $industry) {
+					echo "<option value=\"$key\">$industry</option>";
+				}
+				?>
+			</select>
+		</div>
+	</div>
+
+
+
+
 	</div>
 
 
@@ -1005,21 +1023,40 @@ aria-labelledby="q8help" aria-hidden="true">
 </div>
 
 <div class="panel">
-<p class="step-heading"><a data-toggle="collapse" data-parent="#accordion" href="#step4">STEP 4</a></p>
-<div id="step4" class="panel-collapse collapse">
-	<div class="panel-body">
+	<p class="step-heading"><a data-toggle="collapse" data-parent="#accordion" href="#step4">STEP 4</a></p>
+	<div id="step4" class="panel-collapse collapse">
+		<div class="panel-body">
+			<h2>Share your dial</h2>
+			<p>Now that you've created your dial, make sure your customers know about it.</p>
+			<label>Share on social media</label>
+			<div class="social">
+			<ul>
+				<li><a href="#" id="fbshare"><i class="fa fa-lg fa-facebook"></i></a></li>
+				<li><a href="#" id="twittershare"><i class="fa fa-lg fa-twitter"></i></a></li>
+				<li><a href="#" id="lnshare"><i class="fa fa-lg fa-linkedin"></i></a></li>
+				
+			</ul>
+			</div>
+			<label>Share in the public library</label>
+			<div id="no_public_library2" class="alert alert-info public_library_alert" role="alert" style="display:none;">
+				<p>The Trusted Data site hosts a public library of dials, and we would like to include this dial in that library, but we need your permission.</p>
+				<p><a href="#" class="btn btn-info public-library-permission">Email me a permission link</a></p>
+			</div>
+			<div id="yes_public_library2" class="alert alert-success public_library_alert" role="alert" style="display:none;">
+		  		<h4 class="alert-heading">Thank you!</h4>
+		  		<p>Your dial is currently published in the <a class="alert-link" href="<?php echo get_site_url(); ?>/library">library</a>.  Note that if you make any changes you will need to re-approve this.</p>
+			</div>
+			<div id="reapprove_public_library2" class="alert alert-warning public_library_alert" role="alert" style="display:none;">
+				<p>As you have made changes to your dial, it has been un-published from the public library.  If you would like to re-publish it, click the button below.</p>
+				<p><a href="#" class="btn btn-warning public-library-permission" data-toggle="collapse">Email me a permission link</a></p>
+			</div>
+			<div id="public_library_approval_sent2" class="alert alert-success public_library_alert" style="display:none;">
+				<p>Thank you for requesting that your dial is published in the public library.  You have been sent an email, please follow the instructions in that email.</p>
+			</div>
 
-
-<h2>Share your dial</h2>
-<div class="social">
-<ul>
-	<li><a href="#" id="fbshare"><i class="fa fa-lg fa-facebook"></i></a></li>
-	<li><a href="#" id="twittershare"><i class="fa fa-lg fa-twitter"></i></a></li>
-	<li><a href="#" id="lnshare"><i class="fa fa-lg fa-linkedin"></i></a></li>
-	
-</ul>
+		</div>
+	</div>
 </div>
-</div></div></div>
 
 <script>
 var ajaxurl = '<?php echo admin_url( "admin-ajax.php" )?>';
@@ -1052,6 +1089,10 @@ jQuery(document).ready(function() {
 	}, 1000));
 	
 	jQuery('#wheelURL').on('change keyup paste', jQuery.debounce(function(evt) {
+		saveWheel();
+	}, 1000));
+
+	jQuery('#wheelIndustry').on('change keyup paste', jQuery.debounce(function(evt) {
 		saveWheel();
 	}, 1000));
 	
@@ -1126,9 +1167,16 @@ function saveWheel() {
 			'action':'save_wheel',
 			'id':wheelId,
 			'name':jQuery('#wheelName').val(),
-			'url':jQuery('#wheelURL').val()
+			'url':jQuery('#wheelURL').val(),
+			'industry':jQuery('#wheelIndustry').val()
 	};
 	jQuery.post(ajaxurl, data, function(response) {
+		if (jQuery('#yes_public_library:hidden').length == 0) {
+			jQuery('#yes_public_library').hide();
+			jQuery('#reapprove_public_library').show();
+			jQuery('#yes_public_library2').hide();
+			jQuery('#reapprove_public_library2').show();
+		}
 	});
 
 }
@@ -1145,6 +1193,8 @@ function ajaxSave(id, value) {
 		if (jQuery('#yes_public_library:hidden').length == 0) {
 			jQuery('#yes_public_library').hide();
 			jQuery('#reapprove_public_library').show();
+			jQuery('#yes_public_library2').hide();
+			jQuery('#reapprove_public_library2').show();
 		}
 	});
 }
@@ -1155,6 +1205,9 @@ function sendPermissionEmail() {
 		jQuery('#no_public_library').hide();
 		jQuery('#reapprove_public_library').hide();
 		jQuery('#public_library_approval_sent').show();
+		jQuery('#no_public_library2').hide();
+		jQuery('#reapprove_public_library2').hide();
+		jQuery('#public_library_approval_sent2').show();
 	});
 }
 
@@ -1179,6 +1232,8 @@ function loadWheel(id) {
 		jQuery('#lnshare').attr('href', "http://www.linkedin.com/shareArticle?mini=true&url=https://trusteddata.co.nz/public-dials/"+json.embedCode+"/&title=Trusted Data Dial&summary=I've just made my data dial, visit www.TrustedData.co.nz to create yours!");
 		jQuery('#wheelName').val(json.name);		
 		jQuery('#wheelURL').val(json.url);
+		console.log("setting industry to "+json.industry);
+		jQuery('#wheelIndustry').val(json.industry);
 		jQuery('#q1answer').val(getAnswer(1, json.answers));
 		jQuery('#q2answer').val(getAnswer(2, json.answers));
 		jQuery('#q3answer').val(getAnswer(3, json.answers));
@@ -1194,8 +1249,10 @@ function loadWheel(id) {
 		var publicLibrary = json.library === "1";
 		if (publicLibrary) {
 			jQuery('#yes_public_library').show();
+			jQuery('#yes_public_library2').show();
 		} else {
 			jQuery('#no_public_library').show();
+			jQuery('#no_public_library2').show();
 		}
 		
 	});
