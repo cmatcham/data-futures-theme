@@ -3,6 +3,7 @@
 add_action( 'after_switch_theme', 'create_db' );
 
 include_once 'includes/trusted-data-settings.php';
+include_once 'includes/class.uploads.php';
 include_once 'advanced-custom-fields/acf.php';
 
 
@@ -1453,5 +1454,131 @@ function get_industry_codes() {
 		'S' => 'Other Services'
 	);
 }
+
+function library_image_upload_load_scripts() {
+    wp_enqueue_script('image-form-js', get_template_directory_uri() . '/js/library-image-upload.js', array('jquery'), '0.1.0', true);
+    
+    $uploads = wp_upload_dir();
+    $basedir = $uploads["baseurl"] . "/publicLibrary";
+    
+    $data = array(
+        'upload_url' => admin_url('async-upload.php'),
+        'ajax_url'   => admin_url('admin-ajax.php'),
+        'nonce'      => wp_create_nonce('media-form'),
+        'upload_basedir' => $basedir
+    );
+    
+    wp_localize_script( 'image-form-js', 'su_config', $data );
+}
+add_action('wp_enqueue_scripts', 'library_image_upload_load_scripts');
+
+function image_upload_form_html($dial_id){
+    ob_start();
+    ?>
+        <?php if ( is_user_logged_in() ): ?>
+            <p class="form-notice"></p>
+            <form action="" method="post" class="image-form">
+                <?php wp_nonce_field('image-submission'); ?>
+                <p class="image-notice"></p>
+                <p><label>Replace logo: </label><input type="file" name="async-upload" class="image-file" accept="image/*" value="Change image" required></p>
+                <input type="hidden" name="image_id">
+                <input type="hidden" name="dialId" value="<?php echo $dial_id; ?>"/>
+                <input type="hidden" name="action" value="image_submission">
+            </form>
+        <?php else: ?>
+            <p>Please <a href="<?php echo esc_url( wp_login_url( get_permalink() ) ); ?>">login</a> first to submit your image.</p>
+        <?php endif; ?>
+    <?php
+    $output = ob_get_clean();
+    return $output;
+}
+
+function allow_client_to_uploads() {
+    $client = get_role('client');
+    
+    if ( ! $client->has_cap('upload_files') ) {
+        $client->add_cap('upload_files');
+    }
+}
+add_action('admin_init', 'allow_client_to_uploads');
+
+add_filter('wp_handle_upload_prefilter', 'my_upload_prefilter');
+add_filter('wp_handle_upload', 'my_handle_upload');
+
+function my_upload_prefilter( $file ) {
+    add_filter('upload_dir', 'my_custom_upload_dir');
+    return $file;
+}
+
+function get_library_dial_image($dialid) {
+    $uploads = wp_upload_dir();
+    $basedir = $uploads["basedir"] . "/publicLibrary/" . $dialid;
+    error_log("Looking for ". $basedir . "/" . $dialid . ".png");
+    if (file_exists($basedir . "/" . $dialid . ".png")) {
+        error_log(print_r($uploads,true));
+        return $uploads["baseurl"] . "/publicLibrary/$dialid/$dialid.png";
+    } else {
+        return get_theme_file_uri('images/library-dial.png');
+    }
+}
+
+function my_handle_upload( $fileinfo ) {
+    remove_filter('upload_dir', 'my_custom_upload_dir');
+
+    if(null !==  $_REQUEST["publicLibrary"]) {
+        $dial = $_REQUEST["dialId"];
+        if (is_valid_wheel($dial)) {
+            
+            $handle = new upload($fileinfo["file"]);
+            $handle->image_convert = 'png';
+            $handle->image_x = 220;
+            $handle->image_y  = 200;
+            $handle->image_resize = true;
+            $handle->image_ratio = true;
+            $handle->process(wp_upload_dir()["basedir"] . "/publicLibrary/" . $dial);
+            error_log('copying to ' . $handle->file_dst_path . $dial . ".png");
+            if (!copy($handle->file_dst_pathname , $handle->file_dst_path . $dial . ".png")) {
+                error_log ("failed to copy to $handle->file_dst_path / $dial .png...\n");
+            }
+            $handle->image_convert = 'png';
+            $handle->image_x = 220;
+            $handle->image_y  = 200;
+            $handle->image_resize = true;
+            $handle->image_ratio = true;
+            $handle->image_greyscale = true;
+            $handle->process(wp_upload_dir()["basedir"] . "/publicLibrary/" . $dial);
+            copy($handle->file_dst_pathname , $handle->file_dst_path . $dial . "-grey.png");
+
+            $attachments = get_posts( array(
+                'post_type' => 'attachment',
+                'posts_per_page' => 1,
+                'post_status' => null,
+                'post_mime_type' => 'image'
+            ) );
+            
+            foreach ( $attachments as $attachment ) {
+                error_log("attachment id is ".$attachment->ID);
+                wp_delete_attachment($attachment->ID);
+            }
+            
+        }
+    }
+    
+    return $fileinfo;
+}   
+
+function my_custom_upload_dir($path) {
+    if(null !==  $_REQUEST["publicLibrary"]) {
+        $mydir = '/publicLibrary';
+        
+        $path['subdir']  = $mydir;
+        $path['path']   = $path['basedir'].$mydir;
+        $path['url']    = $path['baseurl'].$mydir;
+    }
+    
+    error_log(print_r($path, true));
+    return $path; //altered or not
+}
+
 
 ?>

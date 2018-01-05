@@ -512,7 +512,7 @@ $selected_wheel = get_selected_wheel($wheels);
 	</div>
 	<div id="yes_public_library" class="alert alert-success public_library_alert" role="alert" style="display:none;">
   		<h4 class="alert-heading">Thank you!</h4>
-  		<p>Your dial is currently published in the <a class="alert-link" href="<?php echo get_site_url(); ?>/library">library</a>.  Note that if you make any changes you will need to re-approve this.</p>
+  		<p>Your dial is currently published in the <a class="alert-link" href="<?php echo get_site_url(); ?>/dial-library">library</a>.  Note that if you make any changes you will need to re-approve this.</p>
 	</div>
 	<div id="reapprove_public_library" class="alert alert-warning public_library_alert" role="alert" style="display:none;">
 		<p>As you have made changes to your dial, it has been un-published from the public library.  If you would like to re-publish it, click the button below.</p>
@@ -1266,6 +1266,7 @@ function triggerLibraryApproval() {
 		'id':id
 	};
 	jQuery.post(ajaxurl, data, function(response) {
+	});
 }
 
 function getAnswer(id, array) {

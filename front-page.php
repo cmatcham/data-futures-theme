@@ -231,6 +231,7 @@ span.icon-bar {
 <p><strong>
 <a class="public" href="<?php echo $public_url;?>">Public</a> | 
 <a class="organisation" href="<?php echo $entity_url;?>">Organisation</a>
+<span style="float:right"><a href="create-your-wheel">Create your dial &gt;</a></span>
 </strong></p>
 </div>
 
