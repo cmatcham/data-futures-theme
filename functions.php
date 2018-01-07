@@ -1530,16 +1530,24 @@ function my_handle_upload( $fileinfo ) {
         if (is_valid_wheel($dial)) {
             
             $handle = new upload($fileinfo["file"]);
+            $handle->allowed = 'image/*';
             $handle->image_convert = 'png';
             $handle->image_x = 220;
             $handle->image_y  = 200;
             $handle->image_resize = true;
             $handle->image_ratio = true;
             $handle->process(wp_upload_dir()["basedir"] . "/publicLibrary/" . $dial);
-            error_log('copying to ' . $handle->file_dst_path . $dial . ".png");
+            
+            if (!$handle->processed) {
+                $fileinfo["error"] = $handle->error;
+                return $fileinfo;
+            }
             if (!copy($handle->file_dst_pathname , $handle->file_dst_path . $dial . ".png")) {
                 error_log ("failed to copy to $handle->file_dst_path / $dial .png...\n");
             }
+            unlink($handle->file_dst_pathname);
+            
+            $handle->allowed = 'image/*';
             $handle->image_convert = 'png';
             $handle->image_x = 220;
             $handle->image_y  = 200;
@@ -1548,19 +1556,7 @@ function my_handle_upload( $fileinfo ) {
             $handle->image_greyscale = true;
             $handle->process(wp_upload_dir()["basedir"] . "/publicLibrary/" . $dial);
             copy($handle->file_dst_pathname , $handle->file_dst_path . $dial . "-grey.png");
-
-            $attachments = get_posts( array(
-                'post_type' => 'attachment',
-                'posts_per_page' => 1,
-                'post_status' => null,
-                'post_mime_type' => 'image'
-            ) );
-            
-            foreach ( $attachments as $attachment ) {
-                error_log("attachment id is ".$attachment->ID);
-                wp_delete_attachment($attachment->ID);
-            }
-            
+            unlink($handle->file_dst_pathname);
         }
     }
     
