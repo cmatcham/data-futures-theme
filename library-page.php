@@ -1,47 +1,6 @@
 <?php /* Template Name: Public dials display */ ?>
 <?php get_header(); ?>
 
-<?php 
-
-/*
-
-// Deal with images uploaded from the front-end while allowing ACF to do itâ€™s thing
-function my_acf_pre_save_post($post_id) {
-
-if ( !function_exists(â€˜wp_handle_uploadâ€™) ) {
-require_once(ABSPATH . â€˜wp-admin/includes/file.phpâ€™);
-}
-
-// Move file to media library
-$movefile = wp_handle_upload( $_FILES[â€˜my_image_uploadâ€™], array(â€˜test_formâ€™ => false) );
-
-// If move was successful, insert WordPress attachment
-if ( $movefile && !isset($movefile[â€˜errorâ€™]) ) {
-$wp_upload_dir = wp_upload_dir();
-$attachment = array(
-â€˜guidâ€™ => $wp_upload_dir[â€˜urlâ€™] . â€˜/â€™ . basename($movefile[â€˜fileâ€™]),
-â€˜post_mime_typeâ€™ => $movefile[â€˜typeâ€™],
-â€˜post_titleâ€™ => preg_replace( â€˜/\.[^.]+$/â€™, â€�, basename($movefile[â€˜fileâ€™]) ),
-â€˜post_contentâ€™ => â€�,
-â€˜post_statusâ€™ => â€˜inheritâ€™
-);
-$attach_id = wp_insert_attachment($attachment, $movefile[â€˜fileâ€™]);
-
-// Assign the file as the featured image
-set_post_thumbnail($post_id, $attach_id);
-update_field(â€˜my_image_uploadâ€™, $attach_id, $post_id);
-
-}
-
-return $post_id;
-
-}
-
-add_filter(â€˜acf/pre_save_postâ€™ , â€˜my_acf_pre_save_postâ€™);
-
-*/
-?>
-
 <style>
 #dataFuturesGuidelinesAnswers {
 	width: 40%;

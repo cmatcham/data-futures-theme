@@ -12,16 +12,20 @@
         
         var library;
         
-        $libraryImages.css('filter','grayscale(100%)');
+        $libraryImages.css('filter','grayscale(80%)');
+        $libraryImages.css('opacity','0.8');
         $libraryEntry.on('mouseover', function(e) {
         	$(this).find('.greyed').css('filter','inherit');
+        	$(this).find('.greyed').css('opacity','1');
+
         }).on('mouseout', function(e) {
-        	$(this).find('.greyed').css('filter','grayscale(100%)');
+        	$(this).find('.greyed').css('filter','grayscale(80%)');
+        	$(this).find('.greyed').css('opacity','0.8');
         }).click(function(e) {
         	if (e.target.type === 'file' || $(e.target).hasClass('btn-change-image')) {
         		return;
         	}
-        	displayModal($(this).data('dialId'), $(this).data('title'), $(this).data('url'));
+        	displayModal($(this).data('dialId'), $(this).data('title'), $(this).data('url'), $(this).data('publicId'));
         });
         
         
@@ -111,7 +115,7 @@
         
     });
     
-    function displayModal(dial, title, url) {
+    function displayModal(dial, title, url, publicDial) {
     	$('#dialLoadingOverlay').show();
 		$('#dialInsertion').hide();
 		$('#dialTitle').text("Loading answers...");
@@ -123,8 +127,8 @@
 		library.draw();
 		$('#displayModal').modal();
 		
-		var data = {'action':'public_wheel', 'id':dial};
-		$.get('https://trusteddata.co.nz/wp-json/dataFutures/v1/wheel/'+dial, data, function(response) {
+		var data = {'action':'public_wheel', 'id':publicDial};
+		$.get('https://trusteddata.co.nz/wp-json/dataFutures/v1/wheel/'+publicDial, data, function(response) {
 			library.answers = response.answers;
 			library.redraw();
 			$('#dialTitle').text(title);
