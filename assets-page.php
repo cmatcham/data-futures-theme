@@ -1,5 +1,6 @@
 <?php /* Template Name: Assets page */ ?>
 <?php get_header(); ?>
+<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
 
 <style>
 #dataFuturesGuidelinesAnswers {
@@ -112,28 +113,28 @@ a.df_button.selected, a.df_button.selected:hover {
 <?php get_footer(); ?>
 <script>
 var images = [
-	{ file: '01_Data.jpg', title: 'Data' },
-	{ file: '02_Personally-identifiable-information.jpg', title: 'Personally-Identifiable Information' },
-	{ file: '03_Non-identified-information.jpg', title: 'Non-Identified Information' },
-	{ file: '04_De-identified-information.jpg', title: 'De-Identified Information' },
-	{ file: '05_Re-identification.jpg', title: 'Re-identification' },
-	{ file: '06_AnonymisedInformation.jpg', title: 'Anonymised Information' },
-	{ file: '07_SocialLicence.jpg', title: 'Social Licence' },
-	{ file: '08_Consent.jpg', title: 'Consent' },
-	{ file: '09_Algorithm.jpg', title: 'Algorithm' },
-	{ file: '10_Pseudonymisation.jpg', title: 'Pseudonymisation' },
-	{ file: '11_Information Privacy.jpg', title: 'Information Privacy' },
-	{ file: '12_BigData.jpg', title: 'Big Data' },
-	{ file: '13_DataDrivenDecisions.jpg', title: 'Data Driven Decisions' },
-	{ file: '14_Artificial Intelligence.jpg', title: 'Artificial Intelligence' },
-	{ file: '15_MachineLearning.jpg', title: 'Machine Learning' },
-	{ file: '16_Blockchain.jpg', title: 'Blockchain' },
-	{ file: '17_InternetOfThings.jpg', title: 'Internet of Things' },
-	{ file: '18_Encryption.jpg', title: 'Encryption' },
-	{ file: '19_OpenData.jpg', title: 'Open Data' },
-	{ file: '20_DataBreach.jpg', title: 'Data Breach' },
-	{ file: '21_OptInOptOut.jpg', title: 'Opt in, opt out' },
-	{ file: '22_RightToAccessRightToCorrect.jpg', title: 'Right to access, right to correct' }
+	{ file: '01_Data.png', title: 'Data' },
+	{ file: '02_Personally-identifiable-information.png', title: 'Personally-Identifiable Information' },
+	{ file: '03_Non-identified-information.png', title: 'Non-Identified Information' },
+	{ file: '04_De-identified-information.png', title: 'De-Identified Information' },
+	{ file: '05_Re-identification.png', title: 'Re-identification' },
+	{ file: '06_AnonymisedInformation.png', title: 'Anonymised Information' },
+	{ file: '07_SocialLicence.png', title: 'Social Licence' },
+	{ file: '08_Consent.png', title: 'Consent' },
+	{ file: '09_Algorithm.png', title: 'Algorithm' },
+	{ file: '10_Pseudonymisation.png', title: 'Pseudonymisation' },
+	{ file: '11_Information Privacy.png', title: 'Information Privacy' },
+	{ file: '12_BigData.png', title: 'Big Data' },
+	{ file: '13_DataDrivenDecisions.png', title: 'Data Driven Decisions' },
+	{ file: '14_Artificial Intelligence.png', title: 'Artificial Intelligence' },
+	{ file: '15_MachineLearning.png', title: 'Machine Learning' },
+	{ file: '16_Blockchain.png', title: 'Blockchain' },
+	{ file: '17_InternetOfThings.png', title: 'Internet of Things' },
+	{ file: '18_Encryption.png', title: 'Encryption' },
+	{ file: '19_OpenData.png', title: 'Open Data' },
+	{ file: '20_DataBreach.png', title: 'Data Breach' },
+	{ file: '21_OptInOptOut.png', title: 'Opt in, opt out' },
+	{ file: '22_RightToAccessRightToCorrect.png', title: 'Right to access, right to correct' }
 	
 	
 ];
@@ -161,8 +162,18 @@ $(function() {
 
 	images.forEach(function(el) {
 		var uri = '<?php echo get_theme_file_uri('/assets/')?>'+el.file;
-		$('#imageInsertion').append('<div class="col-md-4 col-sm-6 col-library image"><div class="boxed"><div class="img"><a href="'+uri+'" data-fancybox="images" data-caption="'+el.title+'"><img src="'+uri+'"/></a></div><div class="title">'+el.title+'</div></div></div>');
-		
+		var id = 'fbshare'+(el.file.replace(/ /g, '_'));
+		var id = 'fbshare'+(el.file.replace(/\./g, '_'));
+		var shares = '<a href="#" class="fbshare" data-image="'+uri+'" id="'+id+'"><i class="fa fa-lg fa-facebook"></i></a>'
+
+		$('#imageInsertion').append('<div class="col-md-4 col-sm-6 col-library image"><div class="boxed"><div class="img"><a href="'+uri+'" data-fancybox="images" data-caption="'+el.title+'"><img src="'+uri+'"/></a></div><div class="title">'+el.title+shares+'</div></div></div>');
+		console.log('clickable: ',$('#fbshare'+id));
+		$('#'+id).click(function(e) {
+			e.preventDefault();
+			console.log('Sharing with uri '+uri);
+			shareOverrideOGMeta('https://trusteddata.co.nz/', el.title, 'Data is not just numbers – it is information and stories.', uri);
+
+		});
 	});
 	
 });
@@ -187,6 +198,16 @@ function onYouTubeIframeAPIReady() {
 	});
 }
 
+window.fbAsyncInit = function() {
+	FB.init({
+		appId            : '157015495020413',
+		autoLogAppEvents : true,
+		xfbml            : true,
+		version          : 'v2.10'
+	});
+	FB.AppEvents.logPageView();
+  };
+
   (function(d, s, id){
 	 var js, fjs = d.getElementsByTagName(s)[0];
 	 if (d.getElementById(id)) {return;}
@@ -194,6 +215,24 @@ function onYouTubeIframeAPIReady() {
 	 js.src = "//connect.facebook.net/en_US/sdk.js";
 	 fjs.parentNode.insertBefore(js, fjs);
    }(document, 'script', 'facebook-jssdk'));
+
+  function shareOverrideOGMeta(overrideLink, overrideTitle, overrideDescription, overrideImage) {
+	FB.ui({
+		method: 'share_open_graph',
+		action_type: 'og.shares',
+		action_properties: JSON.stringify({
+			object: {
+				'og:url': overrideLink,
+				'og:title': overrideTitle,
+				'og:description': overrideDescription,
+				'og:image': overrideImage
+			}
+		})
+	},
+	function (response) {
+	// Action after response
+	});
+}
 
 </script>
 <!-- script async defer src="https://apis.google.com/js/api.js" 

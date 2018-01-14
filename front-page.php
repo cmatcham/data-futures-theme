@@ -7,9 +7,10 @@
     
 <meta property="og:title" content="Trusted Data Dial" />
 <meta property="og:description" content="Create your own trusted data dial" />
+<meta property="og:url" content="https://trusteddata.co.nz/"/>
 <meta property="og:image" content="https://www.trusteddata.co.nz/media/dial.png" />
-<meta property="og:image:width" content="512px" />
-<meta property="og:image:height" content="512px" />
+<meta property="og:image:width" content="512" />
+<meta property="og:image:height" content="512" />
 
 <?php
 $page_object = get_page(get_the_ID()); // page stuff
