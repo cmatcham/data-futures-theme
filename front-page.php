@@ -4,6 +4,13 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+<meta property="og:title" content="Trusted Data Dial" />
+<meta property="og:description" content="Create your own trusted data dial" />
+<meta property="og:image" content="https://www.trusteddata.co.nz/media/dial.png" />
+<meta property="og:image:width" content="512px" />
+<meta property="og:image:height" content="512px" />
+
 <?php
 $page_object = get_page(get_the_ID()); // page stuff
 $page_content = $page_object->post_content;

@@ -122,7 +122,18 @@ var images = [
 	{ file: '08_Consent.jpg', title: 'Consent' },
 	{ file: '09_Algorithm.jpg', title: 'Algorithm' },
 	{ file: '10_Pseudonymisation.jpg', title: 'Pseudonymisation' },
-	{ file: '11_Information Privacy.jpg', title: 'Information Privacy' }
+	{ file: '11_Information Privacy.jpg', title: 'Information Privacy' },
+	{ file: '12_BigData.jpg', title: 'Big Data' },
+	{ file: '13_DataDrivenDecisions.jpg', title: 'Data Driven Decisions' },
+	{ file: '14_Artificial Intelligence.jpg', title: 'Artificial Intelligence' },
+	{ file: '15_MachineLearning.jpg', title: 'Machine Learning' },
+	{ file: '16_Blockchain.jpg', title: 'Blockchain' },
+	{ file: '17_InternetOfThings.jpg', title: 'Internet of Things' },
+	{ file: '18_Encryption.jpg', title: 'Encryption' },
+	{ file: '19_OpenData.jpg', title: 'Open Data' },
+	{ file: '20_DataBreach.jpg', title: 'Data Breach' },
+	{ file: '21_OptInOptOut.jpg', title: 'Opt in, opt out' },
+	{ file: '22_RightToAccessRightToCorrect.jpg', title: 'Right to access, right to correct' }
 	
 	
 ];
@@ -141,7 +152,7 @@ $(function() {
 
 			var tag = document.createElement('script');
 
-			tag.src = "http://www.youtube.com/iframe_api";
+			tag.src = "https://www.youtube.com/iframe_api";
 			var firstScriptTag = document.getElementsByTagName('script')[0];
 			firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 						
@@ -172,9 +183,17 @@ function onYouTubeIframeAPIReady() {
 			width: '320', 
 			videoId: $(this).data("video"), 
 			playerVars: {showinfo: 0}, 
-			host: 'http://www.youtube.com'});
+			host: 'https://www.youtube.com'});
 	});
 }
+
+  (function(d, s, id){
+	 var js, fjs = d.getElementsByTagName(s)[0];
+	 if (d.getElementById(id)) {return;}
+	 js = d.createElement(s); js.id = id;
+	 js.src = "//connect.facebook.net/en_US/sdk.js";
+	 fjs.parentNode.insertBefore(js, fjs);
+   }(document, 'script', 'facebook-jssdk'));
 
 </script>
 <!-- script async defer src="https://apis.google.com/js/api.js" 
