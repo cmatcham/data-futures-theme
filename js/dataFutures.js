@@ -244,6 +244,7 @@ var DataFuturesWheel = function() {
 		ctx.fillStyle = colour;
 		ctx.beginPath();
 		ctx.moveTo(cx, cy);
+		
 		ctx.arc(cx, cy, radius, toRadians(startDegrees), toRadians(endDegrees));
 		ctx.lineTo(cx, cy);
 		ctx.closePath();
@@ -280,6 +281,10 @@ var DataFuturesWheel = function() {
 		ctx.lineTo(cx, cy);
 		ctx.closePath();
 		ctx.fill();
+	console.log('ctx.fillStyle = "'+colour+'";');
+	console.log("ctx.beginPath();	ctx.moveTo("+cx+", "+cy+");	ctx.arc("+cx+", "+cy+", "+radius+", "+self.toRadians(startDegrees + 10)+", "+self.toRadians(endDegrees - 10)+");");
+	console.log("ctx.lineTo("+cx+", "+cy+");ctx.closePath();ctx.fill();");
+	
 	};
 	
 	this.drawSlices = function (ctx, rotation) {
@@ -308,6 +313,9 @@ var DataFuturesWheel = function() {
 		ctx.closePath();
 		ctx.fill(); 
 
+		console.log("ctx.beginPath();	ctx.moveTo("+cx+", "+cy+");	ctx.arc("+cx+", "+cy+", "+middleRadii + padding + 5+", 0, "+Math.PI * 2+");");
+		console.log("ctx.lineTo("+cx+", "+cy+");ctx.closePath();ctx.fill();  ");
+		
 		//draw inner slices out to middleRadii
 		self.drawInnerSlice(ctx, this.colour ? this.colours[2] : this.greyScale[2], this.slices[6].start + rotation, this.slices[7].end + rotation, middleRadii);
 		self.drawInnerSlice(ctx, this.colour ? this.colours[0] : this.greyScale[0], this.slices[0].start + rotation, this.slices[2].end + rotation, middleRadii);
@@ -324,6 +332,9 @@ var DataFuturesWheel = function() {
 		ctx.lineTo(cx, cy);
 		ctx.closePath();
 		ctx.fill();  
+		
+		console.log("ctx.beginPath();	ctx.moveTo("+cx+", "+cy+");	ctx.arc("+cx+", "+cy+", "+innerRadii + 5+", 0, "+Math.PI * 2+");");
+		console.log("ctx.lineTo("+cx+", "+cy+");ctx.closePath();ctx.fill();  ");
 		
 		//draw text on paths
 		var textRadius = innerRadii + 9;
@@ -506,6 +517,12 @@ var DataFuturesWheel = function() {
 	
 }
 
+/* TODO create icons...
+ * 
+ * <svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="600" height="600"><path fill="#000000" stroke="none" paint-order="stroke fill markers" d="M171.96 171.03L29.06 88.53A165 165 0 0 1 129.25 11.66L171.96 171.03Z"/><path fill="#000000" stroke="none" paint-order="stroke fill markers" d="M175.65 170.04L132.95 10.67A165 165 0 0 1 258.15 27.15L175.65 170.04Z"/><path fill="#000000" stroke="none" paint-order="stroke fill markers" d="M178.97 171.96L261.47 29.06A165 165 0 0 1 338.34 129.25L178.97 171.96Z"/><path fill="#000000" stroke="none" paint-order="stroke fill markers" d="M179.96 175.65L339.33 132.95A165 165 0 0 1 322.85 258.15L179.96 175.65Z"/><path fill="#000000" stroke="none" paint-order="stroke fill markers" d="M178.04 178.97L320.94 261.47A165 165 0 0 1 220.75 338.34L178.04 178.97Z"/><path fill="#000000" stroke="none" paint-order="stroke fill markers" d="M174.35 179.96L217.05 339.33A165 165 0 0 1 91.85 322.85L174.35 179.96Z"/><path fill="#000000" stroke="none" paint-order="stroke fill markers" d="M171.03 178.04L88.53 320.94A165 165 0 0 1 11.66 220.75L171.03 178.04Z"/><path fill="#000000" stroke="none" paint-order="stroke fill markers" d="M170.04 174.35L10.67 217.05A165 165 0 0 1 27.15 91.85L170.04 174.35Z"/><path fill="#FFFFFF" stroke="none" paint-order="stroke fill markers" d="M175 175L241 175A66 66 0 1 1 241 174.93L175 175Z"/><path fill="#9352a0" stroke="none" paint-order="stroke fill markers" d="M173.07 175.52L143.07 227.48A60 60 0 0 1 121.11 145.52L173.07 175.52Z"/><path fill="#F78F33" stroke="none" paint-order="stroke fill markers" d="M175.26 173.02L123.3 143.02A60 60 0 0 1 233.22 157.49L175.26 173.02Z"/><path fill="#5085a0" stroke="none" paint-order="stroke fill markers" d="M176.22 176.59L234.17 161.06A60 60 0 0 1 146.22 228.55L176.22 176.59Z"/><path fill="#FFFFFF" stroke="none" paint-order="stroke fill markers" d="M175 175L220 175A45 45 0 1 1 220 174.96L175 175Z"/><path fill="#000000" stroke="none" paint-order="stroke fill markers" d="M175 175L215 175A40 40 0 1 1 215 174.96L175 175Z"/></svg>
+ * 
+ */
+
 
 
 /**
@@ -591,3 +608,4 @@ if (!Array.prototype.find) {
     }
   });
 }
+

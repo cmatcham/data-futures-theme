@@ -138,6 +138,9 @@ function styles() {
         wp_enqueue_script( 'dataFutures', get_theme_file_uri( '/js/dataFutures.js' ), array(), null);
     } else if (is_front_page()) {
         wp_enqueue_script( 'bootstrap', 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js', array(), null);
+    } else if (get_page_template_slug() === 'assets-page.php') {
+        wp_enqueue_style( 'fancybox', get_theme_file_uri( '/css/jquery.fancybox.css'), array(), null );
+        wp_enqueue_script('fancybox', get_theme_file_uri( '/js/jquery.fancybox.min.js'), array('jquery'), null);
     }
     
 }

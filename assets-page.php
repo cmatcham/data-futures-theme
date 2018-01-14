@@ -33,7 +33,6 @@ h2 {
 }
 .col-library {
     height: 300px;
-    cursor: pointer;
 }
 .col-library h2 {
     height: 44px;
@@ -73,16 +72,31 @@ a.df_button.selected, a.df_button.selected:hover {
 .col-library.image img {
     width: 100%;
 }
+.col-library {
+	padding-left: 0px;
+	padding-right: 30px;
+}
+.boxed {
+	border: 1px solid #CCCCCC;
+}
+.video .boxed {
+	width: 321px;
+}
+.title {
+	padding: 10px;
+	color: #5085a0;
+}
 
 </style>
+<div class="container">
 <div class="public">
 <h1 class="heading">Assets</h1>
 </div>
-<p>
+<p style="margin-bottom: 60px">
 <a class="type_switch df_button" data-type="videos">Videos</a>
 <a class="type_switch df_button selected" data-type="images">Images</a>
 </p>
-
+</div>
 <div class="mainDisplay videos">
 	<div class="container" id="videoInsertion">
 		
@@ -104,7 +118,12 @@ var images = [
 	{ file: '04_De-identified-information.jpg', title: 'De-Identified Information' },
 	{ file: '05_Re-identification.jpg', title: 'Re-identification' },
 	{ file: '06_AnonymisedInformation.jpg', title: 'Anonymised Information' },
-	{ file: '07_SocialLicence.jpg', title: 'Social Licence' }
+	{ file: '07_SocialLicence.jpg', title: 'Social Licence' },
+	{ file: '08_Consent.jpg', title: 'Consent' },
+	{ file: '09_Algorithm.jpg', title: 'Algorithm' },
+	{ file: '10_Pseudonymisation.jpg', title: 'Pseudonymisation' },
+	{ file: '11_Information Privacy.jpg', title: 'Information Privacy' }
+	
 	
 ];
 
@@ -117,7 +136,7 @@ $(function() {
 			data.items.forEach(function(el) {
 				var title = el.snippet.title;
 				var id = el.snippet.resourceId.videoId;
-				$('#videoInsertion').append('<div class="col-md-4 col-sm-6 col-library video" data-video="'+id+'"><div class="player"></div><div class="title">'+title+'</div></div>');
+				$('#videoInsertion').append('<div class="col-md-4 col-sm-6 col-library video" data-video="'+id+'"><div class="boxed"><div class="player"></div><div class="title">'+title+'</div></div></div>');
 			});
 
 			var tag = document.createElement('script');
@@ -130,7 +149,8 @@ $(function() {
 	});
 
 	images.forEach(function(el) {
-		$('#imageInsertion').append('<div class="col-md-4 col-sm-6 col-library image"><div class="img"><img src="<?php echo get_theme_file_uri('/assets/')?>'+el.file+'"/></div><div class="title">'+el.title+'</div></div>');
+		var uri = '<?php echo get_theme_file_uri('/assets/')?>'+el.file;
+		$('#imageInsertion').append('<div class="col-md-4 col-sm-6 col-library image"><div class="boxed"><div class="img"><a href="'+uri+'" data-fancybox="images" data-caption="'+el.title+'"><img src="'+uri+'"/></a></div><div class="title">'+el.title+'</div></div></div>');
 		
 	});
 	
