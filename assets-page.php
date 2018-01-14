@@ -33,7 +33,13 @@ h2 {
 	font-size: 20px;
 }
 .col-library {
-    height: 300px;
+	padding-bottom: 25px;
+}
+@media (min-width: 768px) {
+	.col-library {
+	    height: 300px;
+	    padding-bottom: 0px;
+	}
 }
 .col-library h2 {
     height: 44px;
@@ -87,6 +93,10 @@ a.df_button.selected, a.df_button.selected:hover {
 	padding: 10px;
 	color: #5085a0;
 }
+.fbshare {
+	float: right;
+	padding-left: 10px;
+}
 
 </style>
 <div class="container">
@@ -123,10 +133,10 @@ var images = [
 	{ file: '08_Consent.png', title: 'Consent' },
 	{ file: '09_Algorithm.png', title: 'Algorithm' },
 	{ file: '10_Pseudonymisation.png', title: 'Pseudonymisation' },
-	{ file: '11_Information Privacy.png', title: 'Information Privacy' },
+	{ file: '11_Information-Privacy.png', title: 'Information Privacy' },
 	{ file: '12_BigData.png', title: 'Big Data' },
 	{ file: '13_DataDrivenDecisions.png', title: 'Data Driven Decisions' },
-	{ file: '14_Artificial Intelligence.png', title: 'Artificial Intelligence' },
+	{ file: '14_Artificial-Intelligence.png', title: 'Artificial Intelligence' },
 	{ file: '15_MachineLearning.png', title: 'Machine Learning' },
 	{ file: '16_Blockchain.png', title: 'Blockchain' },
 	{ file: '17_InternetOfThings.png', title: 'Internet of Things' },
@@ -163,10 +173,10 @@ $(function() {
 	images.forEach(function(el) {
 		var uri = '<?php echo get_theme_file_uri('/assets/')?>'+el.file;
 		var id = 'fbshare'+(el.file.replace(/ /g, '_'));
-		var id = 'fbshare'+(el.file.replace(/\./g, '_'));
+		id = id.replace(/\./g, '_');
 		var shares = '<a href="#" class="fbshare" data-image="'+uri+'" id="'+id+'"><i class="fa fa-lg fa-facebook"></i></a>'
 
-		$('#imageInsertion').append('<div class="col-md-4 col-sm-6 col-library image"><div class="boxed"><div class="img"><a href="'+uri+'" data-fancybox="images" data-caption="'+el.title+'"><img src="'+uri+'"/></a></div><div class="title">'+el.title+shares+'</div></div></div>');
+		$('#imageInsertion').append('<div class="col-md-4 col-sm-6 col-library image"><div class="boxed"><div class="img"><a href="'+uri+'" data-fancybox="images" data-caption="'+el.title+'" ><img id="'+el.title.replace(/ /g,'_')+'" src="'+uri+'"/></a></div><div class="title">'+el.title+shares+'</div></div></div>');
 		console.log('clickable: ',$('#fbshare'+id));
 		$('#'+id).click(function(e) {
 			e.preventDefault();
