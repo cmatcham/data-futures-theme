@@ -115,7 +115,7 @@ foreach ($dials as $dial) {
 			<img src="<?php echo get_theme_file_uri( '/images/ajax.gif' )?>">
 		</div>
 		<div class="container-fluid">
-		<div id="opengraph" class="row" style="border-bottom: 1px grey solid; border-left: 1px grey solid; border-right: 1px grey solid; padding: 10px;">
+		<div id="opengraph" class="row" style="box-shadow: 9px 6px 28px -10px rgba(0,0,0,0.75); padding: 10px; margin-bottom: 20px;">
 			<div class="col-xs-3">
 			<img id="opengraph-image" class="center-block" style="max-width: 100%"/>
 			</div>
