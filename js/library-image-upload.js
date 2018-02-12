@@ -116,8 +116,9 @@
     });
     
     function displayModal(dial, title, url, publicDial) {
-    	$('#dialLoadingOverlay').show();
-		$('#dialInsertion').hide();
+    		$('#dialLoadingOverlay').show();
+    		$('#opengraph').hide();
+    		$('#dialInsertion').hide();
 		$('#dialTitle').text("Loading answers...");
 		library = new DataFuturesWheel();
 		library.init(
@@ -127,13 +128,28 @@
 		library.draw();
 		$('#displayModal').modal();
 		
-		var data = {'action':'public_wheel', 'id':publicDial};
-		$.get('https://trusteddata.co.nz/wp-json/dataFutures/v1/wheel/'+publicDial, data, function(response) {
+		$.when(getResponses(library, publicDial, title, url), getOpenGraph(dial)).done(function (a1, a2) {
+			console.log('whenning', a1, a2);
+			$('#dialLoadingOverlay').hide();
+			$('#dialInsertion').fadeIn();
+			
+			if ($('#opengraph-title').text()) {
+				$('#opengraph').show();
+			}
+
+		});
+		
+		
+		
+    }
+    
+    function getResponses(library, publicDial, title, url) {
+    		var data = {'action':'public_wheel', 'id':publicDial};
+		return $.get('https://trusteddata.co.nz/wp-json/dataFutures/v1/wheel/'+publicDial, data, function(response) {
 			library.answers = response.answers;
 			library.redraw();
 			$('#dialTitle').text(title);
-			$('#dialLoadingOverlay').fadeOut();
-			$('#dialInsertion').fadeIn();
+			
 			$('#dataFuturesGuidelinesAnswersQuestion').text("");
 			$('#dataFuturesGuidelinesAnswersAnswer').text("");
 			if (url) {
@@ -146,12 +162,21 @@
 				$('#dialLink').hide();
 			}
 		});
-		
-		
-		
-		
-		
-//		lib<?php echo $dial->id;?>.answers = <?php echo json_encode($dial->answers)?>;
+    }
+    
+    function getOpenGraph(dial) {
+    		return $.post(su_config.ajax_url + "?action=opengraph&id="+dial, function(response) {
+			var data = JSON.parse(response);
+			if (data.title) {
+				
+				$('#opengraph-title').text(data.title);
+				$('#opengraph-description').text(data.description);
+				$('#opengraph-image').attr('src', data.image);
+
+			} else {
+				$('#opengraph-title').text('');
+			}
+		});
     }
     
 })(jQuery);

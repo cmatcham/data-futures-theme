@@ -4,6 +4,7 @@ add_action( 'after_switch_theme', 'create_db' );
 
 include_once 'includes/trusted-data-settings.php';
 include_once 'includes/class.uploads.php';
+include_once 'includes/opengraph.php';
 include_once 'advanced-custom-fields/acf.php';
 
 
@@ -848,6 +849,7 @@ function is_valid_wheel($id) {
 function ajax_create_wheel() {
     $id = create_wheel('New wheel', '');
     echo "{\"id\":$id}";
+    wp_die();
 }
 
 function create_wheel($name, $url) {
@@ -1579,5 +1581,42 @@ function my_custom_upload_dir($path) {
     return $path; //altered or not
 }
 
+
+/* Open graph */
+add_action( 'wp_ajax_opengraph', 'load_opengraph_data' );
+add_action( 'wp_ajax_nopriv_opengraph', 'load_opengraph_data' );
+
+function load_opengraph_data() {
+    $wheel_id = $_REQUEST['id'];
+
+    $wheel = get_public_wheel_details(hash_id($wheel_id));
+    
+    if ($wheel -> url) {
+        $url = addhttp($wheel -> url);
+        
+        $graph = OpenGraph::fetch($url);
+
+        $data = new stdClass();
+        foreach ($graph as $key => $value) {
+            $data -> $key = $value;
+        }
+        
+        echo json_encode($data);
+        
+        wp_die();
+    }
+    
+    echo "{}";
+    
+    wp_die();
+    
+}
+
+function addhttp($url) {
+    if (!preg_match("~^(?:f|ht)tps?://~i", $url)) {
+        $url = "http://" . $url;
+    }
+    return $url;
+}
 
 ?>

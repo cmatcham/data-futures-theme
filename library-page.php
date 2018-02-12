@@ -114,6 +114,17 @@ foreach ($dials as $dial) {
 		<div id="dialLoadingOverlay">
 			<img src="<?php echo get_theme_file_uri( '/images/ajax.gif' )?>">
 		</div>
+		<div class="container-fluid">
+		<div id="opengraph" class="row" style="border-bottom: 1px grey solid; border-left: 1px grey solid; border-right: 1px grey solid; padding: 10px;">
+			<div class="col-xs-3">
+			<img id="opengraph-image" class="center-block" style="max-width: 100%"/>
+			</div>
+			<div class="col-xs-9">
+			<h3 id="opengraph-title"></h3>
+			<p id="opengraph-description"></p>
+			</div>
+		</div>
+		</div>
 		<div id="dialInsertion">
 			<canvas id="dataFuturesWheelCanvas" class="inline" width='350px' height='350px'></canvas>
 			<div id="dataFuturesGuidelinesAnswers" class="inline answers">
@@ -132,4 +143,9 @@ foreach ($dials as $dial) {
 
 
 <?php } ?>
+
+<script>
+
+</script>
+
 <?php get_footer(); ?>

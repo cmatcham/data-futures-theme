@@ -280,14 +280,14 @@ $entity_url = get_permalink($entity_link);
 			<?php if (is_user_logged_in()) { ?>
 			<ul class="nav navbar-nav navbar-right">
 				<li class="dropdown"> <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Your dials <span class="caret"></span></a>
-					<ul class="dropdown-menu">
+					<ul class="dropdown-menu" id="wheel-select">
 						<?php
 						$wheels = get_wheels();
 						foreach ( $wheels as $data_future_wheel) {
-							echo '<li><a class="loadWheel" href="#" data-target="'.$data_future_wheel->id.'" id="wheelLink'.$data_future_wheel->id.'">'.$data_future_wheel->name.'</li>';
+							echo '<li><a class="loadWheel" href="#" data-target="'.$data_future_wheel->id.'" id="wheelLink'.$data_future_wheel->id.'">'.$data_future_wheel->name.'</a></li>';
 						}
 						?>	
-						<li role="separator" class="divider"></li>
+						<li id="wheelSelectSeparator" role="separator" class="divider"></li>
 						<li><a id="createNewWheel" href="#">Create new</a></li>
 					</ul>
 				</li>
@@ -1078,7 +1078,7 @@ jQuery(document).ready(function() {
 		}
 	});
 	
-	jQuery('a.loadWheel').click(function(e) {
+	jQuery('ul#wheel-select').on('click', 'a.loadWheel', function(e) {
 		 e.preventDefault(); 
 		 loadWheel(jQuery(this).data('target'));
 	 });
@@ -1158,6 +1158,11 @@ function createWheel() {
 	var ajaxurl = '<?php echo admin_url( "admin-ajax.php" )?>';
 	var data = {'action':'create_wheel'};
 	jQuery.post(ajaxurl, data, function(response) {
+		var newId = JSON.parse(response).id;
+		$('#wheelSelectSeparator').before('<li><a class="loadWheel" href="#" data-target="' + newId + '" id="wheelLink'+newId + '">New wheel</a></li>');
+		loadWheel(newId);
+		
+		
 	});
 }
 
