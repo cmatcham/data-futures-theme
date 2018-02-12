@@ -519,7 +519,7 @@ add_action( 'draft_page', 'scrolling_page_save_custom_post_meta' );
 add_action( 'future_page', 'scrolling_page_save_custom_post_meta' );
 	
 
-add_action('edit_page_form', add_instructions);
+add_action('edit_page_form', 'add_instructions');
 
 function add_instructions($post_id) {
 	if(get_page_template_slug() === 'scrolling-page.php'){      
@@ -588,8 +588,8 @@ function get_wheel() {
     wp_die();
 }
 
-add_action( 'wp_ajax_get_wheel', get_wheel );
-add_action( 'wp_ajax_nopriv_get_wheel', get_wheel );
+add_action( 'wp_ajax_get_wheel', 'get_wheel' );
+add_action( 'wp_ajax_nopriv_get_wheel', 'get_wheel' );
 
 function get_public_wheel() {
     global $wpdb;
@@ -710,11 +710,11 @@ function admin_get_all_wheels($data) {
     return $wheel;
 }
 
-add_action( 'wp_ajax_public_wheel', get_public_wheel );
-add_action( 'wp_ajax_nopriv_public_wheel', get_public_wheel );
+add_action( 'wp_ajax_public_wheel', 'get_public_wheel' );
+add_action( 'wp_ajax_nopriv_public_wheel', 'get_public_wheel' );
 
-add_action( 'wp_ajax_create_wheel', ajax_create_wheel );
-add_action( 'wp_ajax_nopriv_create_wheel', ajax_create_wheel );
+add_action( 'wp_ajax_create_wheel', 'ajax_create_wheel' );
+add_action( 'wp_ajax_nopriv_create_wheel', 'ajax_create_wheel' );
 
 function get_selected_wheel($wheels) {
     if (isset($_REQUEST['id'])) {
@@ -759,8 +759,8 @@ function save_wheel() {
     );
 }
 
-add_action( 'wp_ajax_save_wheel', save_wheel );
-add_action( 'wp_ajax_nopriv_save_wheel', save_wheel );
+add_action( 'wp_ajax_save_wheel', 'save_wheel' );
+add_action( 'wp_ajax_nopriv_save_wheel', 'save_wheel' );
 
 
 function save_answer() {
@@ -835,8 +835,8 @@ function save_answer() {
     
 }
 
-add_action( 'wp_ajax_save_answer', save_answer );
-add_action( 'wp_ajax_nopriv_save_answer', save_answer );
+add_action( 'wp_ajax_save_answer', 'save_answer' );
+add_action( 'wp_ajax_nopriv_save_answer', 'save_answer' );
 
 function is_valid_wheel($id) {
     global $wpdb;
@@ -1431,8 +1431,8 @@ function approve_library($hash) {
 	
 }
 
-add_action( 'wp_ajax_library_approval', send_library_approval_mail );
-add_action( 'wp_ajax_nopriv_library_approval', send_library_approval_mail );
+add_action( 'wp_ajax_library_approval', 'send_library_approval_mail' );
+add_action( 'wp_ajax_nopriv_library_approval', 'send_library_approval_mail' );
 
 function get_industry_codes() {
 	return array(
