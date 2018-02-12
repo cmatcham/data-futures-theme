@@ -53,6 +53,17 @@ h2 {
 .modal-body {
     min-height: 200px;
 }
+.filter ul {
+    list-style: none;
+    text-align: center;
+}
+.filter ul li {
+    display: inline-block;
+    padding: 10px;
+    border: 1px solid blue;
+    margin: 5px;
+}
+
 </style>
 <div class="public">
 <h1 class="heading">Public library</h1>
@@ -84,6 +95,16 @@ if (count($dials) == 0) {
 <script src="<?php  echo get_theme_file_uri( '/js/dataFutures.js' )?>"></script>
 
 <div class="container">
+<div class="filter">
+<ul>
+<?php 
+foreach (get_industry_codes() as $key => $value) {
+    ?><li><?php echo $value?></li><?php 
+}
+?>
+</ul>
+</div>
+
 <?php 
 foreach ($dials as $dial) {
 ?>
