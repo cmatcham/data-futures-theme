@@ -60,8 +60,18 @@ h2 {
 .filter ul li {
     display: inline-block;
     padding: 10px;
-    border: 1px solid blue;
+    border: 1px solid #5085a0;
     margin: 5px;
+    color: #5085a0;
+    cursor: pointer;
+    -moz-transition: all .2s linear;
+    -webkit-transition: all .2s linear;
+    -o-transition: all .2s linear;
+    transition: all .2s linear;
+}
+.filter ul li.active {
+    color: white;
+    background-color: #5085a0;
 }
 
 </style>
@@ -99,7 +109,7 @@ if (count($dials) == 0) {
 <ul>
 <?php 
 foreach (get_industry_codes() as $key => $value) {
-    ?><li><?php echo $value?></li><?php 
+    ?><li data-industry="<?php echo $key; ?>"><?php echo $value?></li><?php 
 }
 ?>
 </ul>
@@ -108,7 +118,7 @@ foreach (get_industry_codes() as $key => $value) {
 <?php 
 foreach ($dials as $dial) {
 ?>
-<div class="col-lg-3 col-md-4 col-sm-6 col-library" data-dial-id="<?php echo $dial->id;?>" data-public-id="<?php echo hash_id($dial->id)?>" data-url="<?php echo htmlspecialchars($dial->url)?>" data-title="<?php echo htmlspecialchars($dial->name);?>">
+<div class="col-lg-3 col-md-4 col-sm-6 col-library" data-dial-id="<?php echo $dial->id;?>" data-public-id="<?php echo hash_id($dial->id)?>" data-url="<?php echo htmlspecialchars($dial->url)?>" data-industry="<?php echo htmlspecialchars($dial->industry)?>" data-title="<?php echo htmlspecialchars($dial->name);?>">
 	<h2><?php echo $dial->name ?></h2>
 	<img class="greyed" src="<?php echo get_library_dial_image($dial->id);?>" id="libraryImage<?php echo $dial->id?>"/>
 	<?php 
@@ -166,7 +176,24 @@ foreach ($dials as $dial) {
 <?php } ?>
 
 <script>
+$('.filter').on('click','li', function() {
+	$(this).toggleClass('active');
+	var selected = document.querySelectorAll('.filter li.active');
 
+	var industries = [];
+	selected.forEach((x,y,z) => industries.push(x.dataset['industry']));
+
+	document.querySelectorAll('div.col-library').forEach(x => {
+		var el = $(x);
+		if (industries.length == 0) {
+			el.show(300);
+		} else if (industries.includes(el.data('industry'))) {
+			el.show(300);
+		} else {
+			el.hide(300);
+		}
+	});
+});
 </script>
 
 <?php get_footer(); ?>
