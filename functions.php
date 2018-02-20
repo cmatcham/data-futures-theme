@@ -144,6 +144,8 @@ function styles() {
         wp_enqueue_script('fancybox', get_theme_file_uri( '/js/jquery.fancybox.min.js'), array('jquery'), null);
     }
     
+    wp_register_script('shuffle', get_theme_file_uri('/js/shuffle.min.js'), array('jquery'), null);
+    
 }
 
 function data_futures_footer($fixed) {

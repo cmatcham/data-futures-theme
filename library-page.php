@@ -1,6 +1,8 @@
 <?php /* Template Name: Public dials display */ ?>
 <?php get_header(); ?>
-
+<?php 
+wp_enqueue_script('shuffle');
+?>
 <style>
 #dataFuturesGuidelinesAnswers {
 	width: 40%;
@@ -115,10 +117,11 @@ foreach (get_industry_codes() as $key => $value) {
 </ul>
 </div>
 
+<div id="dial-container">
 <?php 
 foreach ($dials as $dial) {
 ?>
-<div class="col-lg-3 col-md-4 col-sm-6 col-library" data-dial-id="<?php echo $dial->id;?>" data-public-id="<?php echo hash_id($dial->id)?>" data-url="<?php echo htmlspecialchars($dial->url)?>" data-industry="<?php echo htmlspecialchars($dial->industry)?>" data-title="<?php echo htmlspecialchars($dial->name);?>">
+<div class="col-lg-3 col-md-4 col-sm-6 col-library" data-dial-id="<?php echo $dial->id;?>" data-public-id="<?php echo hash_id($dial->id)?>" data-url="<?php echo htmlspecialchars($dial->url)?>" data-industry="<?php echo htmlspecialchars($dial->industry)?>" data-groups='["<?php echo htmlspecialchars($dial->industry)?>"]' data-title="<?php echo htmlspecialchars($dial->name);?>">
 	<h2><?php echo $dial->name ?></h2>
 	<img class="greyed" src="<?php echo get_library_dial_image($dial->id);?>" id="libraryImage<?php echo $dial->id?>"/>
 	<?php 
@@ -130,7 +133,8 @@ foreach ($dials as $dial) {
 	?>
 </div>
 <?php } ?>
-
+<div class="shuffle-sizer col-lg-3 col-md-4 col-sm-6"></div>
+</div>
 
 </div>
 
@@ -176,23 +180,62 @@ foreach ($dials as $dial) {
 <?php } ?>
 
 <script>
+$(function() {
+var Shuffle = window.Shuffle;
+
+var myShuffle = new Shuffle(document.querySelector('#dial-container'), {
+  itemSelector: '.col-library',
+  sizer: '.shuffle-sizer',
+  buffer: 1,
+  speed: 250,
+});
+
+myShuffle.on(Shuffle.EventType.LAYOUT, function () {
+	  console.log('Things finished moving!');
+	});
+
+myShuffle.on(Shuffle.EventType.REMOVED, function (data) {
+	  console.log(this, data, data.collection, data.shuffle);
+	});
+/*
+window.jQuery('input[name="shuffle-filter"]').on('change', function (evt) {
+  var input = evt.currentTarget;
+  if (input.checked) {
+    myShuffle.filter(input.value);
+  }
+});*/
+
+//myShuffle.filter(Shuffle.ALL_ITEMS);
+
 $('.filter').on('click','li', function() {
 	$(this).toggleClass('active');
 	var selected = document.querySelectorAll('.filter li.active');
 
 	var industries = [];
+
+	
 	selected.forEach((x,y,z) => industries.push(x.dataset['industry']));
 
-	document.querySelectorAll('div.col-library').forEach(x => {
+
+	if (industries.length == 0) {
+		myShuffle.filter(Shuffle.ALL_ITEMS);
+		return;
+	}
+	
+	console.log('shuffling on ', industries);//.join(","));
+	myShuffle.filter(industries);//.join(","));
+	
+/*	document.querySelectorAll('div.col-library').forEach(x => {
 		var el = $(x);
 		if (industries.length == 0) {
-			el.show(300);
+			el.show(3000);
 		} else if (industries.includes(el.data('industry'))) {
-			el.show(300);
+			el.fadeIn(3000);
 		} else {
-			el.hide(300);
+			el.fadeOut(3000);
 		}
-	});
+	}); */
+});
 });
 </script>
 
