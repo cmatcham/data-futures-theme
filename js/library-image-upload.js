@@ -129,7 +129,6 @@
 		$('#displayModal').modal();
 		
 		$.when(getResponses(library, publicDial, title, url), getOpenGraph(dial)).done(function (a1, a2) {
-			console.log('whenning', a1, a2);
 			$('#dialLoadingOverlay').hide();
 			$('#dialInsertion').fadeIn();
 			
@@ -167,7 +166,7 @@
     function getOpenGraph(dial) {
     		return $.post(su_config.ajax_url + "?action=opengraph&id="+dial, function(response) {
 			var data = JSON.parse(response);
-			if (data.title) {
+			if (data.title && data.image) {
 				
 				$('#opengraph-title').text(data.title);
 				$('#opengraph-description').text(data.description);

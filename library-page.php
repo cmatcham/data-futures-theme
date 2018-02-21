@@ -107,7 +107,12 @@ if (count($dials) == 0) {
 <script src="<?php  echo get_theme_file_uri( '/js/dataFutures.js' )?>"></script>
 
 <div class="container">
-<div class="filter">
+<p>
+  <a class="btn btn-primary" style="background-color: #5085a0;color:white" data-toggle="collapse" href="#filterCollapse" role="button" aria-expanded="false" aria-controls="filterCollapse">
+    Filter by industry
+  </a>
+</p>
+<div class="filter collapse" id="filterCollapse">
 <ul>
 <?php 
 foreach (get_industry_codes() as $key => $value) {
@@ -181,61 +186,35 @@ foreach ($dials as $dial) {
 
 <script>
 $(function() {
-var Shuffle = window.Shuffle;
+	var Shuffle = window.Shuffle;
 
-var myShuffle = new Shuffle(document.querySelector('#dial-container'), {
-  itemSelector: '.col-library',
-  sizer: '.shuffle-sizer',
-  buffer: 1,
-  speed: 250,
-});
-
-myShuffle.on(Shuffle.EventType.LAYOUT, function () {
-	  console.log('Things finished moving!');
+	var myShuffle = new Shuffle(document.querySelector('#dial-container'), {
+		itemSelector: '.col-library',
+		sizer: '.shuffle-sizer',
+		buffer: 1,
+		speed: 250,
 	});
 
-myShuffle.on(Shuffle.EventType.REMOVED, function (data) {
-	  console.log(this, data, data.collection, data.shuffle);
-	});
-/*
-window.jQuery('input[name="shuffle-filter"]').on('change', function (evt) {
-  var input = evt.currentTarget;
-  if (input.checked) {
-    myShuffle.filter(input.value);
-  }
-});*/
 
-//myShuffle.filter(Shuffle.ALL_ITEMS);
-
-$('.filter').on('click','li', function() {
-	$(this).toggleClass('active');
-	var selected = document.querySelectorAll('.filter li.active');
-
-	var industries = [];
-
+	$('.filter').on('click','li', function() {
+		$(this).toggleClass('active');
+		var selected = document.querySelectorAll('.filter li.active');
 	
-	selected.forEach((x,y,z) => industries.push(x.dataset['industry']));
-
-
-	if (industries.length == 0) {
-		myShuffle.filter(Shuffle.ALL_ITEMS);
-		return;
-	}
+		var industries = [];
 	
-	console.log('shuffling on ', industries);//.join(","));
-	myShuffle.filter(industries);//.join(","));
+		
+		selected.forEach((x,y,z) => industries.push(x.dataset['industry']));
 	
-/*	document.querySelectorAll('div.col-library').forEach(x => {
-		var el = $(x);
+	
 		if (industries.length == 0) {
-			el.show(3000);
-		} else if (industries.includes(el.data('industry'))) {
-			el.fadeIn(3000);
-		} else {
-			el.fadeOut(3000);
+			myShuffle.filter(Shuffle.ALL_ITEMS);
+			return;
 		}
-	}); */
-});
+		
+		console.log('shuffling on ', industries);//.join(","));
+		myShuffle.filter(industries);//.join(","));
+		
+	});
 });
 </script>
 
